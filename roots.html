@@ -55,9 +55,8 @@
        shapes as particles and lerps one into the other. Generated geometry,
        nothing traced. Without WebGL the static mark stays and says the same
        thing without moving. -->
-  <section class="morph" data-morph aria-labelledby="morph-head">
-    <div class="morph__stage">
-      <svg class="morph__mark" viewBox="-84 -84 168 168" role="img" aria-labelledby="morph-mark-title">
+  <section class="hero" aria-labelledby="roots-head">
+    <svg class="hero-mark" viewBox="-84 -84 168 168" role="img" aria-labelledby="morph-mark-title">
         <title id="morph-mark-title">The Eytan Lev mark in its proportional frame: a six-pointed star with a heartbeat through its centre, set in a circle and a square</title>
         <g class="hero-frame" aria-hidden="true">
           <circle class="hero-circle" cx="0" cy="0" r="68"/>
@@ -71,21 +70,11 @@
         <path class="hero-star" d="M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z"/>
         <path class="eyl-pulse" d="M-33.5,0 L-18,0 L-12,-15 L-4,17 L4,-7 L10,0 L33.5,0"/>
       </svg>
-
-      <div class="morph__copy">
-        <p class="eyebrow"><span data-lang="en">Proportion</span><span data-lang="he">מידה</span></p>
-        <h2 class="morph__head" id="morph-head">
-          <span class="latin-caps" data-lang="en">Keep the body, and it keeps growing.</span>
-          <span data-lang="he">שומרים על הגוף, והוא ממשיך לצמוח.</span>
-        </h2>
-        <p class="morph__lead">
-          <span data-lang="en">The mark is a proportion drawing. Scroll, and it becomes the thing it was always describing.</span>
-          <span data-lang="he">הסמל הוא שרטוט של מידה. גללו, והוא הופך למה שתמיד תיאר.</span>
-        </p>
-      </div>
-
-      <p class="morph__debug" data-morph-debug hidden dir="ltr"></p>
-    </div>
+    <p class="eyebrow"><span data-lang="en">Proportion</span><span data-lang="he">מידה</span></p>
+    <h1 id="roots-head">
+      <span class="latin-caps" data-lang="en">Keep the body, and it keeps growing.</span>
+      <span data-lang="he">שומרים על הגוף, והוא ממשיך לצמוח.</span>
+    </h1>
   </section>
 
   <section class="page-head measure">
@@ -419,6 +408,5 @@
 
 <script src="assets/js/main.js"></script>
 <script src="assets/js/helix.js" defer></script>
-<script src="assets/js/morph.js" defer></script>
 </body>
 </html>

@@ -63,7 +63,7 @@
     // everything reads chalky.
     if (T.ACESFilmicToneMapping !== undefined) {
       renderer.toneMapping = T.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 0.74;
+      renderer.toneMappingExposure = 0.84;
     }
     if (T.sRGBEncoding !== undefined) renderer.outputEncoding = T.sRGBEncoding;
     // Shadows carry the tree's weight onto the ground. Off on small screens,
@@ -115,9 +115,9 @@
     // headline sits on, so the lit flank of the tree faces the open sky and
     // the words. The sky fill is the blue of the field, the ground bounce
     // almost nothing, and the rim is the faint airglow behind the ridge.
-    var hemi = new T.HemisphereLight(0x2E3F66, 0x0B0D0A, 0.30);
+    var hemi = new T.HemisphereLight(0x4A5A78, 0x1E2418, 0.42);
     scene.add(hemi);
-    var key = new T.DirectionalLight(0xC6D4F0, 0.58);
+    var key = new T.DirectionalLight(0xFFD3A0, 0.55);
     key.position.set(7, 8, 9);
     if (SHADOWS) {
       key.castShadow = true;
@@ -130,8 +130,8 @@
       key.shadow.radius = 2.4;
     }
     scene.add(key);
-    var rim = new T.DirectionalLight(0xD8C9A0, 0.8);
-    rim.position.set(-3, 4, -10);
+    var rim = new T.DirectionalLight(0xFFB870, 0.95);
+    rim.position.set(3, 2.5, -10);
     scene.add(rim);
 
     // ---- shamayim.
@@ -161,11 +161,17 @@
 
     // The gradient. Blue-black at the zenith, lifting to a green-gold airglow
     // above the horizon; the last band is the land's own scatter.
-    var SKY_TOP = '#05091A', SKY_LOW = '#3E4A44';
+    // Evening, not night: the zenith is a deep slate blue, and the last hour
+    // of light is still in the sky at the horizon as a broad amber band —
+    // which is what a long exposure shows an hour after sunset, and what
+    // lets the land below keep its green.
+    var SKY_TOP = '#121827', SKY_LOW = '#7E6238';
     var g = sctx.createLinearGradient(0, 0, 0, SH);
-    [[0, SKY_TOP], [0.18, '#080F24'], [0.36, '#0E1A36'], [0.50, '#132242'],
-     [0.60, '#1A2C4A'], [0.68, '#22364C'], [0.74, '#2D434C'],
-     [0.80, '#3A4D48'], [0.88, '#404E44'], [1, SKY_LOW]
+    // The ridge line sits a little under halfway down the frame, so the
+    // warm band has to live just above that or it is behind the hills.
+    [[0, SKY_TOP], [0.14, '#171E31'], [0.28, '#1F2638'], [0.38, '#2B3040'],
+     [0.44, '#3D3B42'], [0.49, '#5A4C3E'], [0.53, '#83653E'],
+     [0.57, '#AC7F45'], [0.61, '#C4964F'], [0.68, '#B4874A'], [0.80, '#8C6A3C'], [1, SKY_LOW]
     ].forEach(function (st) { g.addColorStop(st[0], st[1]); });
     sctx.fillStyle = g; sctx.fillRect(0, 0, SW, SH);
 
@@ -209,14 +215,14 @@
 
     // Painted at a quarter of the sky's width and scaled up — noise this soft
     // has nothing to lose, and it keeps the loop short.
-    var GW = Math.round(SW / 2), GH = Math.round(SH / 2);
+    var GW = Math.round(SW / 3), GH = Math.round(SH / 3);   // a third: enough for grain, cheap enough to paint at load
     var gc = document.createElement('canvas'); gc.width = GW; gc.height = GH;
     var gx = gc.getContext('2d');
     var img = gx.createImageData(GW, GH), d = img.data;
     var HALF = 0.075 * SW;                                        // half-width of the band, texels
     for (var py = 0; py < GH; py++) {
       for (var px = 0; px < GW; px++) {
-        var bc = bandCoords(px * 2, py * 2), u = bc[0], w = bc[1];
+        var bc = bandCoords(px * 3, py * 3), u = bc[0], w = bc[1];
         // the band's own width wanders and thickens toward the bulge
         var wob = (cloud(u * 3.0 + 7, 0.3, 2) - 0.5) * HALF * 1.2;
         var halfHere = HALF * (1.25 - u * 0.5);
@@ -225,20 +231,20 @@
         var nx = px / GW * 6, ny = py / GH * 3.4;
         // three scales: the big star clouds, the mid-scale knots, and a fine
         // grain that is the unresolved stars themselves
-        var c1 = cloud(nx, ny, 5), c2 = fine(nx * 3.1, ny * 3.1, 4), c3 = fine(nx * 11 + 3, ny * 11, 2);
+        var c1 = cloud(nx, ny, 4), c2 = fine(nx * 3.1, ny * 3.1, 3), c3 = fine(nx * 11 + 3, ny * 11, 1);
         var bright = prof * (0.30 + 0.70 * Math.pow(c1, 1.3)) * (0.45 + 0.55 * c2) * (0.7 + 0.6 * c3);
         // the bulge is brighter and warmer; the far end of the band cools
         var warm = Math.max(0, 1 - u * 1.5);
         bright *= 0.8 + warm * 0.9;
         // dust: long clouds along the band where the second noise is high
-        var dv = dust(nx * 1.4 + u * 2.0, ny * 0.5 + w / HALF * 0.35, 4);
+        var dv = dust(nx * 1.4 + u * 2.0, ny * 0.5 + w / HALF * 0.35, 3);
         var lane = Math.max(0, Math.min(1, (dv - 0.45) / 0.15)) * Math.min(1, prof * 1.5) * (0.65 + warm * 0.35);
         var lum = bright * (1 - lane * 0.92);
         // grey-white with a little blue away from the core, gold at the bulge —
         // the lavender of the first pass is not a colour the sky has
         var r = 196 + 44 * warm, gch = 198 + 12 * warm, bch = 214 - 84 * warm;
         var o = (py * GW + px) * 4;
-        var a = Math.min(1, lum * 1.25);
+        var a = Math.min(1, lum * 1.05);
         d[o] = r; d[o + 1] = gch; d[o + 2] = bch; d[o + 3] = Math.round(a * 255);
         // dust in front of the light darkens what is behind the band too
         if (lane > 0.05) {
@@ -271,14 +277,14 @@
     sctx.globalCompositeOperation = 'lighter';
     var NSTAR = Math.round(14000 * (SW / 3072) * (SW / 3072));
     for (var st = 0; st < NSTAR; st++) {
-      var sy = Math.pow(srnd(), 1.35) * 0.80;
+      var sy = Math.pow(srnd(), 1.35) * 0.62;
       var sxp = srnd();
       var x = sxp * SW, y = sy * SH;
       // the band gets the crowd: keep a star more often the closer it lies
       var bcs = bandCoords(x, y);
       var inBand = Math.exp(-(bcs[1] * bcs[1]) / (2 * HALF * HALF * 1.6));
       if (srnd() > 0.28 + 0.72 * inBand) continue;
-      var air = Math.pow(1 - sy / 0.80, 1.3);
+      var air = Math.pow(1 - sy / 0.62, 1.3);
       var m = Math.pow(srnd(), 3.6);
       var mag = (0.12 + 0.88 * m) * air;
       if (mag < 0.03) continue;
@@ -299,10 +305,10 @@
     }
     // Airglow: a band along the whole horizon, green-gold, faint.
     sctx.globalCompositeOperation = 'lighter';
-    var ag = sctx.createLinearGradient(0, 0.60 * SH, 0, 0.84 * SH);
-    ag.addColorStop(0, 'rgba(110,118,82,0)');
-    ag.addColorStop(0.7, 'rgba(118,122,84,0.14)');
-    ag.addColorStop(1, 'rgba(126,120,82,0.20)');
+    var ag = sctx.createLinearGradient(0, 0.40 * SH, 0, 0.62 * SH);
+    ag.addColorStop(0, 'rgba(210,150,80,0)');
+    ag.addColorStop(0.75, 'rgba(220,160,80,0.14)');
+    ag.addColorStop(1, 'rgba(240,180,90,0.22)');
     sctx.fillStyle = ag; sctx.fillRect(0, 0, SW, SH);
     sctx.globalCompositeOperation = 'source-over';
     // Grain. A long exposure has noise in it, and its absence is one of the
@@ -347,9 +353,9 @@
     // neutral grey: distance should warm and lift toward the sun, the way air
     // actually behaves, not just fade.
     // Fog is the horizon sky's own colour, so distance dissolves into it.
-    scene.fog = new T.FogExp2(0x2A3B50, 0.0064);
-    scene.fog.color = lin(0x2A3B50);
-    var fogSky = lin(0x2A3B50), fogSoil = lin(0x0B0907);
+    scene.fog = new T.FogExp2(0x6E5C46, 0.0058);
+    scene.fog.color = lin(0x6E5C46);
+    var fogSky = lin(0x6E5C46), fogSoil = lin(0x0B0907);
 
     // ---- hills: ridge silhouettes at receding depths. Flat-shaded and
     // colour-graded toward the sky, which is what reads as distance.
@@ -452,9 +458,9 @@
       // is the whole trick of layered hills. Each ridge's dark crest sits
       // against the pale foot of the one behind it, and the farthest sits
       // against the horizon sky, which at night is the brightest band there is.
-      var lit = base.clone().lerp(new T.Color(0x9FB4CF), 0.22);
-      var shade = base.clone().lerp(new T.Color(0x070A12), 0.22);
-      var foot = base.clone().lerp(new T.Color(0x3E5068), 0.55);
+      var lit = base.clone().lerp(new T.Color(0xD9B27A), 0.26);
+      var shade = base.clone().lerp(new T.Color(0x0F160F), 0.24);
+      var foot = base.clone().lerp(new T.Color(0x7A6A4E), 0.5);
 
       var h = new Float32Array(RELIEF_W), sm = new Float32Array(RELIEF_W);
       for (var c0 = 0; c0 < RELIEF_W; c0++) {
@@ -584,17 +590,17 @@
     // Night grades the other way from day: the farthest ridge is the one
     // closest to the sky's own blue, and each one nearer is darker, until
     // the near band is almost the black of the foreground trees.
-    ridge(-62, 5.2, 2.3, 0.4, 0x22304A, 190);
-    ridge(-48, 3.8, 2.5, 2.1, 0x1B263B, 150);
-    ridge(-36, 2.4, 2.4, 3.9, 0x151E2F, 118);
+    ridge(-62, 5.2, 2.3, 0.4, 0x4A5548, 190);
+    ridge(-48, 3.8, 2.5, 2.1, 0x3A4A38, 150);
+    ridge(-36, 2.4, 2.4, 3.9, 0x2E4030, 118);
     // Values are chosen so that, AFTER lighting, the sequence stays monotonic
     // — pale and blue at the back, warmer and darker coming forward. A ramp
     // that reverses anywhere reads as collage however well each piece is lit.
     // The two heightfields and the near card stay in the same blue family as
     // the ridges — a green band between blue cards was reading as a cut-out.
-    landform(-31, -21, 1.0, 2.1, 5.6, -1.4, 0x111A28, 96);
-    landform(-21, -12, -0.4, 1.7, 1.2, -2.4, 0x0D1420, 74);
-    ridge(-9, -1.9, 1.1, 4.4, 0x0A0F17, 52);
+    landform(-31, -21, 1.0, 2.1, 5.6, -1.4, 0x3C4C2E, 96);
+    landform(-21, -12, -0.4, 1.7, 1.2, -2.4, 0x33452A, 74);
+    ridge(-9, -1.9, 1.1, 4.4, 0x2A3A22, 52);
 
     // ---- the foreground. The frame is closed at its two lower corners by
     // trees standing nearer than anything else in it — black, unlit, sharp
@@ -607,7 +613,7 @@
     // rather than at a world x that one viewport happened to show.
     var FG_Z = 5.5, fgMat = null, fgL = new T.Group(), fgR = new T.Group();
     (function foreground() {
-      var mat = new T.MeshBasicMaterial({ color: lin(0x05070A), fog: false, transparent: true });
+      var mat = new T.MeshBasicMaterial({ color: lin(0x0A0F0A), fog: false, transparent: true });
       fgMat = mat;
       // A pine, ragged. Tiers of unequal length, each one a short jagged run
       // that droops toward its end, and no two sides alike — a symmetric
@@ -789,10 +795,10 @@
     // jittered vertices, smooth-shaded and keyed a shade under the nearest
     // ridge: a single flat-shaded solid reads as a cardboard pyramid.
     var KNOLL = [
-      { s: [2.9, 0.42, 2.2], p: [0, -0.46, 0.1], r: [0.06, 0.7, 0.04], c: 0x1A2028 },
-      { s: [1.9, 0.3, 1.5], p: [-1.7, -0.56, 0.6], r: [0.1, 2.1, -0.08], c: 0x171D25 },
-      { s: [2.0, 0.28, 1.55], p: [1.8, -0.58, -0.3], r: [-0.08, 4.0, 0.1], c: 0x151B23 },
-      { s: [1.1, 0.36, 0.9], p: [0.15, -0.34, 0.5], r: [0.16, 1.2, 0.1], c: 0x1E252E }
+      { s: [2.9, 0.42, 2.2], p: [0, -0.46, 0.1], r: [0.06, 0.7, 0.04], c: 0x3A4A2E },
+      { s: [1.9, 0.3, 1.5], p: [-1.7, -0.56, 0.6], r: [0.1, 2.1, -0.08], c: 0x36462B },
+      { s: [2.0, 0.28, 1.55], p: [1.8, -0.58, -0.3], r: [-0.08, 4.0, 0.1], c: 0x334229 },
+      { s: [1.1, 0.36, 0.9], p: [0.15, -0.34, 0.5], r: [0.16, 1.2, 0.1], c: 0x445535 }
     ];
     KNOLL.forEach(function (k, i) {
       var g = new T.IcosahedronGeometry(1, 2);
@@ -847,7 +853,7 @@
     floorMottle.needsUpdate = true;
     var floor = new T.Mesh(
       new T.PlaneGeometry(300, 190),
-      toon(0x151B1C, RAMP_EARTH, { map: floorMottle })
+      toon(0x2E3C2A, RAMP_EARTH, { map: floorMottle })
     );
     floor.rotation.x = -Math.PI / 2;
     floor.position.set(0, -7.4, -150);
@@ -1444,7 +1450,7 @@
     });
 
     var col = new T.Color();
-    var cDark = new T.Color(0.26, 0.31, 0.30), cLit = new T.Color(0.80, 0.88, 0.86), cSun = lin(LEAF_SUN);
+    var cDark = new T.Color(0.30, 0.36, 0.28), cLit = new T.Color(0.84, 0.90, 0.70), cSun = lin(LEAF_SUN);
     var yLo = Infinity, yHi = -Infinity;
     clusters.forEach(function (c) { if (c.p.y < yLo) yLo = c.p.y; if (c.p.y > yHi) yHi = c.p.y; });
     var ySpan = Math.max(0.001, yHi - yLo);
@@ -1454,7 +1460,7 @@
       // the texture carries the leaf colour; the instance carries the light —
       // dark and cool inside and low, open and warm at the sunlit top
       col.copy(cDark).lerp(cLit, Math.pow(up, 0.85) * 0.8 + frnd() * 0.3);
-      col.lerp(cSun, Math.pow(up, 2.4) * 0.10 * (0.5 + frnd() * 0.5));
+      col.lerp(cSun, Math.pow(up, 2.4) * 0.16 * (0.5 + frnd() * 0.5));
       lMesh.setColorAt(i, col);
       // Orientation: the spray points away from its twig and a little up,
       // the way growth does; the face it shows is otherwise random, so
@@ -1591,8 +1597,8 @@
       // it has to be sized for that shift, not merely slid into it, or the
       // far side of the crown falls off the frame.
       var leaning = r.width >= 960;
-      var LEAN = 0.115;                         // share of frame width to shift
-      var fill = narrow ? 0.72 : 0.70;          // share of frame height the tree fills
+      var LEAN = 0;                             // centred: the roots go straight down into the descent
+      var fill = narrow ? 0.62 : 0.54;          // share of frame height the tree fills
       var wide = narrow ? 0.98 : 0.94;
       var distH = (size.y / fill / 2) / tanH;
       var distW = (size.x / wide / 2) / tanH / camera.aspect;
@@ -1611,7 +1617,7 @@
       // run off the bottom edge — the page picks them up from there. Aim at
       // the crown's own centre in x as well: a grown tree is never perfectly
       // balanced, and the camera should frame it rather than the origin.
-      var aim = centre.y + visH * (narrow ? 0.03 : 0.10);
+      var aim = centre.y + visH * (narrow ? 0.05 : 0.17);
       // Aiming away from the tree pushes the tree the opposite way on screen,
       // and the side swaps with the document's direction.
       var aimX = centre.x;
@@ -1663,11 +1669,11 @@
       // above takes over; by the bottom you are reading by very little.
       var lit = Math.max(0, 1 - p * 1.9);
       if (renderer.toneMapping !== undefined && renderer.toneMapping !== T.NoToneMapping) {
-        renderer.toneMappingExposure = 0.82 - 0.3 * Math.min(1, p * 1.7);
+        renderer.toneMappingExposure = 0.84 - 0.3 * Math.min(1, p * 1.7);
       }
-      key.intensity = 0.58 * lit;
-      rim.intensity = 0.8 * lit;
-      hemi.intensity = 0.30 * lit;
+      key.intensity = 0.55 * lit;
+      rim.intensity = 0.95 * lit;
+      hemi.intensity = 0.42 * lit;
       underKey.intensity = 0.62 * Math.min(1, p * 2.2);
       underFill.intensity = 0.20 * Math.min(1, p * 2.2);
       // Soil closes over as the camera passes beneath the ground line, and
@@ -1677,7 +1683,7 @@
       capMat.opacity = Math.max(0, Math.min(1, (-y - 0.4) / 1.6));
       var uf = Math.min(1, Math.max(0, (p - 0.04) / 0.16));
       scene.fog.color.copy(fogSky).lerp(fogSoil, uf);
-      scene.fog.density = 0.0064 + 0.05 * uf;
+      scene.fog.density = 0.0058 + 0.05 * uf;
       if (section) section.classList.toggle('is-under', p > 0.1);
     }
 
@@ -1884,22 +1890,9 @@
       wait.observe(frame);
     }
 
-    // drag to turn
-    var down = false, lastX = 0;
+    // No drag. The tree stands where it stands: the descent's taproot is
+    // directly beneath it, and a tree you can spin is a model, not a tree.
     canvas.style.touchAction = 'pan-y';
-    canvas.addEventListener('pointerdown', function (e) {
-      down = true; lastX = e.clientX; canvas.setPointerCapture(e.pointerId);
-      canvas.classList.add('is-dragging');
-    });
-    canvas.addEventListener('pointermove', function (e) {
-      if (!down) return;
-      targetYaw += (e.clientX - lastX) * 0.006;
-      lastX = e.clientX;
-      kick();
-    });
-    ['pointerup', 'pointercancel'].forEach(function (ev) {
-      canvas.addEventListener(ev, function () { down = false; canvas.classList.remove('is-dragging'); });
-    });
 
     var scrollQueued = false;
     window.addEventListener('scroll', function () {
