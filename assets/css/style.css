@@ -422,6 +422,26 @@ html[lang="he"] .hero-tree__copy h1 { max-width: none; }
   .hero-tree__cue { font-size: 0.72rem; }
 }
 
+/* ---------- the six lines, on the home page ----------
+   Six pack shots in a grid, straight after the descent: the products, in
+   the same tile as the shop, so the home page says what is sold before it
+   asks for an address. */
+.lines { padding: clamp(3rem, 7vw, 5rem) clamp(1.25rem, 5vw, 4rem); border-block-start: 1px solid var(--hairline); scroll-margin-block-start: var(--header-h); }
+.lines__inner { max-width: 72rem; margin-inline: auto; }
+.lines__label { margin: 0 0 clamp(1.6rem, 3vw, 2.4rem); font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.3rem, 2.6vw, 1.8rem); color: var(--deep-olive); max-width: 30ch; text-wrap: balance; }
+.lines__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.2rem, 3vw, 2.2rem) clamp(1rem, 2.5vw, 1.8rem); }
+@media (max-width: 900px) { .lines__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .lines__grid { grid-template-columns: 1fr; } }
+.line-card { display: block; text-decoration: none; color: inherit; }
+.line-card .product-card .icon-wrap { transition: transform 0.35s ease; }
+.line-card:hover .icon-wrap, .line-card:focus-visible .icon-wrap { transform: translateY(-3px); }
+.line-card:focus-visible { outline: 2px solid var(--olive); outline-offset: 4px; }
+.line-card .info { padding: 1rem 0.1rem 0; }
+.line-card .shop-line-label { display: flex; gap: 0.3rem; align-items: baseline; }
+.line-card__tr { color: var(--muted); letter-spacing: 0.1em; font-size: 0.72rem; text-transform: uppercase; }
+.line-card h3 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: 1.15rem; line-height: 1.35; color: var(--deep-olive); margin: 0 0 0.45rem; }
+.line-card .desc { margin: 0; font-size: 0.85rem; line-height: 1.6; color: var(--muted); }
+
 /* ---------- the line strip ----------
    A slow marquee of the six lines, sat just above the waitlist: the shelf as
    it will be, then the invitation. Two identical rows translate by exactly
@@ -936,8 +956,68 @@ html[lang="he"] .mlk__translit { text-transform: none; letter-spacing: 0.04em; }
 /* ---------- product cards (line pages + shop) ---------- */
 .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: clamp(1.6rem, 4vw, 2.4rem); }
 .product-card { display: flex; flex-direction: column; }
-.product-card .icon-wrap { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: var(--line-bg); }
-.product-card .icon-wrap svg { width: 56px; height: 56px; fill: none; stroke: var(--line-fg); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; opacity: 0.35; }
+/* The pack shot. There is no photography yet, so each tile is a studio
+   still built in CSS: a lit panel in the line's colour, and on it a dark
+   glass bottle with a paper label carrying the mark and the line's emblem.
+   It is a stand-in for a photograph and is built like one — one soft key
+   from the upper left, a falloff into the corners, a highlight down the
+   shoulder of the glass — so that when real photographs replace it nothing
+   about the page has to change. */
+.product-card .icon-wrap {
+  position: relative; aspect-ratio: 1; overflow: hidden;
+  display: flex; align-items: flex-end; justify-content: center;
+  background:
+    radial-gradient(80% 70% at 38% 22%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(120% 90% at 50% 100%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.38) 100%),
+    var(--line-bg);
+}
+/* the shelf the bottle stands on: a soft contact shadow */
+.product-card .icon-wrap::after {
+  content: ''; position: absolute; inset-inline: 22%; inset-block-end: 9%; height: 6%;
+  border-radius: 50%; background: rgba(0, 0, 0, 0.45); filter: blur(6px);
+}
+.pack { position: absolute; inset-inline: 0; inset-block-end: 12%; height: 68%; display: block; z-index: 1; }
+.pack__cap {
+  position: absolute; inset-inline: 40%; inset-block-start: 0; height: 12%;
+  border-radius: 12% 12% 4% 4% / 30% 30% 10% 10%;
+  background: linear-gradient(90deg, #17150F 0%, #3C372A 22%, #6A6046 38%, #2C2820 60%, #141210 100%);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.pack__body {
+  position: absolute; inset-inline: 32%; inset-block-start: 10%; inset-block-end: 0;
+  border-radius: 26% 26% 8% 8% / 12% 12% 4% 4%;
+  /* amber glass: dark, with a long highlight down the shoulder and a thin
+     bright edge on the far side where the light wraps */
+  background:
+    linear-gradient(90deg,
+      #1A130A 0%, #4A3417 10%, #8A6229 20%, #5A3E19 30%, #2E200E 48%,
+      #24190B 70%, #3D2B12 88%, #6A4B22 95%, #1A130A 100%);
+  box-shadow: inset 0 14px 18px -10px rgba(255, 220, 160, 0.25), inset 0 -10px 16px -8px rgba(0, 0, 0, 0.6),
+              0 10px 24px -10px rgba(0, 0, 0, 0.7);
+  display: flex; align-items: center; justify-content: center;
+}
+/* the label: paper, wrapped round the glass, so it is darker at both ends */
+.pack__body::before {
+  content: ''; position: absolute; inset-inline: 0; inset-block-start: 30%; height: 46%;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0) 14%, rgba(0, 0, 0, 0) 78%, rgba(0, 0, 0, 0.36)),
+    #EFE8D6;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+.pack__mark {
+  position: relative; z-index: 1;
+  font-family: 'David Libre', Georgia, serif; font-weight: 500; font-style: normal;
+  font-size: clamp(0.5rem, 1.1vw, 0.72rem); letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--deep-olive); padding-inline-start: 0.22em; text-align: center;
+  transform: translateY(-58%);
+}
+/* the line's emblem, printed small on the label under the mark */
+.product-card .icon-wrap svg {
+  position: absolute; z-index: 2; width: 12%; height: auto;
+  inset-block-end: calc(12% + 68% * 0.30); inset-inline-start: 50%; transform: translate(-50%, 40%);
+  fill: none; stroke: var(--line-bg); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; opacity: 0.9;
+}
+html[dir="rtl"] .product-card .icon-wrap svg { transform: translate(50%, 40%); }
 .product-card .info { padding: 1.1rem 0.2rem 0; }
 .product-card h3 { margin: 0 0 0.3rem; font-family: 'David Libre', Georgia, serif; font-weight: 500; font-size: 1.05rem; color: var(--ink); }
 .product-card .desc { margin: 0 0 0.6rem; font-size: 0.9rem; line-height: 1.6; color: var(--muted); }

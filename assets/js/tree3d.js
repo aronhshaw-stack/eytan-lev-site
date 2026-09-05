@@ -220,7 +220,7 @@
     // warmer, brighter core toward the bulge at the bottom, and dark dust
     // lanes cut through the middle of it — the lanes are what make it a
     // galaxy seen edge-on rather than a smear of light.
-    var MW = { x0: 0.60, y0: 0.80, x1: 0.38, y1: -0.05 };   // bottom → top
+    var MW = { x0: 0.62, y0: 0.92, x1: 0.38, y1: -0.05 };   // bottom → top
     // A slight bow, because a straight band reads as a beam.
     function mwAt(u) { return [ (MW.x0 + (MW.x1 - MW.x0) * u + Math.sin(u * Math.PI) * 0.05) * SKY,
                                 (MW.y0 + (MW.y1 - MW.y0) * u) * SKY ]; }
@@ -290,7 +290,7 @@
       var br_ = (50 + srnd() * 130) * S * mk * 0.6;
       var warm = Math.max(0, 1 - bu * 1.4);              // warm low, cool high
       var bcol = ((150 + 84 * warm) | 0) + ',' + ((156 + 44 * warm) | 0) + ',' + ((200 - 76 * warm) | 0);
-      var ba = (0.012 + srnd() * 0.02) * (0.55 + warm * 0.45) * gauss(bw, 0.075);
+      var ba = (0.008 + srnd() * 0.013) * (0.75 - warm * 0.25) * gauss(bw, 0.08);
       if (ba <= 0.002) continue;
       disc(gx, bx, by, br_, bcol, ba);
     }
@@ -300,7 +300,7 @@
       var cp = mwAt(cu), cx = (cp[0] + mwnx * cw * SKY) * mk, cy = (cp[1] + mwny * cw * SKY) * mk;
       var cr_ = (22 + srnd() * 60) * S * mk * 0.6;
       var ca = (0.014 + srnd() * 0.026) * (1 - cu * 0.8) * gauss(cw, 0.04);
-      disc(gx, cx, cy, cr_ * 0.9, '236,196,140', ca * 0.6);
+      disc(gx, cx, cy, cr_ * 0.9, '236,196,140', ca * 0.3);
     }
     blurLayer(lc, 5, 3);
     // The dust: two lanes, each a run of small clouds stretched along the
@@ -308,13 +308,13 @@
     // front of starlight is warm, not neutral. Many and faint, so they read
     // as cloud rather than as a pair of smudges. Ellipses: a round dark blob
     // is a hole, a long one is a cloud.
-    for (b = 0; b < 480; b++) {
-      var lane = b % 2 ? 0.016 : -0.012;
+    for (b = 0; b < 900; b++) {
+      var lane = b % 3 === 0 ? 0.02 : (b % 3 === 1 ? -0.014 : 0.004);
       var du = 0.03 + srnd() * 0.64;
-      var dw = lane + Math.sin(du * 7.0 + lane * 60) * 0.012 + (srnd() + srnd() - 1) * 0.034;
+      var dw = lane + Math.sin(du * 7.0 + lane * 60) * 0.012 + (srnd() + srnd() - 1) * 0.05;
       var dp = mwAt(du), dx_ = (dp[0] + mwnx * dw * SKY) * mk, dy_ = (dp[1] + mwny * dw * SKY) * mk;
-      var dr = (5 + srnd() * 13) * S * mk * 0.7, dl = dr * (1.6 + srnd() * 2.2);
-      var da = (0.05 + srnd() * 0.08) * (1 - du * 0.75);
+      var dr = (3 + srnd() * 9) * S * mk * 0.7, dl = dr * (1.6 + srnd() * 2.2);
+      var da = (0.04 + srnd() * 0.06) * (1 - du * 0.75);
       kx.save();
       kx.translate(dx_, dy_); kx.rotate(mwAng + (srnd() - 0.5) * 0.6); kx.scale(dl / dr, 1);
       disc(kx, 0, 0, dr, '24,18,14', da);
@@ -336,17 +336,17 @@
       var fu = srnd(), fw = (srnd() + srnd() + srnd() - 1.5) * 0.105 * (0.7 + fu * 0.6);
       var fp = mwAt(fu), fx = fp[0] + mwnx * fw * SKY, fy = fp[1] + mwny * fw * SKY;
       if (fy < 0 || fy > SKY * 0.8) continue;
-      var fa = (0.04 + srnd() * 0.16) * (0.7 + fu * 0.5);   // thinner toward the bulge, which the core already lights
+      var fa = (0.03 + srnd() * 0.13) * (0.7 + fu * 0.5);   // thinner toward the bulge, which the core already lights
       sctx.fillStyle = 'rgba(236,218,190,' + fa.toFixed(2) + ')';
       sctx.beginPath(); sctx.arc(fx, fy, 0.75 * S, 0, Math.PI * 2); sctx.fill();
     }
 
-    for (var st = 0; st < 2600; st++) {
+    for (var st = 0; st < 3600; st++) {
       var sy = Math.pow(srnd(), 1.5) * 0.76;         // crowded toward the zenith
       var sxp = srnd();
       // how much air we are looking through: 1 overhead, 0 at the haze line
       var air = Math.pow(1 - sy / 0.76, 1.35);
-      var m = Math.pow(srnd(), 2.6);                 // the power law
+      var m = Math.pow(srnd(), 3.4);                 // the power law — steeper: a real field is almost all faint
       var mag = (0.10 + 0.90 * m) * air;
       if (mag < 0.035) continue;
 
@@ -358,36 +358,26 @@
       var cb = c[2] + (128 - c[2]) * red;
       var rgbs = (cr | 0) + ',' + (cg | 0) + ',' + (cb | 0);
       var x = sxp * SKY, y = sy * SKY;
-      var core = (0.18 + 0.70 * m) * S;
+      var core = (0.16 + 0.40 * m) * S;
 
       // halo first — a point source through a lens is a core plus a skirt,
       // and the skirt is what makes a bright star read as bright rather than
       // as a bigger dot
-      if (m > 0.25) {
-        var hg = sctx.createRadialGradient(x, y, 0, x, y, core * 5.5);
-        hg.addColorStop(0, 'rgba(' + rgbs + ',' + (mag * 0.34).toFixed(3) + ')');
-        hg.addColorStop(0.35, 'rgba(' + rgbs + ',' + (mag * 0.09).toFixed(3) + ')');
+      if (m > 0.45) {
+        var hg = sctx.createRadialGradient(x, y, 0, x, y, core * 4);
+        hg.addColorStop(0, 'rgba(' + rgbs + ',' + (mag * 0.14).toFixed(3) + ')');
+        hg.addColorStop(0.4, 'rgba(' + rgbs + ',' + (mag * 0.035).toFixed(3) + ')');
         hg.addColorStop(1, 'rgba(' + rgbs + ',0)');
         sctx.fillStyle = hg;
-        sctx.beginPath(); sctx.arc(x, y, core * 5.5, 0, Math.PI * 2); sctx.fill();
+        sctx.beginPath(); sctx.arc(x, y, core * 4, 0, Math.PI * 2); sctx.fill();
       }
       sctx.beginPath();
       sctx.arc(x, y, core, 0, Math.PI * 2);
       sctx.fillStyle = 'rgba(' + rgbs + ',' + mag.toFixed(3) + ')';
       sctx.fill();
 
-      // The few brightest get spikes. Not an effect: it is what an aperture
-      // does to a point source, and its absence is one of the things that
-      // makes a rendered sky look printed.
-      if (m > 0.93) {
-        var sp = core * 9;
-        sctx.strokeStyle = 'rgba(' + rgbs + ',' + (mag * 0.30).toFixed(3) + ')';
-        sctx.lineWidth = 0.24 * S;
-        sctx.beginPath();
-        sctx.moveTo(x - sp, y); sctx.lineTo(x + sp, y);
-        sctx.moveTo(x, y - sp); sctx.lineTo(x, y + sp);
-        sctx.stroke();
-      }
+      // No spikes. Diffraction spikes belong to a telescope's spider, not to
+      // a camera lens, and drawn at this size they read as clip-art sparkles.
     }
 
     // Airglow. There is no sun in this sky any more; what sits on the
@@ -400,10 +390,7 @@
     ag.addColorStop(0.7, 'rgba(118,122,84,0.16)');
     ag.addColorStop(1, 'rgba(126,120,82,0.22)');
     sctx.fillStyle = ag; sctx.fillRect(0, 0, SKY, SKY);
-    var sg = sctx.createRadialGradient(330 * S, 400 * S, 0, 330 * S, 400 * S, 220 * S);
-    sg.addColorStop(0, 'rgba(136,122,78,0.10)');
-    sg.addColorStop(1, 'rgba(136,122,78,0)');
-    sctx.fillStyle = sg; sctx.fillRect(0, 0, SKY, SKY);
+
     sctx.globalCompositeOperation = 'source-over';
 
     var skyTex = new T.CanvasTexture(sc);
@@ -422,6 +409,7 @@
     // Fog is the horizon sky's own colour, so distance dissolves into it.
     scene.fog = new T.FogExp2(0x2A3B50, 0.0064);
     scene.fog.color = lin(0x2A3B50);
+    var fogSky = lin(0x2A3B50), fogSoil = lin(0x0B0907);
 
     // ---- hills: ridge silhouettes at receding depths. Flat-shaded and
     // colour-graded toward the sky, which is what reads as distance.
@@ -946,27 +934,40 @@
     // apart: adjacent layers a quarter of a stop from each other read as one
     // khaki mass however dark you make them.
     var STRATA = [
-      { y0: 0.0, y1: -2.4, c: 0x2A2519 },     // topsoil
-      { y0: -2.4, y1: -5.6, c: 0x413828 },    // brown earth
-      { y0: -5.6, y1: -8.4, c: 0x60533B },    // ochre fill
-      { y0: -8.4, y1: -9.2, c: 0x120F0C },    // an ash lens
-      { y0: -9.2, y1: -13.4, c: 0x6E6144 },   // rubble and lime
-      { y0: -13.4, y1: -17.8, c: 0x322C20 },
-      { y0: -17.8, y1: -19.0, c: 0x0F0D0A },  // a second burning
-      { y0: -19.0, y1: -23.8, c: 0x554A34 },
-      { y0: -23.8, y1: -28.6, c: 0x25211A },
-      { y0: -28.6, y1: -40.0, c: 0x15130F }   // bedrock
+      // One dark family, low contrast: underground the eye should read
+      // light and form, not a colour chart. The layers still change, but
+      // the way soil does in a cutting seen by a lamp — a shade, not a stripe.
+      { y0: 0.0, y1: -2.4, c: 0x1C1710 },     // topsoil
+      { y0: -2.4, y1: -5.6, c: 0x2A2318 },    // brown earth
+      { y0: -5.6, y1: -8.4, c: 0x3A3123 },    // ochre fill
+      { y0: -8.4, y1: -9.2, c: 0x0C0A08 },    // an ash lens
+      { y0: -9.2, y1: -13.4, c: 0x413827 },   // rubble and lime
+      { y0: -13.4, y1: -17.8, c: 0x241E15 },
+      { y0: -17.8, y1: -19.0, c: 0x0A0806 },  // a second burning
+      { y0: -19.0, y1: -23.8, c: 0x362E20 },
+      { y0: -23.8, y1: -28.6, c: 0x1B1711 },
+      { y0: -28.6, y1: -40.0, c: 0x0F0D0A }   // bedrock
     ];
 
     var under = new T.Group();
     under.visible = false;        // nothing below ground is built until needed
     scene.add(under);
 
+    // The ground itself. Once the camera is below the surface it should be
+    // looking up at soil, not at a stripe of sky over a card — that stripe
+    // is what made the cutting read as a diorama. A wide dark slab at the
+    // ground line, faded in as the camera passes under it, closes the sky.
+    var capMat = new T.MeshBasicMaterial({ color: lin(0x0A0806), side: T.DoubleSide, transparent: true, opacity: 0, fog: false });
+    var cap = new T.Mesh(new T.PlaneGeometry(220, 120), capMat);
+    cap.rotation.x = -Math.PI / 2;
+    cap.position.set(0, -0.02, -10);
+    under.add(cap);
+
     var WALL_W = 46, WALL_Z = -3.2;
     STRATA.forEach(function (s, i) {
       var h = s.y0 - s.y1;
       var m = new T.Mesh(new T.PlaneGeometry(WALL_W, h),
-        new T.MeshBasicMaterial({ color: lin(s.c), fog: false }));
+        new T.MeshStandardMaterial({ color: lin(s.c), roughness: 1, metalness: 0, map: mottle, fog: true }));
       m.position.set(0, (s.y0 + s.y1) / 2, WALL_Z - i * 0.002);
       under.add(m);
       // A ragged seam along the top of each layer: strata are not ruled lines.
@@ -982,7 +983,7 @@
       seam.closePath();
       var sm = new T.Mesh(new T.ShapeGeometry(seam),
         new T.MeshBasicMaterial({
-          color: lin(s.c).lerp(lin(0x1E1B14), 0.35), fog: false }));
+          color: lin(s.c).lerp(lin(0x0E0C08), 0.45), fog: true }));
       sm.position.set(0, s.y0, WALL_Z + 0.02);
       under.add(sm);
     });
@@ -1014,7 +1015,7 @@
       });
       var geo = new T.BoxGeometry(1, 1, 1);
       var mesh = new T.InstancedMesh(geo,
-        toon(0x8B8168, RAMP_EARTH), boxes.length);
+        toon(0x4A4234, RAMP_EARTH), boxes.length);
       var mm = new T.Matrix4(), qq = new T.Quaternion(), ee = new T.Euler();
       boxes.forEach(function (b, i) {
         ee.set(0, 0, b.r);
@@ -1039,7 +1040,7 @@
         var c = document.createElement('canvas');
         c.width = 256; c.height = 160;
         var x = c.getContext('2d');
-        x.fillStyle = '#C4B694'; x.fillRect(0, 0, 256, 160);
+        x.fillStyle = '#8A7C60'; x.fillRect(0, 0, 256, 160);
         // Foxed edges, so a leaf reads as old rather than as a sticker.
         var edge = x.createRadialGradient(128, 80, 40, 128, 80, 150);
         edge.addColorStop(0, 'rgba(120,100,64,0)');
@@ -1075,7 +1076,7 @@
       LAYERS.forEach(function (li, k) {
         var s = STRATA[li];
         var tex = leafTexture(9001 + k * 977);
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 3; i++) {
           var w = rr(1.5, 2.6);
           var m = new T.Mesh(new T.PlaneGeometry(w, w * 0.62),
             toon(0xFFFFFF, RAMP_EARTH, { map: tex, transparent: true, opacity: 0.94 }));
@@ -1243,7 +1244,7 @@
         // stopping on a flat cut face.
         var r0 = (0.95 - 0.72 * u0) * (u0 > 0.86 ? Math.max(0.05, (1 - u0) / 0.14) : 1);
         branches.push({ a: spine[i].clone(), b: spine[i + 1].clone(), r: r0,
-                        depth: 9, root: true });
+                        depth: 9, root: true, spine: true });
       }
       // Six laterals, alternating sides, reaching further as they go deeper.
       var AT = [0.10, 0.25, 0.40, 0.55, 0.70, 0.84];
@@ -1350,8 +1351,7 @@
     bMesh.instanceMatrix.setUsage(T.DynamicDrawUsage);
 
     var dCyl = new T.CylinderGeometry(1, 1, 1, 9, 1, true);
-    var dMesh = new T.InstancedMesh(dCyl,
-      toon(0x8E8069, RAMP_WOOD, { map: barkMap, roughness: 1.0 }), deepIdx.length);
+    var dMesh = new T.InstancedMesh(dCyl, barkMat, deepIdx.length);
     under.add(dMesh);
 
     // There used to be an ink line here: a second copy of every limb,
@@ -1364,6 +1364,16 @@
     var UP = new V(0, 1, 0);
     var m4 = new T.Matrix4(), q = new T.Quaternion(), mid = new V(), dirv = new V(), scl = new V();
 
+    // Joints. Every limb is a run of straight cylinders, and where two meet
+    // at an angle the seam shows as a ring — the "segmented pipe" look of
+    // every procedural tree. A sphere at each joint, the radius of the
+    // segment ending there, closes the seam from every angle. Same bark,
+    // same light, one instanced mesh per system.
+    var jointGeo = new T.SphereGeometry(1, 10, 8);
+    var jS = new T.InstancedMesh(jointGeo, barkMat, surfIdx.length);
+    var jD = new T.InstancedMesh(jointGeo, barkMat, deepIdx.length + 1);
+    jS.instanceMatrix.setUsage(T.DynamicDrawUsage);
+    var jQ = new T.Quaternion();
     function placeBranch(mesh, slot, i, t) {
       var br = branches[i];
       var grown = Math.max(0.0001, t);
@@ -1376,12 +1386,32 @@
       scl.set(br.r, len * (br.deep ? 1.12 : 1), br.r);
       m4.compose(mid, q, scl);
       mesh.setMatrixAt(slot, m4);
+      // the joint sits at the segment's end, at the radius the taper reaches there
+      // Not on the taproot's own spine — its segments already overlap and
+      // are nearly collinear, and a sphere on each of sixty-four of them
+      // reads as a string of beads. Not on a terminal segment either: a
+      // root or twig tapers to its tip, it does not end in a ball.
+      // Sized to the thinner side of the joint, so it closes the seam without
+      // standing proud of either segment.
+      var jr = br.r * (br.deep ? 0.74 : 0.56) * Math.min(1, grown * 4);
+      if (br.spine || br.depth <= 0) jr = 0;
+      scl.set(jr, jr, jr);
+      m4.compose(b, jQ, scl);
+      (br.deep ? jD : jS).setMatrixAt(slot, m4);
     }
 
     // The deep system does not grow in — it is already there, waiting under
     // the ground — so it is placed once and never touched again.
     deepIdx.forEach(function (i, slot) { placeBranch(dMesh, slot, i, 1); });
     dMesh.instanceMatrix.needsUpdate = true;
+    (function capTaproot() {
+      var top = branches[deepFrom];
+      scl.set(top.r * 1.02, top.r * 1.02, top.r * 1.02);
+      m4.compose(top.a, jQ, scl);
+      jD.setMatrixAt(deepIdx.length, m4);
+    })();
+    jD.instanceMatrix.needsUpdate = true;
+    under.add(jD);
 
     // ---- foliage
     //
@@ -1553,18 +1583,20 @@
 
     if (SHADOWS) {
       bMesh.castShadow = true; bMesh.receiveShadow = true;
+      jS.castShadow = true; jS.receiveShadow = true;
       lMesh.castShadow = true; lMesh.receiveShadow = true;
       mMesh.castShadow = true; mMesh.receiveShadow = true;
     }
     scene.add(bMesh);
+    scene.add(jS);
     scene.add(lMesh);
     scene.add(mMesh);
 
     // ---- framing: fit the camera to the tree it actually generated,
     // rather than to numbers that happened to work once.
     var group = new T.Group();
-    scene.remove(bMesh); scene.remove(lMesh); scene.remove(mMesh);
-    group.add(bMesh); group.add(lMesh); group.add(mMesh);
+    scene.remove(bMesh); scene.remove(jS); scene.remove(lMesh); scene.remove(mMesh);
+    group.add(bMesh); group.add(jS); group.add(lMesh); group.add(mMesh);
     scene.add(group);
 
     // The roots are meant to run off the bottom edge, so they are left out
@@ -1695,8 +1727,16 @@
       key.intensity = 0.58 * lit;
       rim.intensity = 0.8 * lit;
       hemi.intensity = 0.30 * lit;
-      underKey.intensity = 0.78 * Math.min(1, p * 2.2);
-      underFill.intensity = 0.42 * Math.min(1, p * 2.2);
+      underKey.intensity = 0.62 * Math.min(1, p * 2.2);
+      underFill.intensity = 0.20 * Math.min(1, p * 2.2);
+      // Soil closes over as the camera passes beneath the ground line, and
+      // the air down here is dust: the fog turns from the horizon's blue to
+      // the dark of the cutting, and thickens, so the wall and the far roots
+      // fall away into it instead of standing flat-lit at the back.
+      capMat.opacity = Math.max(0, Math.min(1, (-y - 0.4) / 1.6));
+      var uf = Math.min(1, Math.max(0, (p - 0.04) / 0.16));
+      scene.fog.color.copy(fogSky).lerp(fogSoil, uf);
+      scene.fog.density = 0.0064 + 0.05 * uf;
       if (section) section.classList.toggle('is-under', p > 0.1);
     }
 
@@ -1843,6 +1883,7 @@
           Math.max(0, Math.min(1, (e - stagger) / (1 - stagger || 1))));
       }
       bMesh.instanceMatrix.needsUpdate = true;
+      jS.instanceMatrix.needsUpdate = true;
 
       var lt = Math.max(0, (e - 0.55) / 0.45);
       var swayNow = (reduced || depthP > 0.25) ? 0 : now;
