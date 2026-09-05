@@ -1,0 +1,1560 @@
+/* Eytan Lev — shared styles.
+   Logical properties only for anything that must mirror (BRAND.md rule 10):
+   the same sheet serves LTR English and RTL Hebrew.
+   Flat surfaces: hairlines and panel backgrounds are the only contrast. */
+
+:root {
+  --olive: #5C6B4A;
+  --deep-olive: #46523A;
+  --sage: #A8B598;
+  --cream: #F4F0E6;
+  --panel: #EDE7D6;
+  --ink: #46433A;
+  --muted: #7A7565;
+  --hairline: #DDD5C2;
+}
+
+/* Glass surfaces. Same palette, rendered translucent — these only read
+   when something moves behind them, so they are used on the sticky header
+   and on labels floating over the tree, never on flat ground. */
+:root {
+  --glass: rgba(244, 240, 230, 0.62);
+  --glass-strong: rgba(244, 240, 230, 0.82);
+  --glass-edge: rgba(255, 255, 255, 0.6);
+  --glass-blur: blur(16px) saturate(1.6);
+  --sticky-offset: 0px;
+  /* Measured by main.js once the header has laid out; this is the fallback
+     for the first paint and for no-JS. */
+  --header-h: 7.2rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Assistant', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+img, svg { max-width: 100%; }
+button { font: inherit; }
+[hidden] { display: none !important; }
+
+/* ---------- language switching ----------
+   Copy exists twice in the markup; the html[lang] attribute decides which
+   half renders. An inline head script applies the stored choice pre-paint. */
+html:not([lang="he"]) [data-lang="he"] { display: none !important; }
+html[lang="he"] [data-lang="en"] { display: none !important; }
+
+/* Latin display: caps + tracking; centred variant adds a matching
+   inline-start pad so the trailing letterspace doesn't push it off-axis. */
+.latin-caps { text-transform: uppercase; letter-spacing: 0.2em; }
+.latin-caps-center { text-transform: uppercase; letter-spacing: 0.2em; padding-inline-start: 0.2em; }
+
+.eyebrow { font-size: 0.8125rem; color: var(--sage); margin: 0 0 1.1rem; }
+.eyebrow [data-lang="en"] { text-transform: uppercase; letter-spacing: 0.18em; }
+.eyebrow [data-lang="he"] { letter-spacing: 0.1em; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ---------- header ---------- */
+.site-header {
+  display: flex; align-items: center; gap: clamp(1rem, 4vw, 2.5rem);
+  padding: 1.1rem clamp(1.25rem, 5vw, 4rem);
+  border-block-end: 1px solid var(--hairline);
+  flex-wrap: wrap; row-gap: 0.7rem;
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease,
+              -webkit-backdrop-filter 0.3s ease, backdrop-filter 0.3s ease;
+  position: relative; z-index: 40;
+}
+/* At the very top of the page the header drops its glass and sits over
+   whatever the page opens on — over the sky on the home page, that is the
+   difference between a picture and a picture with a bar across it. main.js
+   adds and removes .is-top, so with no JS the header simply keeps its glass,
+   which is the safe way round. */
+.site-header.is-top {
+  border-block-end-color: transparent;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* Over the sky the glass is gone, so the header has to carry its own
+   contrast. On a pale sky that means going darker; on the night sky of the
+   home page it means going lighter, which is what is-over-sky marks. */
+.site-header.is-top .site-nav { color: var(--deep-olive); }
+.site-header.is-top .lang-toggle { border-color: var(--sage); }
+.site-header.is-top.is-over-sky .site-nav,
+.site-header.is-top.is-over-sky .brand-name { color: var(--cream); }
+.site-header.is-top.is-over-sky .brand-mark { stroke: var(--cream); }
+.site-header.is-top.is-over-sky .lang-toggle {
+  color: var(--cream); border-color: rgba(244, 240, 230, 0.45);
+}
+.site-header.is-top.is-over-sky .site-nav a:hover { border-block-end-color: var(--sage); }
+.site-header.is-top.is-over-sky .site-nav a.active {
+  color: var(--cream); border-block-end-color: var(--sage);
+}
+/* Sticky only where the nav fits on one line — a wrapped two-row header
+   would eat too much of a small viewport. */
+@media (min-width: 901px) {
+  :root { --sticky-offset: 4.2rem; }
+  .site-header { position: sticky; inset-block-start: 0; z-index: 40; }
+  .site-nav { order: 0; width: auto; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header { background: var(--cream); }
+  .site-header.is-top { background: transparent; }
+}
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+.brand-mark { width: 26px; height: 26px; fill: none; stroke: var(--olive); stroke-width: 6; stroke-linejoin: round; stroke-linecap: round; }
+.brand-name { font-family: 'David Libre', Georgia, serif; font-size: 1.2rem; color: var(--deep-olive); }
+
+.site-nav {
+  display: flex; gap: clamp(0.9rem, 3vw, 1.9rem);
+  margin-inline-start: auto; font-size: 0.8125rem; letter-spacing: 0.05em;
+  color: var(--muted); order: 3; width: 100%; justify-content: flex-start; flex-wrap: wrap;
+}
+.site-nav a { text-decoration: none; padding-block: 0.2rem; border-block-end: 1px solid transparent; color: inherit; }
+.site-nav a:hover { border-block-end-color: var(--hairline); }
+.site-nav a.active { border-block-end-color: var(--sage); color: var(--olive); }
+
+.lang-toggle {
+  font-family: 'Assistant', sans-serif; font-size: 0.8125rem; letter-spacing: 0.05em;
+  color: var(--olive); background: transparent; border: 1px solid var(--hairline);
+  border-radius: 999px; padding: 0.32rem 0.9rem; cursor: pointer;
+}
+
+/* ---------- footer ---------- */
+.site-footer { text-align: center; padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 5vw, 4rem); border-block-start: 1px solid var(--hairline); }
+.footer-mark { width: 30px; height: 30px; fill: none; stroke: var(--sage); stroke-width: 6; stroke-linejoin: round; stroke-linecap: round; }
+.footer-brand { font-family: 'David Libre', Georgia, serif; font-size: 1.25rem; color: var(--deep-olive); margin: 0.6rem 0 0.2rem; }
+.footer-meta { margin: 0; font-size: 0.8125rem; color: var(--muted); }
+.footer-meta--spaced { margin-block-start: 1.4rem; }
+.footer-back-link { color: var(--olive); text-decoration: underline; text-underline-offset: 0.2em; font-size: 0.9rem; }
+
+/* ---------- generic page scaffolding ---------- */
+.measure { max-width: calc(58ch + 2 * clamp(1.25rem, 5vw, 4rem)); margin-inline: auto; }
+.page-head { padding: clamp(3rem, 8vw, 5rem) clamp(1.25rem, 5vw, 4rem) clamp(1.5rem, 4vw, 2rem); }
+.page-head--solo { padding-block-end: clamp(4rem, 10vw, 7rem); }
+.page-title {
+  font-family: 'David Libre', Georgia, serif; font-weight: 400;
+  font-size: clamp(1.8rem, 4.4vw, 2.6rem); line-height: 1.3;
+  color: var(--deep-olive); margin: 0 0 1.2rem; max-width: 20ch;
+}
+.page-intro { margin: 0; max-width: 58ch; }
+.page-intro--muted { color: var(--muted); }
+.prose { padding: 0 clamp(1.25rem, 5vw, 4rem) clamp(3.5rem, 9vw, 6rem); }
+.prose p { margin: 0 0 1.15rem; max-width: 58ch; }
+.byline { font-family: 'David Libre', Georgia, serif; color: var(--muted); margin-block-start: 1.8rem; }
+.text-link { color: var(--olive); text-decoration: underline; text-underline-offset: 0.2em; font-size: 0.95rem; }
+
+/* ---------- waveform divider (never a plain rule) ---------- */
+.divider { display: flex; align-items: center; gap: 0.75rem; padding-inline: clamp(1.25rem, 5vw, 4rem); margin-block: clamp(2rem, 5vw, 3rem); }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--hairline); }
+.divider svg { width: 56px; height: 28px; flex: none; fill: none; stroke: var(--sage); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+
+/* ---------- quote band ---------- */
+.quote-band { background: var(--olive); color: var(--cream); padding: clamp(2.4rem, 6vw, 4rem) clamp(1.25rem, 5vw, 4rem); text-align: center; }
+.quote-band blockquote { margin: 0; }
+.quote-he { font-family: 'David Libre', Georgia, serif; font-size: clamp(1.4rem, 3.4vw, 2.05rem); line-height: 1.55; margin: 0 auto; max-width: 30ch; direction: rtl; }
+.quote-en { font-family: 'David Libre', Georgia, serif; font-size: clamp(1.1rem, 2vw, 1.3rem); line-height: 1.5; margin: 0.9rem auto 0; max-width: 32ch; opacity: 0.85; }
+.quote-cite { display: block; font-family: 'Assistant', sans-serif; font-style: normal; font-size: 0.8125rem; letter-spacing: 0.06em; color: var(--sage); margin-block-start: 1.1rem; }
+
+/* ---------- hero (home) ---------- */
+.hero { text-align: center; padding: clamp(3rem, 9vw, 6rem) clamp(1.25rem, 5vw, 4rem) clamp(2rem, 5vw, 3.5rem); }
+.hero-mark { display: block; margin-inline: auto; width: clamp(140px, 21vw, 210px); height: auto; fill: none; stroke: var(--olive); stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+.hero-star { stroke: var(--olive); stroke-width: 4; }
+
+/* Vitruvian frame: hairline weight so it sits behind the mark, never
+   competing with it. Circumference 427, perimeter 480 — the dash lengths
+   are those figures rounded up so each shape draws exactly once. */
+.hero-circle, .hero-square, .hero-ticks path { stroke: var(--sage); stroke-width: 1.3; fill: none; }
+.hero-circle { stroke-dasharray: 428; stroke-dashoffset: 428; animation: hero-draw 1.5s ease 0.15s forwards; }
+.hero-square { stroke-dasharray: 480; stroke-dashoffset: 480; animation: hero-draw 1.5s ease 0.45s forwards; }
+.hero-ticks { opacity: 0; animation: hero-fade 0.9s ease 1.5s forwards; }
+@keyframes hero-draw { to { stroke-dashoffset: 0; } }
+@keyframes hero-fade { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-circle, .hero-square { animation: none; stroke-dashoffset: 0; }
+  .hero-ticks { animation: none; opacity: 1; }
+}
+.hero h1, .hero-tree__copy h1 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(2.1rem, 5.6vw, 3.6rem); line-height: 1.24; color: var(--deep-olive); margin: 1.6rem auto 0; max-width: 20ch; }
+html[lang="he"] .hero h1, html[lang="he"] .hero-tree__copy h1 { max-width: 16ch; }
+.hero .sub, .hero-tree__copy .sub { color: var(--muted); font-size: 1.05rem; margin: 1rem auto 0; max-width: 44ch; }
+
+@keyframes eyl-heartbeat {
+  0% { stroke-dashoffset: 130; }
+  45% { stroke-dashoffset: 0; }
+  55% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -130; }
+}
+.eyl-pulse { stroke-dasharray: 130; stroke-dashoffset: 130; animation: eyl-heartbeat 2.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .eyl-pulse { animation: none !important; stroke-dashoffset: 0 !important; }
+}
+
+/* ---------- symbol tiles (home featured + symbols page) ---------- */
+.tile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); }
+.tile { background: var(--cream); padding: clamp(1.4rem, 3vw, 1.9rem); }
+.tile svg { width: 44px; height: 44px; fill: none; stroke: var(--olive); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.tile h3 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: 1.15rem; letter-spacing: 0.02em; color: var(--deep-olive); margin: 0.85rem 0 0.3rem; }
+.tile p { margin: 0; font-size: 0.9rem; line-height: 1.7; color: var(--muted); }
+
+.section-heading { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.35; color: var(--deep-olive); margin: 0 0 clamp(2rem, 5vw, 3rem); max-width: 24ch; }
+
+/* ---------- value tree feature band ----------
+   Full-bleed panel band. The figures carry the argument, so they get
+   display type and tabular figures; the "unsupported" count is the
+   hook and is the only coloured number. */
+.tree-feature {
+  background: var(--panel);
+  border-block: 1px solid var(--hairline);
+  padding: clamp(2.5rem, 6vw, 3.8rem) clamp(1.25rem, 5vw, 4rem);
+}
+.tree-feature__inner { max-width: 64ch; margin-inline: auto; }
+/* Deliberately smaller than .page-title: this band sits under the page
+   heading and must not compete with it. */
+.tree-feature h2 {
+  font-family: 'David Libre', Georgia, serif; font-weight: 400;
+  font-size: clamp(1.25rem, 2.5vw, 1.6rem); line-height: 1.35;
+  color: var(--deep-olive); margin: 0 0 0.9rem; max-width: 24ch; text-wrap: balance;
+}
+.tree-feature__lead { margin: 0 0 1.8rem; color: var(--ink); max-width: 58ch; }
+.tree-stats {
+  display: flex; flex-wrap: wrap; margin: 0 0 1.7rem;
+  border-block-start: 1px solid var(--line-2, var(--hairline));
+}
+.tree-stats > div { flex: 1 1 7rem; padding-block: 1rem 0.9rem; padding-inline-end: 1.1rem; }
+.tree-stats > div + div { border-inline-start: 1px solid var(--hairline); padding-inline-start: 1.1rem; }
+.tree-stats dt {
+  font-family: 'David Libre', Georgia, serif; font-size: clamp(1.6rem, 3.4vw, 2.1rem);
+  line-height: 1; color: var(--deep-olive); font-variant-numeric: tabular-nums;
+}
+.tree-stats dd { margin: 0.45rem 0 0; font-size: 0.8rem; line-height: 1.45; color: var(--muted); }
+.tree-stats .flag dt { color: #8C2231; }
+.tree-stats .flag dd { color: #8C2231; }
+
+/* ---------- the hero film ----------
+   Scroll-scrubbed video above the descent; assets/js/hero-video.js drives it
+   and sets --p (0..1) as the track is scrolled. Off by default — the section
+   is hidden until the flag on it carries a file. */
+.hero-video { position: relative; background: #070B18; margin-block-start: calc(-1 * var(--header-h)); }
+.hero-video__stage {
+  position: sticky; inset-block-start: 0; height: 100svh; overflow: hidden;
+  background: #070B18 center / cover no-repeat;
+}
+.hero-video__video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity 0.6s ease;
+}
+.hero-video.is-live .hero-video__video { opacity: 1; }
+/* Poster only: a plain full-height still, no track and nothing pinned. */
+.hero-video.is-poster .hero-video__stage { position: static; }
+/* The handoff. Over the last tenth of the track the frame settles into the
+   colour the descent's sky begins with, so the cut from film to scene is a
+   change of subject, not a change of ground. */
+.hero-video__stage::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: #070B18;
+  opacity: clamp(0, calc((var(--p, 0) - 0.9) * 10), 1);
+}
+
+/* ---------- the descent ----------
+   The home page is one scene. The stage pins to the viewport, the section
+   behind it is several viewports tall, and the camera falls through the
+   ground as you scroll it. The sky gradient here matches the one the canvas
+   paints, so there is no flash of cream while Three loads and the SVG
+   fallback gets a sky of its own. */
+.descent {
+  position: relative;
+  /* Pulled up under the header and padded back out by the stage: the scene
+     starts at the top of the viewport and the header floats on the sky. */
+  margin-block-start: calc(-1 * var(--header-h));
+  background: linear-gradient(#070B18 0%, #111C38 36%, #1E2E4E 60%, #34474E 74%, #4A5445 88%, #4A5343 100%);
+}
+/* Only once the 3D scene is live is there anything to descend through. With
+   no WebGL the section is an ordinary block: tree, then the six cards. */
+.descent.is-descent { height: 420svh; background: none; }
+.descent.is-descent .descent__stage {
+  position: sticky; inset-block-start: 0; height: 100svh;
+  background: linear-gradient(#070B18 0%, #111C38 36%, #1E2E4E 60%, #34474E 74%, #4A5445 88%, #4A5343 100%);
+}
+
+.descent__stage {
+  position: relative;
+  min-height: 100svh;
+  display: flex; flex-direction: column; align-items: center;
+  overflow: hidden;
+  padding-block-start: calc(var(--header-h) + clamp(0.5rem, 2vh, 1.5rem));
+  padding-inline: clamp(1.25rem, 5vw, 4rem);
+  padding-block-end: clamp(1.25rem, 3vh, 2rem);
+}
+
+/* A vignette and a scrim off the top and bottom edges: the frame darkens at
+   the corners and lifts behind the headline, which is what lets small type
+   sit over a picture. Both are decoration and must never eat a click. */
+/* The grain sits over the scene and under everything that has to be read.
+   main.js fills in --paper; with no JS there is simply no overlay. Roots
+   keeps it: that page is still drawn. The descent does not — the home scene
+   is lit and graded now, and a paper tooth over a lit scene is the one thing
+   that tells you it is not one. */
+.morph__stage::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(58% 44% at 50% 34%, rgba(206, 214, 168, 0.09), rgba(206, 214, 168, 0) 72%),
+    radial-gradient(120% 100% at 50% 46%, rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+/* The grade, cut back. There was a warm bloom on the sun's side and a cool
+   lift in the corners, screen-blended — and screen-blending a haze over a
+   lit scene is exactly what "glossy" looks like. At night there is no sun to
+   bloom. What is left is the faintest cool lift at the top, which is the
+   sky's own scatter, and the vignette below. Decoration: never eats a click. */
+.descent__stage::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(90% 60% at 30% 0%, rgba(120, 158, 210, 0.05), rgba(120, 158, 210, 0) 72%);
+  transition: opacity 0.4s ease;
+}
+.descent__stage::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(rgba(12, 16, 28, 0.55), rgba(12, 16, 28, 0.22) 18%, rgba(12, 16, 28, 0) 42%),
+    linear-gradient(to top, rgba(14, 18, 14, 0.6), rgba(14, 18, 14, 0) 22%),
+    radial-gradient(112% 78% at 50% 44%, rgba(8, 11, 20, 0) 44%, rgba(8, 11, 20, 0.52) 100%);
+  transition: opacity 0.4s ease;
+}
+/* Underground there is no sky to scrim and no sun to bloom; the strata supply
+   their own darkness. (This selector used to be broken by a comment pasted
+   into the middle of it, which silenced the scrim and the vignette in every
+   state, not just underground.) */
+.descent.is-under .descent__stage::before,
+.descent.is-under .descent__stage::after { opacity: 0; }
+
+.descent__stage .treenav__frame { width: min(100%, 1000px, (100svh - var(--header-h)) * 0.8); }
+.descent.is-descent .treenav__frame { position: absolute; inset: 0; width: auto; max-width: none; }
+
+/* The copy has no scrim of its own: an off-centre radial in a box shows its
+   own edge as soon as the layout mirrors. The stage's top scrim already lifts
+   this whole band, and it runs the full width, so it has no edge to show.
+
+   Centred on a narrow screen, thrown to the inline-start edge on a wide one.
+   The tree is symmetric and centred; putting the words on its axis makes two
+   centred things compete, and the sky to one side of the crown is the
+   quietest part of the frame. */
+.hero-tree__copy { position: relative; z-index: 2; max-width: 44rem; text-align: center; pointer-events: none; }
+@media (min-width: 960px) {
+  .hero-tree__copy {
+    align-self: flex-start; text-align: start; max-width: 30rem;
+    margin-block-start: clamp(0.5rem, 3vh, 2rem);
+  }
+  .hero-tree__copy .hero-mark { margin-inline: 0; }
+  .hero-tree__copy h1, .hero-tree__copy .sub { margin-inline: 0; }
+  /* The centred display variant carries a compensating inline-start pad for
+     optical centring; left-aligned it just looks indented. */
+  .hero-tree__copy .latin-caps-center { padding-inline-start: 0; }
+}
+
+/* Small type by design: the tree is the picture, the words caption it. */
+/* The hero sits on the night sky, so its type and its mark are drawn in
+   light rather than in ink. */
+.hero-tree__copy .hero-mark { width: clamp(38px, 3.6vw, 50px); stroke-width: 7; stroke: var(--cream); }
+.hero-tree__copy h1 { color: var(--cream); }
+.hero-tree__copy .hero-circle, .hero-tree__copy .hero-square,
+.hero-tree__copy .hero-ticks path { stroke: var(--sage); }
+.hero-tree__copy .hero-star, .hero-tree__copy .eyl-pulse { stroke: var(--cream); }
+.hero-tree__copy h1 { font-size: clamp(1.18rem, 2vw, 1.58rem); line-height: 1.28; margin-block-start: 0.7rem; max-width: none; }
+html[lang="he"] .hero-tree__copy h1 { max-width: none; }
+
+/* The line and the cue sit at the foot of the frame, out of the canopy. Both
+   the copy and the foot belong to the surface; they clear out on the way down
+   so the strata are not read through a headline. */
+.hero-tree__foot {
+  position: relative; z-index: 2; margin-block-start: auto;
+  width: 100%; display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem;
+}
+.hero-tree__copy, .hero-tree__foot { transition: opacity 0.35s ease; }
+.descent.is-under .hero-tree__copy, .descent.is-under .hero-tree__foot {
+  opacity: 0; pointer-events: none;
+}
+.hero-tree__foot .sub {
+  margin: 0; max-width: 30ch; text-align: start; pointer-events: none;
+  font-size: clamp(0.78rem, 1.1vw, 0.92rem); line-height: 1.6;
+  color: var(--cream);
+}
+
+.hero-tree__cue {
+  flex: none;
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.42rem 0.95rem; border-radius: 999px;
+  background: var(--glass); border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  font-size: 0.8rem; letter-spacing: 0.02em; color: var(--deep-olive); text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.hero-tree__cue:hover, .hero-tree__cue:focus-visible { background: var(--glass-strong); border-color: var(--sage); }
+.hero-tree__cue svg { width: 30px; height: 15px; flex: none; fill: none; stroke: var(--olive); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.hero-tree__cue svg path { stroke-dasharray: 62; animation: cue-beat 2.6s ease-in-out infinite; }
+@keyframes cue-beat { 0%, 100% { stroke-dashoffset: 62; } 45%, 60% { stroke-dashoffset: 0; } }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .hero-tree__cue { background: var(--cream); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-tree__cue svg path { animation: none; stroke-dashoffset: 0; }
+}
+@media (max-width: 720px) {
+  /* Not enough width for the line and the cue side by side. */
+  .hero-tree__foot { flex-direction: column; align-items: center; gap: 0.7rem; }
+  .hero-tree__foot .sub { text-align: center; max-width: 34ch; }
+  .hero-tree__cue { font-size: 0.72rem; }
+}
+
+/* ---------- the line strip ----------
+   A slow marquee of the six lines, sat just above the waitlist: the shelf as
+   it will be, then the invitation. Two identical rows translate by exactly
+   half the track, which is what makes the loop seamless. */
+.linestrip { padding: clamp(2rem, 5vw, 3rem) 0 clamp(2.5rem, 6vw, 3.5rem); border-block-start: 1px solid var(--hairline); }
+.linestrip__inner {
+  max-width: 78rem; margin-inline: auto;
+  display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
+  padding-inline: clamp(1.25rem, 5vw, 4rem);
+}
+.linestrip__label { margin: 0; font-size: 0.8125rem; letter-spacing: 0.06em; color: var(--muted); }
+@media (min-width: 820px) {
+  .linestrip__inner { flex-direction: row; align-items: center; gap: 0; }
+  .linestrip__label { flex: none; max-width: 11rem; text-align: end; padding-inline-end: 1.5rem; border-inline-end: 1px solid var(--hairline); }
+  .linestrip__viewport { flex: 1; min-width: 0; }
+}
+
+.linestrip__viewport { position: relative; width: 100%; overflow: hidden; }
+.linestrip__track { display: flex; width: max-content; animation: linestrip-run 46s linear infinite; }
+.linestrip__row { display: flex; align-items: center; gap: clamp(2.5rem, 6vw, 5rem); list-style: none; margin: 0; padding: 0 clamp(1.25rem, 3vw, 2.5rem); }
+@keyframes linestrip-run { to { transform: translateX(-50%); } }
+/* RTL reads the other way, so the strip has to travel the other way too. */
+html[dir="rtl"] .linestrip__track { animation-name: linestrip-run-rtl; }
+@keyframes linestrip-run-rtl { to { transform: translateX(50%); } }
+/* A moving link is not a clickable link. Stop for the pointer and for the
+   keyboard, both. */
+.linestrip__viewport:hover .linestrip__track,
+.linestrip__track:focus-within { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .linestrip__track { animation: none; width: auto; }
+  .linestrip__viewport { overflow-x: auto; }
+  .linestrip__row[aria-hidden="true"] { display: none; }
+}
+
+.linestrip__item a {
+  display: inline-flex; align-items: baseline; gap: 0.6rem;
+  text-decoration: none; color: var(--muted); white-space: nowrap;
+  transition: color 0.2s ease;
+}
+.linestrip__item a:hover, .linestrip__item a:focus-visible { color: var(--line-bg); }
+.linestrip__item a:focus-visible { outline: 2px solid var(--line-bg); outline-offset: 4px; }
+.linestrip__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-bg); align-self: center; flex: none; }
+.linestrip__name { font-family: 'David Libre', Georgia, serif; font-size: 1rem; color: var(--deep-olive); }
+.linestrip__tr { font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sage); }
+
+/* Progressive blur at both ends, the way the source component does it: not
+   one blurred pane but three, each masked to a shorter run, so the focus
+   falls away rather than stepping. Where backdrop-filter is unavailable the
+   colour gradient alone still hides the cut. */
+.linestrip__fade { position: absolute; inset-block: 0; width: clamp(48px, 8vw, 96px); pointer-events: none; }
+.linestrip__fade::before, .linestrip__fade::after { content: ''; position: absolute; inset: 0; }
+.linestrip__fade--start { inset-inline-start: 0; }
+.linestrip__fade--end { inset-inline-end: 0; }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .linestrip__fade { -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px); }
+  .linestrip__fade::before { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+  .linestrip__fade::after { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .linestrip__fade { background: var(--cream); }
+}
+/* Gradients take a physical direction — there is no logical form — so the
+   two sides are written out and swapped for RTL. */
+.linestrip__fade--start,
+html[dir="rtl"] .linestrip__fade--end {
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 26%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 26%, transparent 100%);
+  background: linear-gradient(to right, var(--cream) 0%, rgba(244, 240, 230, 0) 100%);
+}
+.linestrip__fade--end,
+html[dir="rtl"] .linestrip__fade--start {
+  -webkit-mask-image: linear-gradient(to left, #000 0%, #000 26%, transparent 100%);
+  mask-image: linear-gradient(to left, #000 0%, #000 26%, transparent 100%);
+  background: linear-gradient(to left, var(--cream) 0%, rgba(244, 240, 230, 0) 100%);
+}
+.linestrip__fade--start::before, html[dir="rtl"] .linestrip__fade--end::before {
+  -webkit-mask-image: linear-gradient(to right, #000 0%, transparent 62%);
+  mask-image: linear-gradient(to right, #000 0%, transparent 62%);
+}
+.linestrip__fade--end::before, html[dir="rtl"] .linestrip__fade--start::before {
+  -webkit-mask-image: linear-gradient(to left, #000 0%, transparent 62%);
+  mask-image: linear-gradient(to left, #000 0%, transparent 62%);
+}
+.linestrip__fade--start::after, html[dir="rtl"] .linestrip__fade--end::after {
+  -webkit-mask-image: linear-gradient(to right, #000 0%, transparent 32%);
+  mask-image: linear-gradient(to right, #000 0%, transparent 32%);
+}
+.linestrip__fade--end::after, html[dir="rtl"] .linestrip__fade--start::after {
+  -webkit-mask-image: linear-gradient(to left, #000 0%, transparent 32%);
+  mask-image: linear-gradient(to left, #000 0%, transparent 32%);
+}
+
+/* ---------- the mark opening into the tree ----------
+   A scroll-driven particle morph at the top of Roots. The stage pins and the
+   section behind it is a few viewports tall, the same shape of thing as the
+   descent on the home page. Where WebGL is missing, .is-live never lands and
+   the section is a static mark with its copy — which says the same thing. */
+/* A dark band, like the quote band. Cream particles on a cream ground are
+   invisible; on deep olive the whole ramp — cream to sage to leaf green —
+   reads, and the mark comes up as a thing drawn in light. */
+.morph {
+  position: relative;
+  background:
+    radial-gradient(110% 85% at 50% 30%, #26301F 0%, #171E14 52%, #0D110B 100%);
+  color: var(--cream);
+}
+.morph.is-live { height: 250svh; }
+.morph__stage {
+  position: relative;
+  min-height: min(76svh, 42rem);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(2.5rem, 7vw, 4.5rem) clamp(1.25rem, 5vw, 4rem);
+  overflow: hidden;
+}
+.morph.is-live .morph__stage {
+  position: sticky; inset-block-start: 0; height: 100svh; min-height: 0;
+}
+
+.morph__canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+/* The static mark is the fallback, and it steps aside once the particles
+   are running rather than being hidden from the start — nothing flashes. */
+.morph__mark {
+  position: relative; z-index: 1;
+  width: clamp(150px, 24vw, 260px); height: auto;
+  fill: none; stroke: var(--sage); stroke-width: 4;
+  stroke-linejoin: round; stroke-linecap: round;
+  transition: opacity 0.5s ease;
+}
+.morph.is-live .morph__mark { opacity: 0; pointer-events: none; }
+
+.morph__copy { position: relative; z-index: 2; max-width: 34rem; text-align: center; }
+.morph__head {
+  font-family: 'David Libre', Georgia, serif; font-weight: 400;
+  font-size: clamp(1.3rem, 2.6vw, 1.95rem); line-height: 1.3;
+  color: var(--cream); margin: 0;
+}
+.morph__lead { margin: 0.9rem 0 0; color: var(--sage); font-size: 0.95rem; }
+.morph .eyebrow { color: var(--sage); opacity: 0.85; }
+/* Once the particles take over, the copy sits on the picture. */
+.morph.is-live .morph__copy {
+  position: absolute; inset-block-end: clamp(2rem, 6vh, 4rem); inset-inline: 0;
+  margin-inline: auto; pointer-events: none;
+}
+
+.morph__debug {
+  position: absolute; z-index: 3;
+  inset-block-start: 0.75rem; inset-inline-start: 0.75rem;
+  margin: 0; padding: 0.35rem 0.6rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.7rem;
+  color: var(--cream); background: rgba(20, 24, 14, 0.55); border: 1px solid rgba(244, 240, 230, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No spin, and no three viewports of scroll to get through it: the morph
+     still runs on scroll, it just does not tumble on the way. */
+  .morph.is-live { height: 160svh; }
+}
+
+/* ---------- the line labels, underground ----------
+   The six product lines are the ends of six real roots. In 3D the renderer
+   places these in pixels each frame, exactly as it does the branch labels
+   above ground; with no WebGL they fall back to an ordinary grid under the
+   tree. Either way each one is a plain link with all its words. */
+.rootlab {
+  display: block; text-decoration: none; color: inherit;
+  max-width: 24rem;
+  padding: clamp(1rem, 2.4vw, 1.35rem) clamp(1.05rem, 2.6vw, 1.45rem);
+  border: 1px solid var(--hairline);
+  border-inline-start: 3px solid var(--line-bg);
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, opacity 0.25s ease;
+}
+.rootlab:hover, .rootlab:focus-visible {
+  border-color: var(--line-bg);
+  box-shadow: 0 10px 30px -18px rgba(20, 22, 14, 0.8);
+}
+.rootlab:focus-visible { outline: 2px solid var(--line-bg); outline-offset: 3px; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .rootlab { background: var(--cream); }
+}
+
+/* In the scene they are absolutely placed and centred on their root tip. */
+.treenav__frame.is-3d .rootlab {
+  position: absolute; transform: translate(-50%, -50%);
+  width: clamp(15rem, 24vw, 21rem); max-width: none;
+  z-index: 3;
+}
+.treenav__frame.is-3d .rootlab:hover,
+.treenav__frame.is-3d .rootlab:focus-visible { transform: translate(-50%, -50%) scale(1.03); }
+
+/* In the fallback the cards stack inside the frame, which makes the frame
+   much taller than the drawing. The branch labels are positioned as a
+   percentage of their container, so they need a container that is the
+   drawing — hence the plot. In 3D it is static and the renderer places
+   everything in pixels against the frame as before. */
+.treenav__frame:not(.is-3d) .treenav__plot { position: relative; }
+.treenav__frame.is-3d .treenav__plot { position: static; }
+
+.rootlab__tip { display: none; }
+.rootlab__names { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
+.rootlab__name { font-family: 'David Libre', Georgia, serif; font-size: 1.15rem; color: var(--line-bg); }
+.rootlab__tr { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sage); }
+.rootlab__say { display: block; margin-block-start: 0.55rem; font-size: 0.9rem; line-height: 1.65; }
+.rootlab__prods { display: block; margin-block-start: 0.6rem; font-size: 0.76rem; color: var(--muted); }
+.rootlab__go { display: block; margin-block-start: 0.8rem; font-size: 0.8rem; letter-spacing: 0.04em; color: var(--line-bg); }
+
+/* Fallback layout: no scene to hang off, so they line up under the tree. */
+.treenav__frame:not(.is-3d) .rootlab {
+  position: static; margin-inline: auto; margin-block-start: 1.25rem;
+}
+.descent:not(.is-descent) .descent__stage { padding-block-end: clamp(2.5rem, 6vw, 4rem); }
+/* In the fallback the stage is a plain column, and the frame carries the
+   stacked cards — so the headline has to be told to come first. */
+.descent:not(.is-descent) .hero-tree__copy { order: -1; margin-block-end: clamp(1.5rem, 4vw, 2.5rem); }
+.descent:not(.is-descent) .hero-tree__foot { margin-block-start: clamp(2rem, 5vw, 3rem); }
+@media (min-width: 780px) {
+  .treenav__frame:not(.is-3d) .rootlab { max-width: 30rem; }
+}
+
+/* ---------- the tree navigator ----------
+   Original generated geometry, not traced. The tree carries the site's
+   own structure: roots to Roots, trunk to Values, six limbs to the rest.
+   Labels are HTML over the SVG so they are real links — keyboard
+   reachable, translatable, and glass where SVG cannot be. */
+.treenav { padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 6vw, 4rem); }
+.treenav__frame { position: relative; max-width: 1000px; margin-inline: auto; }
+.treenav__svg { display: block; width: 100%; height: auto; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+/* The 3D tree replaces the SVG when WebGL is available; the SVG stays as
+   the fallback, and the labels are the same links either way. */
+.treenav__canvas { display: none; width: 100%; cursor: grab; }
+.treenav__canvas.is-dragging { cursor: grabbing; }
+.treenav__frame.is-3d .treenav__canvas { display: block; }
+.treenav__frame.is-3d .treenav__svg { display: none; }
+/* In 3D the labels are positioned in pixels by the renderer each frame. */
+.treenav__frame.is-3d .treenav__label { transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease; }
+
+.tr-trunk, .tr-limb { stroke: var(--deep-olive); }
+/* The descent's fallback tree stands on the night sky, so it is drawn in
+   light. Everywhere else the drawing is ink on cream. */
+.descent .tr-trunk, .descent .tr-limb { stroke: var(--sage); }
+.descent .tr-twig { stroke: #8FA07C; opacity: 0.8; }
+.descent .tr-root { stroke: #9AA48E; opacity: 0.5; }
+.descent .tr-leaf { fill: #B7C4A6; }
+.descent .tr-ground { stroke: rgba(244, 240, 230, 0.35); }
+.tr-twig { stroke: var(--olive); opacity: 0.7; }
+.tr-root { stroke: var(--muted); opacity: 0.6; }
+.tr-leaf { fill: var(--sage); stroke: none; opacity: 0.75; }
+.tr-node { fill: var(--cream); stroke: var(--olive); stroke-width: 2; }
+.tr-ground { stroke: var(--hairline); stroke-width: 1.5; }
+.tr-group { transition: opacity 0.25s ease; cursor: pointer; }
+.tr-group.is-lit .tr-limb, .tr-group.is-lit .tr-trunk { stroke: var(--olive); stroke-width: 8; }
+.tr-group.is-lit .tr-twig, .tr-group.is-lit .tr-root { opacity: 1; }
+.tr-group.is-lit .tr-leaf { opacity: 1; }
+.tr-group.is-lit .tr-node { fill: var(--olive); stroke: var(--deep-olive); }
+.treenav__frame.has-lit .tr-group:not(.is-lit) { opacity: 0.32; }
+/* Leaves sit outside the limb groups, so dim them alongside. */
+.tr-leaf { transition: opacity 0.25s ease; }
+.treenav__frame.has-lit .tr-leaf { opacity: 0.22; }
+
+/* Draw-in: the tree grows from the roots up. */
+.tr-anim path { stroke-dasharray: 620; stroke-dashoffset: 620; animation: tr-draw 1.5s ease forwards; }
+.tr-anim .tr-root { animation-delay: 0.1s; }
+.tr-anim .tr-trunk { animation-delay: 0.35s; }
+.tr-anim .tr-limb { animation-delay: 0.75s; }
+.tr-anim .tr-twig { animation-delay: 1.05s; }
+.tr-anim .tr-leaf { opacity: 0; animation: tr-fade 0.8s ease 1.5s forwards; }
+@keyframes tr-draw { to { stroke-dashoffset: 0; } }
+@keyframes tr-fade { to { opacity: 0.75; } }
+@media (prefers-reduced-motion: reduce) {
+  .tr-anim path { animation: none; stroke-dashoffset: 0; }
+  .tr-anim .tr-leaf { animation: none; opacity: 0.75; }
+}
+
+.treenav__label {
+  position: absolute; transform: translate(-50%, -50%);
+  display: inline-flex; align-items: baseline; gap: 0.4rem;
+  padding: 0.34rem 0.8rem; border-radius: 999px;
+  background: var(--glass); border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  font-family: 'David Libre', Georgia, serif; font-size: clamp(0.8rem, 1.5vw, 1rem);
+  color: var(--deep-olive); text-decoration: none; white-space: nowrap;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.treenav__label:hover, .treenav__label:focus-visible {
+  background: var(--glass-strong); border-color: var(--sage);
+  transform: translate(-50%, -50%) scale(1.06);
+}
+.treenav__label:focus-visible { outline: 2px solid var(--olive); outline-offset: 3px; }
+.treenav__label .he { color: var(--olive); font-size: 0.85em; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .treenav__label { background: var(--cream); }
+}
+.treenav__caption { margin: 1.2rem auto 0; max-width: 46ch; text-align: center; font-size: 0.85rem; color: var(--muted); }
+@media (max-width: 700px) { .treenav__label { font-size: 0.7rem; padding: 0.24rem 0.55rem; } }
+
+/* ---------- double helix: the two columns ---------- */
+.helix { padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 5vw, 4rem); }
+.helix__inner { max-width: 68rem; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 3.5rem); align-items: start; }
+@media (max-width: 820px) { .helix__inner { grid-template-columns: 1fr; } }
+
+/* The stage is a dark studio field, not the page. Shading needs range: on
+   cream every olive is a mid-tone, and a solid object drawn only in mid-tones
+   cannot look solid however carefully it is lit. Give it somewhere near-black
+   to fall to and the same colours read as a photographed material. */
+.helix__stage {
+  position: sticky; top: 1.5rem;
+  border-radius: 3px;
+  background: #0C100B;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 0 0 0.95rem;
+  overflow: hidden;
+}
+/* A slow sweep of light across the field, so the ground is not dead flat.
+   Purely atmospheric — it carries no information and stops when asked to. */
+@media (max-width: 820px) { .helix__stage { position: static; } }
+.helix__canvas { position: relative; width: 100%; height: clamp(340px, 42vw, 470px); display: block; touch-action: none; cursor: grab; }
+.helix__canvas.is-dragging { cursor: grabbing; }
+.helix__hint { position: relative; margin: 0.85rem 0 0; text-align: center; font-size: 0.7rem; letter-spacing: 0.1em; color: #93A487; }
+html[lang="en"] .helix__hint { text-transform: uppercase; }
+.helix__note {
+  position: relative; margin: 0.5rem 0 0; text-align: center;
+  font-size: 0.68rem; line-height: 1.6; color: #6C7A63; max-width: 42ch;
+  margin-inline: auto;
+}
+.helix h2 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.4rem, 3vw, 1.95rem); line-height: 1.35; color: var(--deep-olive); margin: 0 0 1rem; max-width: 22ch; text-wrap: balance; }
+.helix__lead { margin: 0 0 1.4rem; max-width: 52ch; }
+
+.helix__legend { display: flex; flex-direction: column; gap: 0.4rem; margin: 0 0 1.4rem; padding-block-start: 1.2rem; border-block-start: 1px solid var(--hairline); }
+.helix__strand {
+  display: flex; align-items: baseline; gap: 0.7rem; font-size: 0.9rem; color: var(--muted);
+  background: none; border: none; padding: 0.25rem 0; cursor: pointer; text-align: start; font-family: inherit;
+}
+.helix__strand[aria-pressed="false"] { opacity: 0.4; text-decoration: line-through; }
+.helix__strand:focus-visible { outline: 2px solid var(--olive); outline-offset: 3px; }
+.helix__swatch { width: 22px; height: 2px; flex: none; transform: translateY(-0.25em); }
+
+.helix__picker { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 1.2rem; }
+.helix__dot {
+  font-family: 'Assistant', sans-serif; font-size: 0.7rem; letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums; color: var(--muted); background: transparent;
+  border: 1px solid var(--hairline); border-radius: 999px; padding: 0.3rem 0.7rem;
+  cursor: pointer; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.helix__dot:hover { border-color: var(--sage); color: var(--olive); }
+.helix__dot.is-active { background: var(--olive); border-color: var(--olive); color: var(--cream); }
+.helix__dot:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+
+.helix__pairs { min-height: 15rem; }
+.helix__pair { display: none; }
+.helix__pair.is-active { display: block; }
+.helix__pair h3 { font-family: 'David Libre', Georgia, serif; font-weight: 500; font-size: 1.15rem; color: var(--deep-olive); margin: 0 0 0.9rem; }
+.helix__he { color: var(--olive); }
+html[lang="he"] .helix__he { display: none; }
+.helix__row { display: grid; grid-template-columns: 5.5rem 1fr; gap: 0.9rem; margin-block-end: 0.8rem; align-items: baseline; }
+@media (max-width: 460px) { .helix__row { grid-template-columns: 1fr; gap: 0.2rem; } }
+.helix__tag { font-size: 0.68rem; letter-spacing: 0.12em; color: var(--sage); }
+html[lang="en"] .helix__tag { text-transform: uppercase; }
+.helix__row p { margin: 0; font-size: 0.92rem; line-height: 1.7; color: var(--ink); max-width: 46ch; }
+.helix__verdict { margin: 1rem 0 0; }
+
+/* Evidence-strength pills, same scale as the value tree */
+.hpill { font-size: 0.625rem; font-weight: 500; letter-spacing: 0.1em; padding: 0.18rem 0.6rem; border: 1px solid; border-radius: 999px; }
+html[lang="en"] .hpill { text-transform: uppercase; }
+.hpill--established { color: #46523A; border-color: #A8B598; background: #E8EDDC; }
+.hpill--moderate    { color: #3F5A63; border-color: #9DB4B8; background: #E4EAEA; }
+.hpill--preliminary { color: #5C5347; border-color: #C9AE86; background: #EFE7D5; }
+.hpill--unsupported { color: #8C2231; border-color: #D9A79E; background: #F7EAE6; }
+.hpill--none        { color: var(--muted); border-color: var(--hairline); background: transparent; }
+
+/* ---------- moach / lev / kaved — the melech spine ----------
+   Type-led: the teaching is a wordplay, so the letters are the artwork.
+   On reveal the three initials assemble into מלך. Reduced motion shows
+   the finished state immediately. */
+.mlk { background: var(--panel); border-block: 1px solid var(--hairline); padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 5vw, 4rem); }
+.mlk__inner { max-width: 62ch; margin-inline: auto; }
+.mlk h2 {
+  font-family: 'David Libre', Georgia, serif; font-weight: 400;
+  font-size: clamp(1.3rem, 2.7vw, 1.7rem); line-height: 1.35;
+  color: var(--deep-olive); margin: 0 0 2rem; max-width: 26ch; text-wrap: balance;
+}
+.mlk__spine { display: flex; flex-direction: column; align-items: center; margin-block-end: 2.2rem; }
+/* Fixed centre column with start-aligned RTL text, so the three initial
+   letters stack in one vertical column before they assemble. */
+.mlk__term { display: grid; grid-template-columns: 1fr 5.5rem 1fr; align-items: baseline; gap: clamp(0.9rem, 3vw, 1.6rem); width: 100%; max-width: 30rem; }
+.mlk__word { font-family: 'David Libre', Georgia, serif; font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.2; color: var(--deep-olive); direction: rtl; text-align: start; }
+.mlk__initial { color: var(--sage); transition: color 0.5s ease; }
+.mlk.is-revealed .mlk__initial { color: var(--olive); }
+.mlk__term:nth-of-type(2) .mlk__initial { transition-delay: 0.15s; }
+.mlk__term:nth-of-type(3) .mlk__initial { transition-delay: 0.3s; }
+.mlk__translit { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-align: end; }
+html[lang="he"] .mlk__translit { text-transform: none; letter-spacing: 0.04em; }
+.mlk__gloss { font-size: 0.9rem; color: var(--muted); text-align: start; }
+.mlk__link { width: 1px; height: 1.6rem; background: var(--hairline); }
+.mlk__crown { margin-block-start: 1.5rem; padding-block-start: 1.5rem; border-block-start: 1px solid var(--hairline); width: 100%; max-width: 30rem; text-align: center; }
+.mlk__melech { margin: 0; font-family: 'David Libre', Georgia, serif; font-size: clamp(2.2rem, 6vw, 3.1rem); color: var(--olive); direction: rtl; line-height: 1.2; }
+.mlk__melech span { display: inline-block; opacity: 0; transform: translateY(-0.5em); transition: opacity 0.55s ease, transform 0.55s ease; }
+.mlk.is-revealed .mlk__melech span { opacity: 1; transform: none; }
+.mlk.is-revealed .mlk__melech span:nth-child(1) { transition-delay: 0.1s; }
+.mlk.is-revealed .mlk__melech span:nth-child(2) { transition-delay: 0.25s; }
+.mlk.is-revealed .mlk__melech span:nth-child(3) { transition-delay: 0.4s; }
+.mlk__crown-gloss { margin: 0.6rem 0 0; font-size: 0.9rem; color: var(--muted); }
+.mlk__body p { margin: 0 0 1.15rem; max-width: 58ch; }
+.mlk__body p:last-child { margin-block-end: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .mlk__melech span { opacity: 1; transform: none; transition: none; }
+  .mlk__initial { color: var(--olive); transition: none; }
+}
+
+/* ---------- principles ---------- */
+.principles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: clamp(1.4rem, 4vw, 2.6rem); }
+.principle h3 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: 1.15rem; color: var(--deep-olive); margin: 0 0 0.4rem; padding-block-start: 0.9rem; border-block-start: 1px solid var(--sage); }
+.principle p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+/* ---------- waitlist bands ---------- */
+.waitlist { text-align: center; padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 5vw, 4rem); }
+.waitlist h2 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.4rem, 3vw, 1.8rem); line-height: 1.35; margin: 0 auto 0.5rem; max-width: 24ch; }
+.waitlist .sub { margin: 0 auto 1.6rem; }
+.waitlist-form { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-inline: auto; max-width: 460px; }
+.waitlist-form input { flex: 1 1 220px; font-family: 'Assistant', sans-serif; font-size: 0.95rem; border-radius: 4px; padding: 0.7rem 0.9rem; min-height: 44px; }
+.waitlist-form button { font-family: 'Assistant', sans-serif; font-size: 0.95rem; letter-spacing: 0.04em; border-radius: 4px; padding: 0.7rem 1.5rem; min-height: 44px; cursor: pointer; }
+.form-note { margin: 1rem auto 0; font-size: 0.8125rem; min-height: 1.2em; }
+
+/* cream/panel variant (home, shop) */
+.waitlist--panel { background: var(--panel); padding-block: clamp(3.5rem, 9vw, 6.5rem); }
+.waitlist--panel h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); color: var(--deep-olive); }
+.waitlist--panel .sub { color: var(--muted); margin-block-end: 1.8rem; }
+.waitlist--panel input { color: var(--ink); background: var(--cream); border: 1px solid var(--hairline); }
+.waitlist--panel button { color: var(--cream); background: var(--olive); border: 1px solid var(--olive); }
+.waitlist--panel .form-note { color: var(--olive); }
+
+/* olive variant (from-here) */
+.waitlist--olive { background: var(--olive); color: var(--cream); }
+.waitlist--olive .sub { color: var(--sage); opacity: 0.9; }
+.waitlist--olive input { color: var(--ink); background: var(--cream); border: 1px solid var(--hairline); }
+.waitlist--olive button { color: var(--cream); background: var(--deep-olive); border: 1px solid var(--deep-olive); }
+.waitlist--olive .form-note { color: var(--sage); }
+
+/* line variant — colored by the line palette vars set on <body> */
+.waitlist--line { background: var(--line-bg); color: var(--line-pale); }
+.waitlist--line .sub { color: var(--line-fg); opacity: 0.9; }
+.waitlist--line input { color: var(--line-input, var(--line-accent)); background: var(--line-pale); border: 1px solid var(--line-input, var(--line-accent)); }
+.waitlist--line button { color: var(--line-bg); background: var(--line-fg); border: 1px solid var(--line-fg); }
+.waitlist--line .form-note { color: var(--line-fg); }
+
+/* ---------- contact form ---------- */
+.contact-form { display: flex; flex-direction: column; gap: 1rem; max-width: 480px; margin-inline: auto; }
+.contact-form label { display: block; font-size: 0.8125rem; color: var(--muted); margin-block-end: 0.3rem; }
+.contact-form input, .contact-form textarea {
+  width: 100%; font-family: 'Assistant', sans-serif; font-size: 0.95rem; color: var(--ink);
+  background: #FFFFFF; border: 1px solid var(--hairline); border-radius: 4px; padding: 0.7rem 0.9rem; min-height: 44px;
+}
+.contact-form textarea { resize: vertical; min-height: 0; }
+.contact-form button {
+  align-self: center; font-family: 'Assistant', sans-serif; font-size: 0.95rem; letter-spacing: 0.04em;
+  color: var(--cream); background: var(--olive); border: 1px solid var(--olive); border-radius: 4px;
+  padding: 0.7rem 1.8rem; min-height: 44px; cursor: pointer;
+}
+.contact-note { color: var(--olive); text-align: center; }
+
+/* ---------- FAQ ---------- */
+.faq-group { margin-block-end: clamp(2rem, 5vw, 3rem); }
+.faq-group h2 { font-family: 'David Libre', Georgia, serif; font-weight: 500; font-size: 1.15rem; color: var(--deep-olive); margin: 0 0 0.9rem; }
+.faq-item { border-block-start: 1px solid var(--hairline); }
+.faq-question { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; text-align: start; background: none; border: none; padding: 1rem 0; cursor: pointer; color: var(--ink); font-size: 1rem; font-weight: 300; }
+.faq-question .sign { flex: none; font-size: 1.2rem; color: var(--olive); line-height: 1; }
+.faq-answer { margin: 0 0 1.1rem; color: var(--muted); font-size: 0.95rem; max-width: 56ch; }
+.faq-item:not(.open) .faq-answer { display: none; }
+.faq-item.open .sign-plus { display: none; }
+.faq-item:not(.open) .sign-minus { display: none; }
+
+/* ---------- journal ---------- */
+.journal-wrap { padding-inline: clamp(1.25rem, 5vw, 4rem); max-width: 1080px; margin-inline: auto; }
+.journal-filters { display: flex; gap: 0.6rem; flex-wrap: wrap; border-block-end: 1px solid var(--hairline); padding-block-end: clamp(1.2rem, 3vw, 1.6rem); }
+.journal-filter { font-family: 'Assistant', sans-serif; font-size: 0.8125rem; letter-spacing: 0.03em; padding: 0.4rem 0.9rem; border-radius: 999px; cursor: pointer; border: 1px solid var(--hairline); background: transparent; color: var(--muted); }
+.journal-filter.active { border-color: var(--olive); background: var(--olive); color: var(--cream); }
+.journal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: clamp(1.6rem, 4vw, 2.4rem); padding-block: clamp(1.5rem, 4vw, 2.5rem) clamp(4rem, 10vw, 6.5rem); }
+.journal-card { display: flex; flex-direction: column; gap: 0.7rem; text-decoration: none; color: inherit; padding-block-start: 1rem; border-block-start: 1px solid var(--sage); }
+.journal-card .cat { margin: 0; font-size: 0.75rem; color: var(--olive); }
+.journal-card .cat [data-lang="en"] { text-transform: uppercase; letter-spacing: 0.1em; }
+.journal-card .cat [data-lang="he"] { letter-spacing: 0.1em; }
+.journal-card h3 { margin: 0; font-family: 'David Libre', Georgia, serif; font-weight: 500; font-size: 1.2rem; line-height: 1.35; color: var(--deep-olive); }
+.journal-card .dek { margin: 0; font-size: 0.92rem; color: var(--muted); line-height: 1.65; }
+.journal-card .cta { margin: 0.2rem 0 0; font-size: 0.8125rem; color: var(--olive); }
+.journal-card--soon .cta { color: #A8A296; }
+
+/* ---------- article ---------- */
+.article { padding: clamp(3rem, 8vw, 5rem) clamp(1.25rem, 5vw, 4rem) clamp(2rem, 5vw, 3rem); max-width: calc(58ch + 2 * clamp(1.25rem, 5vw, 4rem)); margin-inline: auto; }
+.article .back { display: inline-block; margin-block-end: 1.4rem; color: var(--muted); text-decoration: none; font-size: 0.8125rem; }
+.article h1 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.8rem, 4.4vw, 2.5rem); line-height: 1.3; color: var(--deep-olive); margin: 0 0 1rem; max-width: 20ch; }
+.article .dek { margin: 0 0 2.2rem; color: var(--muted); font-size: 1.05rem; max-width: 58ch; }
+.article p { margin: 0 0 1.15rem; max-width: 58ch; }
+.pull-quote { background: var(--panel); padding: clamp(1.4rem, 4vw, 2rem); margin: 2rem 0; border-inline-start: 3px solid var(--olive); }
+.pull-quote p { margin: 0; font-family: 'David Libre', Georgia, serif; font-size: 1.1rem; line-height: 1.6; color: var(--deep-olive); max-width: none; }
+.article .sources { margin: 2rem 0 0; font-size: 0.8125rem; color: var(--muted); }
+
+/* ---------- product line pages (palette vars set on <body>) ---------- */
+.line-hero { background: var(--line-bg); color: var(--line-pale); text-align: center; padding: clamp(3rem, 8vw, 5rem) clamp(1.25rem, 5vw, 4rem); }
+.line-hero svg { width: 72px; height: 72px; fill: none; stroke: var(--line-fg); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.line-hero .name-big { font-family: 'David Libre', Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.6rem); margin: 1.2rem 0 0.4rem; }
+.line-hero .name-small { font-family: 'David Libre', Georgia, serif; font-size: 0.85rem; letter-spacing: 0.2em; padding-inline-start: 0.2em; color: var(--line-fg); margin: 0; text-transform: uppercase; }
+.line-statement { padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 5vw, 4rem) clamp(2rem, 5vw, 3rem); text-align: center; }
+.line-statement p { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.5; color: var(--line-accent); margin: 0 auto; max-width: 26ch; }
+.line-idea { padding: 0 clamp(1.25rem, 5vw, 4rem) clamp(3.5rem, 9vw, 6rem); max-width: calc(58ch + 2 * clamp(1.25rem, 5vw, 4rem)); margin-inline: auto; }
+.line-idea p { margin: 0 0 1.15rem; max-width: 58ch; }
+.line-planned { padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 5vw, 4rem); background: var(--panel); }
+.line-planned .eyebrow { color: var(--line-eyebrow, var(--line-accent)); margin-block-end: 0.5rem; }
+.line-planned h2 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.3rem, 2.6vw, 1.7rem); color: var(--line-h2, var(--line-accent)); margin: 0 0 clamp(2rem, 5vw, 2.6rem); }
+
+/* ---------- product cards (line pages + shop) ---------- */
+.product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: clamp(1.6rem, 4vw, 2.4rem); }
+.product-card { display: flex; flex-direction: column; }
+.product-card .icon-wrap { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: var(--line-bg); }
+.product-card .icon-wrap svg { width: 56px; height: 56px; fill: none; stroke: var(--line-fg); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; opacity: 0.35; }
+.product-card .info { padding: 1.1rem 0.2rem 0; }
+.product-card h3 { margin: 0 0 0.3rem; font-family: 'David Libre', Georgia, serif; font-weight: 500; font-size: 1.05rem; color: var(--ink); }
+.product-card .desc { margin: 0 0 0.6rem; font-size: 0.9rem; line-height: 1.6; color: var(--muted); }
+.product-card .price { margin: 0; font-size: 0.8rem; letter-spacing: 0.08em; font-weight: 600; color: var(--line-bg); }
+.shop-line-label { margin: 0 0 0.5rem; font-size: 0.75rem; color: var(--line-bg); }
+.shop-line-label [data-lang="en"] { text-transform: uppercase; letter-spacing: 0.1em; }
+.shop-line-label [data-lang="he"] { letter-spacing: 0.1em; }
+
+/* ---------- shop toolbar ---------- */
+.shop-toolbar {
+  position: sticky; inset-block-start: var(--sticky-offset); z-index: 5;
+  padding: 0.8rem clamp(1.25rem, 5vw, 4rem); border-block-end: 1px solid var(--hairline);
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .shop-toolbar { background: var(--cream); }
+}
+.shop-search { width: 100%; font-family: 'Assistant', sans-serif; font-size: 0.95rem; color: var(--ink); background: #FFFFFF; border: 1px solid var(--hairline); border-radius: 4px; padding: 0.6rem 0.9rem; min-height: 42px; }
+.shop-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-block-start: 0.8rem; }
+.shop-filter { font-family: 'Assistant', sans-serif; font-size: 0.8125rem; letter-spacing: 0.03em; border-radius: 999px; padding: 0.4rem 1rem; cursor: pointer; border: 1px solid var(--hairline); background: transparent; color: var(--olive); }
+.shop-filter.active { background: var(--olive); color: var(--cream); border-color: var(--olive); }
+.shop-grid-section { padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 4rem) clamp(3.5rem, 9vw, 6rem); }
+.no-results { text-align: center; color: var(--muted); padding: 2rem 0; margin: 0; }
+
+/* ---------- from here / source map ---------- */
+.bilingual-lockup { text-align: center; }
+.bilingual-lockup .big-he { font-family: 'David Libre', Georgia, serif; font-weight: 500; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.3; color: var(--deep-olive); margin: 0 auto; max-width: 18ch; direction: rtl; }
+.bilingual-lockup .small-en { font-family: 'David Libre', Georgia, serif; font-size: clamp(1.1rem, 2.2vw, 1.4rem); letter-spacing: 0.2em; padding-inline-start: 0.2em; color: var(--olive); margin: 1.1rem 0 0; text-transform: uppercase; }
+.source-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); }
+.source-card { background: var(--cream); border: 1px solid var(--hairline); margin-inline-start: -1px; margin-block-start: -1px; padding: clamp(1.4rem, 3vw, 1.9rem); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.7rem; }
+.source-card svg { width: 44px; height: 44px; fill: none; stroke: var(--olive); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; flex: none; }
+.source-card h3 { margin: 0; font-family: 'David Libre', Georgia, serif; font-weight: 500; font-size: 1.05rem; color: var(--deep-olive); }
+.source-card .grower { margin: 0; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--sage); }
+.standards-list { display: flex; flex-direction: column; }
+.standards-list .row { padding-block: 1.1rem; border-block-end: 1px solid var(--hairline); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.standards-list .label { font-family: 'David Libre', Georgia, serif; font-weight: 500; color: var(--deep-olive); }
+.standards-list .detail { color: var(--muted); font-size: 0.9rem; }
+/* Untranslated English inside an RTL document has to declare its own
+   direction, or its punctuation strands at the wrong end of the line. */
+.en { direction: ltr; unicode-bidi: isolate; }
+
+.worldwide { text-align: center; padding: 0 clamp(1.25rem, 5vw, 4rem) clamp(2.5rem, 6vw, 3.5rem); }
+.worldwide .he { font-family: 'David Libre', Georgia, serif; font-size: 1.1rem; color: var(--deep-olive); margin: 0 0 0.4rem; direction: rtl; }
+.worldwide .en { font-family: 'David Libre', Georgia, serif; font-size: 0.8rem; letter-spacing: 0.2em; padding-inline-start: 0.2em; color: var(--muted); margin: 0; text-transform: uppercase; }
+/* The plate below is a symmetrical object on the centre line, so on this one
+   page the head is centred to meet it. Everywhere else heads stay ranged to
+   the start edge. */
+.page-head--centred { text-align: center; }
+.page-head--centred .page-intro { max-width: 40rem; margin-inline: auto; }
+
+/* ---------- the robe ----------
+   The Values page is one picture: a woven ground with the breastplate lying
+   on it, close enough that the weave is legible. Exodus 39:3 has the gold
+   beaten into thin plates and cut into wires to be worked in among the blue,
+   the purple, the scarlet and the fine linen, so the cloth carries four
+   threads at four intervals that share no factor — which is what stops a
+   weave reading as a stripe.
+
+   Everything here is drawn: gradients, not photographs. Nothing is traced. */
+.robe {
+  --cloth: #1E2A46;
+  --thread-gold: rgba(198, 162, 96, 0.13);
+  --thread-scarlet: rgba(146, 44, 48, 0.1);
+  --thread-purple: rgba(96, 56, 116, 0.1);
+  --stitch: rgba(214, 186, 124, 0.42);
+  position: relative;
+  /* The cloth runs to the top edge and the header floats on it — the page is
+     one picture, and a cream band above it would be a bar across the top. */
+  margin-block-start: calc(-1 * var(--header-h));
+  padding-block-start: var(--header-h);
+  background-color: var(--cloth);
+  background-image:
+    /* light falling from over the left shoulder, and the fall-off at the edges */
+    radial-gradient(90% 62% at 24% 4%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0) 66%),
+    radial-gradient(125% 85% at 50% 44%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.46) 100%),
+    /* the gold wire, worked both ways */
+    repeating-linear-gradient(90deg, var(--thread-gold) 0 1px, rgba(0, 0, 0, 0) 1px 61px),
+    repeating-linear-gradient(0deg, var(--thread-gold) 0 1px, rgba(0, 0, 0, 0) 1px 79px),
+    /* scarlet and purple */
+    repeating-linear-gradient(90deg, var(--thread-scarlet) 0 1px, rgba(0, 0, 0, 0) 1px 103px),
+    repeating-linear-gradient(0deg, var(--thread-purple) 0 1px, rgba(0, 0, 0, 0) 1px 127px),
+    /* the linen itself: warp catching the light, weft in its shadow */
+    repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0.055) 0 1px, rgba(0, 0, 0, 0.05) 1px 2px, rgba(0, 0, 0, 0) 2px 3px),
+    repeating-linear-gradient(0deg,
+      rgba(0, 0, 0, 0.11) 0 1px, rgba(255, 255, 255, 0.035) 1px 2px, rgba(0, 0, 0, 0) 2px 3px);
+  color: #E8E2D2;
+}
+/* Cloth is dark, so the page's own type has to come up with it. */
+.robe .page-title { color: #F0E7D2; }
+.robe .eyebrow { color: var(--sage); }
+.robe .page-intro { color: #CFC9B8; }
+.robe a { color: #E4CFA2; }
+
+/* ---------- the choshen ----------
+   Twelve values in four rows of three, each in a setting of gold, on a
+   ground the colour of the ephod it was made like. The form is Exodus
+   28:15-21; the stones are not identified, and the twelve colours come from
+   the product lines and the master palette. Each stone is a real link.
+
+   The plate is square because the choshen was — a span by a span — which is
+   why the cells are 4:3 rather than square: three of them across and four
+   down makes a square. */
+.choshen {
+  --gold: #B08D57;
+  --gold-lit: #EFD9A6;
+  --gold-mid: #C9A667;
+  --gold-dark: #6B5027;
+  --ephod: #16233C;
+  position: relative;
+  padding: clamp(0.5rem, 2vw, 1.5rem) clamp(1rem, 4vw, 3rem) clamp(2rem, 5vw, 3.5rem);
+  /* Cloth hangs, and light rakes across it. A weave with no falloff reads as
+     wallpaper however fine the thread is. */
+  background-image:
+    radial-gradient(78% 52% at 24% 0%, rgba(190, 208, 240, 0.10), rgba(190, 208, 240, 0) 68%),
+    radial-gradient(120% 90% at 62% 108%, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0) 62%);
+}
+/* Two seams running past the plate, stitched. At this distance a garment
+   shows its seams; a flat colour field does not. Symmetric, so they need no
+   mirroring in Hebrew. */
+.choshen::before, .choshen::after {
+  content: ''; position: absolute; inset-block: 0; width: 1.5px;
+  background-image: repeating-linear-gradient(0deg, var(--stitch) 0 6px, rgba(0, 0, 0, 0) 6px 11px);
+  opacity: 0.45; pointer-events: none;
+}
+.choshen::before { inset-inline-start: clamp(0.6rem, 4vw, 3rem); }
+.choshen::after { inset-inline-end: clamp(0.6rem, 4vw, 3rem); }
+@media (max-width: 720px) { .choshen::before, .choshen::after { display: none; } }
+
+/* The binding: the plate is stitched down to the cloth, so a run of stitches
+   sits just outside its edge and the plate throws a shadow onto the weave. */
+.choshen__bind {
+  position: relative;
+  max-width: min(54rem, 94vw); margin-inline: auto;
+  padding: clamp(0.5rem, 1.6vw, 1rem);
+}
+.choshen__bind::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(90deg, var(--stitch) 0 6px, rgba(0, 0, 0, 0) 6px 11px),
+    repeating-linear-gradient(90deg, var(--stitch) 0 6px, rgba(0, 0, 0, 0) 6px 11px),
+    repeating-linear-gradient(0deg, var(--stitch) 0 6px, rgba(0, 0, 0, 0) 6px 11px),
+    repeating-linear-gradient(0deg, var(--stitch) 0 6px, rgba(0, 0, 0, 0) 6px 11px);
+  background-size: 100% 1.5px, 100% 1.5px, 1.5px 100%, 1.5px 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+}
+.choshen__plate {
+  position: relative;
+  padding: clamp(0.8rem, 2.2vw, 1.4rem);
+  /* The plate is made like the ephod, so it takes the same weave in a
+     warmer key, with its own light. */
+  background-color: var(--ephod);
+  background-image:
+    radial-gradient(80% 60% at 26% 8%, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(120% 90% at 50% 50%, rgba(0, 0, 0, 0) 46%, rgba(0, 0, 0, 0.34) 100%),
+    repeating-linear-gradient(90deg, var(--thread-gold) 0 1px, rgba(0, 0, 0, 0) 1px 31px),
+    repeating-linear-gradient(0deg, var(--thread-gold) 0 1px, rgba(0, 0, 0, 0) 1px 41px),
+    repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0.05) 0 1px, rgba(0, 0, 0, 0.05) 1px 2px, rgba(0, 0, 0, 0) 2px 3px),
+    repeating-linear-gradient(0deg,
+      rgba(0, 0, 0, 0.1) 0 1px, rgba(255, 255, 255, 0.03) 1px 2px, rgba(0, 0, 0, 0) 2px 3px);
+  border-radius: 3px;
+  /* A gold cord couched round the edge, then the shadow it casts on the robe. */
+  box-shadow:
+    inset 0 0 0 1px var(--gold-dark),
+    inset 0 0 0 3px rgba(201, 166, 103, 0.55),
+    inset 0 0 0 4px rgba(20, 16, 10, 0.5),
+    inset 0 2px 14px rgba(0, 0, 0, 0.3),
+    0 2px 3px rgba(0, 0, 0, 0.5),
+    0 10px 18px -8px rgba(0, 0, 0, 0.55),
+    0 34px 60px -28px rgba(0, 0, 0, 0.95);
+}
+
+.choshen__stones {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.4rem, 1.3vw, 0.8rem);
+}
+.choshen__cell { display: block; }
+/* Set by hand, so no two sit at quite the same angle. The amounts are
+   deliberately below the threshold where anything looks skew — the eye
+   registers that the row is not machined without being able to say why. */
+.choshen__cell:nth-child(1)  { transform: rotate(-0.35deg) scale(0.995); }
+.choshen__cell:nth-child(2)  { transform: rotate(0.22deg); }
+.choshen__cell:nth-child(3)  { transform: rotate(-0.15deg) scale(0.992); }
+.choshen__cell:nth-child(4)  { transform: rotate(0.3deg); }
+.choshen__cell:nth-child(5)  { transform: rotate(-0.26deg) scale(0.997); }
+.choshen__cell:nth-child(6)  { transform: rotate(0.12deg); }
+.choshen__cell:nth-child(7)  { transform: rotate(0.28deg) scale(0.993); }
+.choshen__cell:nth-child(8)  { transform: rotate(-0.19deg); }
+.choshen__cell:nth-child(9)  { transform: rotate(0.34deg) scale(0.996); }
+.choshen__cell:nth-child(10) { transform: rotate(-0.3deg); }
+.choshen__cell:nth-child(11) { transform: rotate(0.17deg) scale(0.994); }
+.choshen__cell:nth-child(12) { transform: rotate(-0.24deg); }
+@media (prefers-reduced-motion: reduce) { .choshen__cell { transform: none; } }
+/* and each dome catches the light at its own point */
+.choshen__cell:nth-child(1)  .stone__face { --hx: 19%; --hy: 15%; }
+.choshen__cell:nth-child(2)  .stone__face { --hx: 23%; --hy: 18%; }
+.choshen__cell:nth-child(3)  .stone__face { --hx: 20%; --hy: 14%; }
+.choshen__cell:nth-child(4)  .stone__face { --hx: 25%; --hy: 17%; }
+.choshen__cell:nth-child(5)  .stone__face { --hx: 18%; --hy: 19%; }
+.choshen__cell:nth-child(6)  .stone__face { --hx: 22%; --hy: 13%; }
+.choshen__cell:nth-child(7)  .stone__face { --hx: 24%; --hy: 16%; }
+.choshen__cell:nth-child(8)  .stone__face { --hx: 19%; --hy: 20%; }
+.choshen__cell:nth-child(9)  .stone__face { --hx: 26%; --hy: 15%; }
+.choshen__cell:nth-child(10) .stone__face { --hx: 21%; --hy: 17%; }
+.choshen__cell:nth-child(11) .stone__face { --hx: 23%; --hy: 14%; }
+.choshen__cell:nth-child(12) .stone__face { --hx: 20%; --hy: 18%; }
+
+/* The setting: a bezel of gold with a rolled lip, the stone seated in it.
+   The lip is padding rather than a border so the gradient runs round all
+   four sides, and the gradient turns twice — dark at the far side, bright
+   again where the metal rolls over — because a single ramp reads as paint. */
+.stone {
+  position: relative; display: block;
+  aspect-ratio: 4 / 3;
+  padding: clamp(6px, 1.05vw, 11px);
+  /* the setting follows the stone: a cushion, so the collar is one too */
+  border-radius: 12% / 16%;
+  text-decoration: none; color: inherit;
+  background:
+    /* worked metal is never smooth: a fine tooth over the reflection */
+    repeating-linear-gradient(126deg,
+      rgba(255, 255, 255, 0.05) 0 1px, rgba(0, 0, 0, 0.05) 1px 2px, rgba(0, 0, 0, 0) 2px 5px),
+    conic-gradient(from 202deg at 46% 42%,
+      #5E4620 0deg, #8A6B3C 34deg, #D8BE8C 76deg,
+      #F8EBC8 104deg, #E0C795 126deg, #A2803F 168deg,
+      #6B5027 200deg, #523D1C 232deg, #A88551 274deg,
+      #EFD9A6 310deg, #C9A667 338deg, #5E4620 360deg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(60, 44, 20, 0.55),
+    /* seated on cloth, so the shadow is soft and thrown down-and-right,
+       away from the light the bezel is reflecting */
+    0 2px 2px rgba(14, 10, 5, 0.5),
+    0 7px 10px -3px rgba(0, 0, 0, 0.5),
+    0 16px 28px -10px rgba(0, 0, 0, 0.72);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+}
+.stone:hover, .stone:focus-visible {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -1px 0 rgba(60, 44, 20, 0.5),
+    0 4px 4px rgba(14, 10, 5, 0.45),
+    0 12px 16px -4px rgba(0, 0, 0, 0.5),
+    0 26px 40px -14px rgba(0, 0, 0, 0.8);
+}
+.stone:focus-visible { outline: 2px solid var(--gold-lit); outline-offset: 3px; }
+
+/* A cabochon, not a swatch. What the eye checks on a domed stone, in order:
+   the body is lightest at the crown and darkens toward the edge (the light
+   path through it lengthens), a thin bright line runs round the very rim
+   where the curve turns to face the lamp, and a soft crescent of returned
+   light sits on the far side, opposite the hotspot, where light that went
+   in comes back out. The hotspot itself is the lamp's reflection — small,
+   hard and elongated, never a soft glow. All of that is built here in
+   layers over the one stone colour each link carries. */
+@property --hx { syntax: '<percentage>'; inherits: false; initial-value: 21%; }
+@property --hy { syntax: '<percentage>'; inherits: false; initial-value: 16%; }
+.stone__face {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.3rem; height: 100%; padding: 0.45rem;
+  /* a cushion, not a tile — the corners of a cabochon are turned */
+  border-radius: 14% / 18%;
+  text-align: center;
+  --core: var(--stone);
+  --core: color-mix(in srgb, var(--stone) 72%, #FFFFFF);
+  --deep: var(--stone);
+  --deep: color-mix(in srgb, var(--stone) 62%, #000000);
+  background:
+    /* the lamp: a hard hotspot with a short elongated tail */
+    radial-gradient(3.4% 2.8% at var(--hx, 21%) var(--hy, 16%),
+      rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55) 52%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(15% 6.5% at calc(var(--hx, 21%) + 4%) calc(var(--hy, 16%) + 1.5%),
+      rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0) 78%),
+    /* the sheen the dome carries across its near shoulder */
+    radial-gradient(66% 52% at 36% 30%, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0) 72%),
+    /* returned light: a crescent on the far side, warm from the gold under it */
+    radial-gradient(56% 36% at 68% 84%, rgba(255, 240, 205, 0.30), rgba(255, 240, 205, 0.08) 45%, rgba(255, 240, 205, 0) 70%),
+    /* limb darkening: the rim is the longest path through the stone */
+    radial-gradient(98% 92% at 48% 46%,
+      rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, 0.16) 66%, rgba(0, 0, 0, 0.42) 86%, rgba(0, 0, 0, 0.66) 100%),
+    /* the body: lit core, deep colour at the edge */
+    radial-gradient(58% 50% at 44% 40%, var(--core) 0%, var(--stone) 58%, var(--deep) 100%);
+  box-shadow:
+    /* the rim line where the dome turns to face the light, then the
+       shadow the bezel lip throws down onto the stone */
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.20),
+    inset 1px 1.5px 3px rgba(255, 255, 255, 0.28),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.35),
+    inset 0 7px 12px -2px rgba(0, 0, 0, 0.55),
+    inset 0 -3px 8px rgba(255, 236, 194, 0.10),
+    inset 0 0 22px 4px rgba(0, 0, 0, 0.26),
+    /* the girdle: a dark seat, then the bright bevel of the metal round it */
+    0 0 0 1px rgba(20, 14, 6, 0.75),
+    0 0 0 2px rgba(255, 236, 194, 0.42),
+    0 0 0 3px rgba(120, 90, 40, 0.5);
+  transition: --hx 0.45s ease, --hy 0.45s ease;
+}
+/* Move, and the lamp slides over the dome — a reflection travels across a
+   curved surface; a printed dot would stay put. */
+.stone:hover .stone__face, .stone:focus-visible .stone__face {
+  --hx: 27%; --hy: 21%;
+}
+.stone__face::before {
+  content: ''; position: absolute; inset: -30%;
+  /* Inclusions. Two periods at different angles, so the banding never
+     settles into a regular stripe. Faint — at any more than this it reads
+     as brushed metal or wood grain rather than as stone. */
+  background:
+    repeating-linear-gradient(var(--vein, 118deg),
+      rgba(255, 255, 255, 0.012) 0 3px,
+      rgba(255, 255, 255, 0) 3px 17px,
+      rgba(0, 0, 0, 0.014) 17px 21px,
+      rgba(255, 255, 255, 0) 21px 44px),
+    repeating-linear-gradient(calc(var(--vein, 118deg) + 37deg),
+      rgba(255, 255, 255, 0.008) 0 8px,
+      rgba(255, 255, 255, 0) 8px 53px);
+  pointer-events: none;
+}
+/* Inside the stone: a cloud of the body colour, brighter, sitting off-centre
+   under the surface. It is what makes the face read as having depth to look
+   into rather than a colour to look at. */
+.stone__face::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(40% 34% at 58% 56%, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(30% 22% at 30% 62%, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 70%);
+  mix-blend-mode: screen;
+}
+.stone__face > * { position: relative; }
+.stone__face svg {
+  width: clamp(19px, 3.1vw, 28px); height: auto; flex: none;
+  fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round;
+  opacity: 0.82;
+  filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.5));
+}
+/* Cut into the stone rather than printed on it: a dark edge on the side the
+   light comes from, and the letter taking the light on the far side — which
+   is what a groove does and a printed letter does not. */
+.stone__he {
+  font-family: 'David Libre', Georgia, serif; font-weight: 500;
+  font-size: clamp(0.74rem, 1.55vw, 1.05rem); line-height: 1.25;
+  color: var(--cut);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.62), 0 1px 0 rgba(255, 255, 255, 0.13);
+}
+.stone__en {
+  font-family: 'David Libre', Georgia, serif;
+  font-size: clamp(0.44rem, 0.85vw, 0.62rem); letter-spacing: 0.16em;
+  padding-inline-start: 0.16em; text-transform: uppercase;
+  color: var(--cut); opacity: 0.68;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Chains of braided gold above, a cord of blue below — both drawn as two
+   strands in antiphase, which is what makes a twist read as a twist rather
+   than as a bent wire. Decoration only; nothing here is a control. */
+.choshen__chain { display: block; width: 100%; height: auto; }
+.choshen__chain--top { margin-block-end: clamp(0.1rem, 0.6vw, 0.4rem); }
+.choshen__chain--foot { margin-block-start: clamp(0.1rem, 0.6vw, 0.4rem); }
+.ch-braid path, .ch-twist path {
+  fill: none; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round;
+}
+.ch-braid path { stroke: var(--gold); }
+.ch-braid path:nth-child(even) { stroke: var(--gold-lit); opacity: 0.75; }
+.ch-twist path { stroke: #3E6E8E; }
+.ch-twist path:nth-child(even) { stroke: #6E9CB8; opacity: 0.8; }
+.ch-ring { fill: none; stroke: var(--gold-lit); stroke-width: 3.4; }
+
+.choshen__note {
+  max-width: 46rem; margin: clamp(1.8rem, 4vw, 2.6rem) auto 0;
+  text-align: center; font-size: 0.85rem; line-height: 1.75;
+  color: #B6AF9C;
+}
+
+@media (max-width: 560px) {
+  /* At this size the English caption is under six pixels and reads as dirt. */
+  .stone__en { display: none; }
+  .stone__face { gap: 0.22rem; }
+}
+
+.values-follow { text-align: center; padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 4rem) clamp(3.5rem, 9vw, 6rem); }
+
+/* ============================================================ THE SHELF
+   produce.html. A catalogue that has to stay readable at 36 entries and at
+   360, so everything here is grid-driven and nothing depends on a count. */
+
+.shelfctl { padding: clamp(2rem, 5vw, 3rem) clamp(1.25rem, 5vw, 4rem); border-block-end: 1px solid var(--hairline); }
+.shelfctl__inner {
+  max-width: 68rem; margin-inline: auto;
+  display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem); align-items: start;
+}
+@media (max-width: 780px) { .shelfctl__inner { grid-template-columns: 1fr; } }
+
+/* ---- the season wheel: a polar histogram, not decoration. Each wedge's
+   length is the number of things harvested in that month, so the summer gap
+   in the middle of the year is visible before anyone reads a word. */
+.wheel { position: relative; }
+.wheel__svg { display: block; width: 100%; height: auto; overflow: visible; }
+.wheel__ground { fill: none; stroke: var(--hairline); stroke-width: 1; }
+.wheel__hub { fill: var(--panel); stroke: var(--hairline); stroke-width: 1; }
+.wheel__hit { fill: transparent; }
+.wheel__bar {
+  /* the fuller the month, the deeper the wedge — length says it, tone says it again */
+  fill: color-mix(in srgb, #C9D0BA, #8FA07A calc(var(--share, 0) * 100%));
+  transition: fill 180ms ease;
+}
+@supports not (fill: color-mix(in srgb, red, blue)) { .wheel__bar { fill: #C3CBB4; } }
+.wheel__n {
+  font-family: 'Assistant', system-ui, sans-serif; font-size: 8px; font-weight: 600;
+  fill: var(--deep-olive); text-anchor: middle; pointer-events: none; opacity: 0.75;
+}
+.wheel__seg.is-on .wheel__n { fill: var(--cream); opacity: 1; }
+.wheel__seg { cursor: pointer; }
+.wheel__seg:hover .wheel__bar { fill: var(--sage); }
+.wheel__seg.is-now .wheel__bar { fill: #9FAF8C; }
+.wheel__seg.is-on .wheel__bar { fill: var(--olive); }
+.wheel__seg:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+.wheel__lbl {
+  font-family: 'Assistant', system-ui, sans-serif; font-size: 8.5px; font-weight: 500;
+  letter-spacing: 0.06em; fill: var(--muted); text-anchor: middle; pointer-events: none;
+}
+.wheel__lbl--he { display: none; letter-spacing: 0; font-size: 9.5px; }
+html[lang="he"] .wheel__lbl { display: none; }
+html[lang="he"] .wheel__lbl--he { display: block; }
+.wheel__read {
+  position: absolute; inset-block-start: 50%; inset-inline-start: 50%;
+  transform: translate(-50%, -50%); text-align: center; pointer-events: none;
+}
+html[dir="rtl"] .wheel__read { transform: translate(50%, -50%); }
+.wheel__count { font-family: 'David Libre', Georgia, serif; font-size: 1.9rem; line-height: 1; color: var(--deep-olive); margin: 0; }
+.wheel__of { font-size: 0.6rem; letter-spacing: 0.08em; color: var(--muted); margin: 0.25rem 0 0; max-width: 6rem; line-height: 1.3; }
+html[lang="en"] .wheel__of { text-transform: uppercase; }
+
+/* ---- filters */
+.eyebrow--tight { margin-block: 1.1rem 0.5rem; }
+.shelfctl__hint { font-size: 0.85rem; line-height: 1.65; color: var(--muted); margin: 0.4rem 0 1.1rem; max-width: 52ch; }
+.chiprow { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.chip {
+  font: inherit; font-size: 0.72rem; letter-spacing: 0.04em; cursor: pointer;
+  padding: 0.32rem 0.72rem; border-radius: 999px;
+  border: 1px solid var(--hairline); background: transparent; color: var(--muted);
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+.chip:hover { border-color: var(--sage); color: var(--olive); }
+.chip.is-on { background: var(--olive); border-color: var(--olive); color: var(--cream); }
+.chip:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+.shelfsearch { display: block; margin-block-start: 1.2rem; }
+.shelfsearch input {
+  font: inherit; width: 100%; max-width: 22rem; padding: 0.55rem 0.85rem;
+  border: 1px solid var(--hairline); border-radius: 2px;
+  background: var(--cream); color: var(--ink);
+}
+.shelfsearch input:focus-visible { outline: 2px solid var(--olive); outline-offset: 1px; }
+.shelfctl__status { font-size: 0.72rem; letter-spacing: 0.06em; color: var(--muted); margin: 0.7rem 0 0; min-height: 1em; }
+
+/* ---- the shelves themselves */
+.shelf { padding: clamp(2rem, 4vw, 2.8rem) clamp(1.25rem, 5vw, 4rem) 0; }
+.shelf[hidden] { display: none; }
+.shelf__title {
+  max-width: 68rem; margin: 0 auto 1.2rem;
+  font-family: 'David Libre', Georgia, serif; font-weight: 400;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem); color: var(--deep-olive);
+  display: flex; align-items: baseline; gap: 0.6rem;
+  padding-block-end: 0.6rem; border-block-end: 1px solid var(--hairline);
+}
+.shelf__n { font-family: 'Assistant', system-ui, sans-serif; font-size: 0.7rem; color: var(--muted); }
+.shelf__row {
+  max-width: 68rem; margin-inline: auto;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1px; background: var(--hairline); border: 1px solid var(--hairline);
+}
+
+/* Cards are separated by the grid's own gap showing the background through —
+   one hairline between neighbours instead of two touching borders. */
+.pcard { background: var(--cream); padding: 1.1rem 1.1rem 0.9rem; display: flex; flex-direction: column; }
+.pcard[hidden] { display: none; }
+.pcard.is-open { background: var(--panel); }
+.pcard__head { margin-block-end: 0.7rem; }
+.pcard__name { font-family: 'David Libre', Georgia, serif; font-weight: 500; font-size: 1.02rem; color: var(--deep-olive); margin: 0; }
+.pcard__he { font-size: 0.9rem; color: var(--olive); margin: 0.1rem 0 0; }
+html[lang="he"] .pcard__he { display: none; }
+.pcard__latin { font-size: 0.72rem; font-style: italic; color: var(--muted); margin: 0.25rem 0 0; }
+
+/* Twelve cells, one per month. The lit ones are the harvest. */
+.pcard__season { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1px; margin-block-end: 0.35rem; }
+.pcard__season i { display: block; height: 5px; background: var(--line); }
+.pcard__season i.is-on { background: var(--olive); }
+.pcard__when { font-size: 0.68rem; letter-spacing: 0.04em; color: var(--muted); margin: 0 0 0.7rem; }
+.pcard__tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0 0 0.5rem; align-items: center; }
+.ptag { font-size: 0.6rem; letter-spacing: 0.08em; padding: 0.16rem 0.5rem; border-radius: 2px; border: 1px solid; }
+html[lang="en"] .ptag { text-transform: uppercase; }
+.ptag--grown { color: #46523A; border-color: #A8B598; }
+.ptag--processed { color: #7A3A26; border-color: #E0C9A6; }
+.ptag--partial { color: #5C5347; border-color: #C9AE86; }
+.pcard__regions { font-size: 0.7rem; line-height: 1.6; color: var(--muted); margin: 0 0 0.6rem; }
+
+.pcard__more { margin-block-start: auto; border-block-start: 1px solid var(--hairline); padding-block-start: 0.5rem; }
+.pcard__more summary {
+  cursor: pointer; font-size: 0.66rem; letter-spacing: 0.12em; color: var(--olive);
+  list-style: none; padding-block: 0.15rem;
+}
+html[lang="en"] .pcard__more summary { text-transform: uppercase; }
+.pcard__more summary::-webkit-details-marker { display: none; }
+.pcard__more summary::after { content: ' +'; }
+.pcard__more[open] summary::after { content: ' –'; }
+.pcard__more summary:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+.pcard__body { padding-block-start: 0.6rem; }
+.prow { display: grid; grid-template-columns: 4.6rem 1fr; gap: 0.7rem; margin-block-end: 0.65rem; align-items: baseline; }
+@media (max-width: 420px) { .prow { grid-template-columns: 1fr; gap: 0.15rem; } }
+.prow__k { font-size: 0.6rem; letter-spacing: 0.1em; color: var(--sage); }
+html[lang="en"] .prow__k { text-transform: uppercase; }
+.prow p { margin: 0; font-size: 0.82rem; line-height: 1.65; color: var(--ink); }
+.pdois { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.pdoi { font-size: 0.68rem; color: var(--olive); text-decoration: underline; text-underline-offset: 2px; }
+.pcite { font-size: 0.7rem; line-height: 1.55; color: #7A3A26; margin: 0 0 0.65rem; padding-inline-start: 0.6rem; border-inline-start: 2px solid #E0C9A6; }
+.pnote { font-size: 0.78rem; line-height: 1.65; color: var(--muted); margin: 0.8rem 0 0; padding-block-start: 0.6rem; border-block-start: 1px solid var(--hairline); }
+
+/* ---- the honesty band. BRAND.md §6 makes this section mandatory and says it
+   must not be visually downplayed, so it gets a dark panel and full width. */
+.honesty { background: var(--deep-olive); color: var(--cream); padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 5vw, 4rem); margin-block-start: clamp(3rem, 6vw, 4.5rem); }
+.honesty .eyebrow { color: var(--sage); }
+.honesty h2 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.4rem, 3vw, 2rem); margin: 0 0 1rem; color: var(--cream); }
+.honesty p { color: #DCE0D0; line-height: 1.8; }
+.honesty__list { list-style: none; padding: 0; margin: 1.6rem 0; display: grid; gap: 0.9rem; }
+.honesty__list li { padding-block-end: 0.9rem; border-block-end: 1px solid rgba(244, 240, 230, 0.16); font-size: 0.9rem; line-height: 1.7; color: #DCE0D0; }
+.honesty__list strong { color: var(--cream); font-weight: 500; display: block; margin-block-end: 0.15rem; }
+.honesty__foot { font-size: 0.92rem; }
+.honesty .btn--ghost { border-color: var(--sage); color: var(--cream); }
+.honesty .btn--ghost:hover { background: var(--sage); color: var(--deep-olive); }
+
+/* ========================================================== THE GROWERS
+   farms.html. The plot is rainfall against elevation — deliberately not a
+   map, per BRAND.md's no-adversary rule, and in any case the two numbers
+   explain the crop and an outline does not. */
+
+.grad { padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 5vw, 4rem); border-block: 1px solid var(--hairline); background: var(--panel); }
+.grad__inner { max-width: 68rem; margin-inline: auto; }
+.grad__head { margin-block-end: 1.6rem; }
+.grad__head h2 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.4rem, 3vw, 2rem); color: var(--deep-olive); margin: 0 0 0.8rem; text-wrap: balance; }
+.grad__lead { margin: 0; line-height: 1.8; color: var(--ink); max-width: 62ch; }
+.grad__plot { overflow-x: auto; }
+.grad__svg { display: block; width: 100%; min-width: 34rem; height: auto; }
+
+.grad__wash { fill: url(#grad-wash); }
+.grad__sea { fill: #DDE4E4; opacity: 0.5; }
+.grad__grid { stroke: var(--hairline); stroke-width: 1; }
+.grad__grid--v { stroke-dasharray: 2 5; }
+.grad__sealevel { stroke: #3F5A63; stroke-width: 1.4; }
+.grad__ax { font-family: 'Assistant', system-ui, sans-serif; font-size: 10px; fill: var(--muted); }
+.grad__axname { font-family: 'Assistant', system-ui, sans-serif; font-size: 9px; letter-spacing: 0.16em; fill: var(--sage); }
+.grad__sealbl { font-family: 'Assistant', system-ui, sans-serif; font-size: 9px; letter-spacing: 0.12em; fill: #3F5A63; text-anchor: end; }
+
+.grad__node { cursor: pointer; }
+.grad__halo { fill: var(--olive); opacity: 0; transition: opacity 180ms ease; }
+.grad__dot {
+  fill: url(#grad-dot); stroke: var(--cream); stroke-width: 1.5;
+  filter: drop-shadow(0 1.5px 1.5px rgba(30, 36, 20, 0.35));
+  transition: fill 180ms ease, opacity 180ms ease;
+}
+.grad__n {
+  font-family: 'Assistant', system-ui, sans-serif; font-size: 10.5px; font-weight: 600;
+  fill: var(--cream); text-anchor: middle; pointer-events: none;
+  transition: opacity 180ms ease;
+}
+.grad__lbl { font-family: 'Assistant', system-ui, sans-serif; font-size: 11px; font-weight: 500; fill: var(--deep-olive); text-anchor: middle; pointer-events: none; transition: opacity 180ms ease; }
+.grad__lbl--he { display: none; }
+html[lang="he"] .grad__lbl { display: none; }
+html[lang="he"] .grad__lbl--he { display: block; }
+.grad__node:hover .grad__dot,
+.grad__node.is-on .grad__dot { fill: url(#grad-dot-on); }
+.grad__node.is-on .grad__halo { opacity: 0.16; }
+.grad__node.is-off .grad__dot { opacity: 0.3; }
+.grad__node.is-off .grad__lbl { opacity: 0.28; }
+.grad__node.is-off .grad__n { opacity: 0.3; }
+.grad__node:focus-visible { outline: 2px solid var(--olive); outline-offset: 3px; }
+
+.grad__read { margin-block-start: 1.4rem; min-height: 8rem; }
+.grad__panel h3 { font-family: 'David Libre', Georgia, serif; font-weight: 500; font-size: 1.15rem; color: var(--deep-olive); margin: 0 0 0.3rem; }
+.grad__stat { font-size: 0.78rem; letter-spacing: 0.05em; color: var(--muted); margin: 0 0 0.8rem; }
+.grad__crops { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.grad__crops a {
+  display: inline-block; font-size: 0.76rem; padding: 0.24rem 0.62rem; border-radius: 999px;
+  border: 1px solid var(--hairline); color: var(--olive); text-decoration: none; background: var(--cream);
+}
+.grad__crops a:hover { border-color: var(--sage); background: var(--cream); text-decoration: underline; text-underline-offset: 2px; }
+.grad__foot { margin-block-start: 1.6rem; padding-block-start: 1.2rem; border-block-start: 1px solid var(--hairline); font-size: 0.9rem; line-height: 1.8; color: var(--muted); max-width: 62ch; }
+
+/* ---- the terms */
+.terms { padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 5vw, 4rem); }
+.terms--dark { background: var(--deep-olive); }
+.terms__inner h2 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.35rem, 2.8vw, 1.85rem); color: var(--deep-olive); margin: 0 0 0.8rem; text-wrap: balance; }
+.terms--dark .terms__inner h2 { color: var(--cream); }
+.terms--dark .eyebrow { color: var(--sage); }
+.terms__inner > p { line-height: 1.8; color: var(--ink); max-width: 58ch; }
+.terms--dark .terms__inner > p { color: #DCE0D0; }
+.terms__list { margin: 1.6rem 0 0; padding-inline-start: 1.4rem; display: grid; gap: 1rem; }
+.terms__list li { padding-block-end: 1rem; border-block-end: 1px solid var(--hairline); line-height: 1.75; color: var(--ink); font-size: 0.94rem; }
+.terms--dark .terms__list li { border-block-end-color: rgba(244, 240, 230, 0.16); color: #DCE0D0; }
+.terms__list li::marker { color: var(--sage); font-size: 0.8rem; }
+.terms__list strong { display: block; font-weight: 500; color: var(--deep-olive); margin-block-end: 0.2rem; }
+.terms--dark .terms__list strong { color: var(--cream); }
+
+/* ---- the visit log, empty on purpose */
+.visits { padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 5vw, 4rem) clamp(3.5rem, 8vw, 5rem); }
+.visits__inner h2 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.35rem, 2.8vw, 1.85rem); color: var(--deep-olive); margin: 0 0 1rem; }
+.visits__empty { border: 1px dashed var(--line); padding: clamp(1.5rem, 4vw, 2.5rem); background: var(--panel); }
+.visits__empty p { margin: 0; line-height: 1.8; color: var(--muted); max-width: 58ch; }
+
+/* onward links at the foot of a position page */
+.onward { padding: clamp(2.5rem, 6vw, 3.5rem) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 7vw, 4.5rem); border-block-start: 1px solid var(--hairline); }
+.onward__head { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.25rem, 2.6vw, 1.7rem); color: var(--deep-olive); margin: 0 0 0.8rem; text-wrap: balance; }
+.onward__lead { line-height: 1.8; color: var(--muted); max-width: 58ch; margin: 0 0 1.4rem; }

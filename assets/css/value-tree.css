@@ -1,0 +1,308 @@
+/* ============================================================
+   Eytan Lev — value tree module.
+   Rethemed from the portable module onto the site's design system:
+   master palette, David Libre + Assistant (no mono face), flat
+   surfaces, and logical properties throughout so the tree mirrors
+   in Hebrew (BRAND.md hard rule 10). Selectors stay namespaced .vt-*.
+   ============================================================ */
+
+.vt {
+  --vt-surface: var(--cream);
+  --vt-sunk: var(--panel);
+  --vt-ink: var(--ink);
+  --vt-ink-2: #565244;
+  --vt-ink-3: var(--muted);
+  --vt-line: var(--hairline);
+  --vt-line-2: #C9C0AB;
+  --vt-olive: var(--olive);
+  --vt-olive-deep: var(--deep-olive);
+  --vt-olive-bg: #E7EADC;
+  --vt-alert: #8C2231;
+  --vt-alert-bg: #F7EFEA;
+  --vt-dim: #8E8A7A;
+
+  --vt-display: 'David Libre', Georgia, 'Times New Roman', serif;
+  --vt-body: 'Assistant', system-ui, sans-serif;
+  --vt-maxw: 1080px;
+
+  color: var(--vt-ink);
+  font-family: var(--vt-body);
+  line-height: 1.7;
+  padding: clamp(2.5rem, 7vw, 4rem) clamp(1.25rem, 5vw, 4rem) clamp(4rem, 10vw, 6rem);
+}
+.vt p { margin: 0; }
+
+/* Label role — replaces the module's mono face with the site's
+   eyebrow convention: Assistant, uppercase, tracked. */
+.vt-label {
+  font-family: var(--vt-body); font-size: 0.6875rem; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--vt-olive);
+}
+html[lang="he"] .vt-label { text-transform: none; letter-spacing: 0.08em; }
+
+/* ---------- header ---------- */
+.vt-head { max-width: 68ch; margin: 0 auto clamp(2.5rem, 6vw, 3.5rem); display: flex; flex-direction: column; gap: 1rem; }
+.vt-h1 {
+  font-family: var(--vt-display); font-weight: 400; font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+  line-height: 1.25; margin: 0; text-wrap: balance; color: var(--vt-olive-deep);
+}
+.vt-standard {
+  font-size: 0.9rem; color: var(--vt-ink-2);
+  border-inline-start: 2px solid var(--vt-olive); padding-inline-start: 0.9rem;
+}
+
+/* ---------- draft banner ---------- */
+.vt-draft {
+  max-width: var(--vt-maxw); margin: 0 auto clamp(2rem, 5vw, 3rem);
+  background: var(--vt-alert-bg); border: 1px solid var(--vt-alert);
+  padding: 0.9rem 1.1rem; display: flex; flex-direction: column; gap: 0.35rem;
+}
+.vt-draft .vt-label { color: var(--vt-alert); }
+.vt-draft p { font-size: 0.875rem; color: var(--vt-ink-2); }
+
+/* ---------- tree scaffolding ---------- */
+.vt-tree { max-width: var(--vt-maxw); margin: 0 auto; }
+.vt-root {
+  max-width: 520px; margin: 0 auto; text-align: center;
+  background: var(--vt-olive-bg); border: 1px solid var(--vt-olive);
+  padding: 1.2rem 1.4rem; display: flex; flex-direction: column; gap: 0.2rem;
+}
+.vt-root__name { font-family: var(--vt-display); font-size: 1.3rem; color: var(--vt-olive-deep); }
+.vt-root__he { font-family: var(--vt-display); font-size: 1.05rem; color: var(--vt-olive); }
+.vt-root__note { font-size: 0.8rem; color: var(--vt-ink-2); margin-block-start: 0.35rem; }
+
+.vt-stem { width: 1px; height: 2.2rem; background: var(--vt-line-2); margin-inline: auto; }
+
+.vt-role-band {
+  max-width: var(--vt-maxw); margin: 0 auto 0.6rem;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem;
+  padding: 0.6rem 0.9rem; background: var(--vt-sunk); border: 1px solid var(--vt-line);
+}
+.vt-role-blurb { font-size: 0.85rem; color: var(--vt-ink-2); }
+.vt-role-band--outcome .vt-label { color: var(--vt-dim); }
+.vt-role-band--override { background: var(--vt-alert-bg); border-color: var(--vt-alert); }
+.vt-role-band--override .vt-label { color: var(--vt-alert); }
+.vt-role-band--developing .vt-label { color: var(--vt-ink-3); }
+
+/* ---------- branch map ---------- */
+.vt-map {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem;
+  padding: 1.1rem 1.2rem; margin-block-end: 2.2rem;
+  background: var(--vt-sunk); border: 1px solid var(--vt-line);
+}
+@media (max-width: 720px) { .vt-map { grid-template-columns: 1fr; gap: 0.9rem; } }
+.vt-map__col { display: flex; flex-direction: column; gap: 0.45rem; }
+.vt-map__col + .vt-map__col { border-inline-start: 1px solid var(--vt-line); padding-inline-start: 1.1rem; }
+@media (max-width: 720px) {
+  .vt-map__col + .vt-map__col { border-inline-start: 0; padding-inline-start: 0; border-block-start: 1px solid var(--vt-line); padding-block-start: 0.9rem; }
+}
+.vt-map ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+.vt-map a {
+  font-family: var(--vt-display); font-size: 1rem; color: var(--vt-ink);
+  text-decoration: none; display: flex; gap: 0.55rem; align-items: baseline;
+}
+.vt-map a:hover { color: var(--vt-olive); }
+.vt-map a:focus-visible { outline: 2px solid var(--vt-olive); outline-offset: 2px; }
+.vt-num { font-size: 0.6875rem; color: var(--vt-ink-3); font-variant-numeric: tabular-nums; }
+
+/* ---------- the tree diagram ----------
+   Fixed composition: the SVG stays LTR in both locales so the pillars
+   never swap. Edges draw in, then nodes settle. */
+.vt-tree-fig { margin: 0 0 clamp(2rem, 5vw, 3rem); direction: ltr; }
+.vt-sefirot { display: block; width: 100%; max-width: 620px; margin-inline: auto; height: auto; overflow: visible; }
+.vt-tree-cap { margin: 0.6rem auto 0; max-width: 62ch; font-size: 0.8rem; color: var(--vt-ink-3); text-align: center; }
+
+.vt-edge {
+  stroke: var(--vt-line-2); stroke-width: 1; fill: none;
+  stroke-dasharray: 1000; stroke-dashoffset: 1000;
+  animation: vt-draw 0.9s ease forwards;
+  animation-delay: calc(var(--i) * 0.045s);
+}
+.vt-edge--override { stroke: var(--vt-alert); stroke-dasharray: 5 4; animation: none; opacity: 0.75; }
+.vt-edge--developing { stroke: var(--vt-line-2); stroke-dasharray: 3 5; animation: none; opacity: 0.7; }
+@keyframes vt-draw { to { stroke-dashoffset: 0; } }
+
+.vt-node-g { cursor: pointer; opacity: 0; animation: vt-pop 0.5s ease forwards; animation-delay: calc(0.5s + var(--i) * 0.06s); }
+@keyframes vt-pop { from { opacity: 0; } to { opacity: 1; } }
+.vt-node-c { fill: var(--vt-surface); stroke: var(--vt-olive); stroke-width: 1.5; transition: fill 0.2s ease, stroke-width 0.2s ease; }
+.vt-node-g:hover .vt-node-c, .vt-node-g:focus-visible .vt-node-c { fill: var(--vt-olive-bg); stroke-width: 2.5; }
+.vt-node-g:focus-visible { outline: none; }
+.vt-node-g:focus-visible .vt-node-c { stroke: var(--vt-olive-deep); }
+.vt-node-n { font-family: var(--vt-body); font-size: 12px; fill: var(--vt-ink-3); text-anchor: middle; font-variant-numeric: tabular-nums; }
+.vt-node-he { font-family: var(--vt-display); font-size: 15px; fill: var(--vt-olive-deep); text-anchor: middle; }
+.vt-node-en { font-family: var(--vt-body); font-size: 10.5px; letter-spacing: 0.06em; fill: var(--vt-ink-3); text-anchor: middle; text-transform: uppercase; }
+
+.vt-node-g--scope .vt-node-c { stroke: var(--vt-olive-deep); stroke-width: 2.5; }
+.vt-node-g--override .vt-node-c { stroke: var(--vt-alert); }
+.vt-node-g--override .vt-node-he { fill: var(--vt-alert); }
+.vt-node-g--outcome .vt-node-c { stroke: var(--vt-dim); }
+.vt-node-g--developing .vt-node-c { stroke: var(--vt-line-2); stroke-dasharray: 4 4; }
+.vt-node-g--developing .vt-node-he, .vt-node-g--developing .vt-node-en { fill: var(--vt-ink-3); }
+
+/* Target highlight when a node sends you to its entry */
+.vt-node.is-targeted { box-shadow: none; border-color: var(--vt-olive); }
+.vt-node.is-targeted > .vt-summary { background: var(--vt-olive-bg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .vt-edge { animation: none; stroke-dashoffset: 0; }
+  .vt-node-g { animation: none; opacity: 1; }
+}
+
+/* ---------- domains ---------- */
+.vt-branches { display: flex; flex-direction: column; gap: 2rem; }
+.vt-domain { display: flex; flex-direction: column; gap: 0.6rem; }
+.vt-domain__head { padding-block-end: 0.25rem; border-block-end: 1px solid var(--vt-line); }
+.vt-h2 { font-family: var(--vt-display); font-weight: 500; font-size: 1.25rem; margin: 0 0 0.2rem; color: var(--vt-olive-deep); }
+.vt-domain__blurb { font-size: 0.85rem; color: var(--vt-ink-3); padding-block-end: 0.5rem; }
+.vt-domain__nodes { display: flex; flex-direction: column; gap: 0.6rem; }
+
+/* ---------- node ---------- */
+.vt-node {
+  background: var(--vt-surface); border: 1px solid var(--vt-line);
+  border-inline-start: 3px solid var(--vt-olive); scroll-margin-block-start: 1.5rem;
+}
+.vt-node--wide { max-width: var(--vt-maxw); margin: 0 auto 1.6rem; }
+.vt-node--override { border-inline-start-color: var(--vt-alert); }
+.vt-node--outcome { border-inline-start-color: var(--vt-dim); }
+.vt-node--developing { border-inline-start-color: var(--vt-line-2); }
+.vt-node[open] { border-color: var(--vt-line-2); }
+.vt-node[open] { border-inline-start-color: var(--vt-olive); }
+.vt-node--override[open] { border-inline-start-color: var(--vt-alert); }
+
+.vt-summary {
+  display: grid; grid-template-columns: auto 1fr auto auto; gap: 0.8rem;
+  align-items: center; padding: 0.9rem 1rem; cursor: pointer; list-style: none;
+}
+.vt-summary::-webkit-details-marker { display: none; }
+.vt-summary:hover { background: var(--vt-sunk); }
+.vt-summary:focus-visible { outline: 2px solid var(--vt-olive); outline-offset: -2px; }
+.vt-titles { display: flex; flex-direction: column; gap: 0.05rem; min-width: 0; }
+.vt-name { font-family: var(--vt-display); font-size: 1.1rem; line-height: 1.25; color: var(--vt-olive-deep); }
+.vt-tagline { font-size: 0.85rem; color: var(--vt-ink-3); }
+.vt-hebrew { font-family: var(--vt-display); font-size: 1rem; color: var(--vt-olive); white-space: nowrap; }
+.vt-chev {
+  width: 7px; height: 7px;
+  border-inline-end: 1.5px solid var(--vt-ink-3); border-block-end: 1.5px solid var(--vt-ink-3);
+  transform: rotate(45deg) translateY(-2px); transition: transform 0.15s ease;
+}
+.vt-node[open] .vt-chev { transform: rotate(225deg) translateY(-2px); }
+@media (prefers-reduced-motion: reduce) { .vt-chev { transition: none; } }
+
+/* ---------- panel ---------- */
+.vt-panel { padding: 0 1rem 1.3rem; display: flex; flex-direction: column; gap: 1.3rem; border-block-start: 1px solid var(--vt-line); }
+.vt-panel > * { max-width: 78ch; }
+.vt-block { display: flex; flex-direction: column; gap: 0.55rem; padding-block-start: 1rem; }
+.vt-h4 { margin: 0; }
+.vt-panel p { font-size: 0.9rem; color: var(--vt-ink-2); max-width: 74ch; }
+.vt-lead { color: var(--vt-ink); }
+.vt-why {
+  font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--vt-ink-3); margin-inline-end: 0.4rem;
+}
+html[lang="he"] .vt-why { text-transform: none; letter-spacing: 0.06em; }
+.vt-misleads { border-inline-start: 2px solid var(--vt-line-2); padding-inline-start: 0.75rem; }
+.vt-note { font-size: 0.85rem; color: var(--vt-ink-3); font-style: italic; }
+.vt-none { color: var(--vt-ink); }
+
+.vt-related { margin: 0.25rem 0 0; display: flex; flex-direction: column; gap: 0.45rem; }
+.vt-related div { display: grid; grid-template-columns: minmax(130px, 190px) 1fr; gap: 0.75rem; }
+@media (max-width: 640px) { .vt-related div { grid-template-columns: 1fr; gap: 0.1rem; } }
+.vt-related dt { font-size: 0.85rem; color: var(--vt-ink); font-weight: 500; }
+.vt-related dd { margin: 0; font-size: 0.85rem; color: var(--vt-ink-2); }
+.vt-he { font-family: var(--vt-display); color: var(--vt-olive); font-weight: 400; }
+
+.vt-sources { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+.vt-source { display: flex; flex-direction: column; gap: 0.3rem; padding-inline-start: 0.85rem; border-inline-start: 2px solid var(--vt-olive-bg); }
+.vt-source__ref { font-size: 0.8rem; color: var(--vt-olive); text-decoration: none; border-block-end: 1px solid currentColor; align-self: flex-start; }
+.vt-source__ref:hover { color: var(--vt-ink); }
+.vt-source__says { font-size: 0.9rem; }
+.vt-source__why { font-size: 0.85rem; color: var(--vt-ink-3); }
+
+.vt-positions { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.vt-positions li { display: grid; grid-template-columns: minmax(150px, 230px) 1fr; gap: 0.9rem; }
+@media (max-width: 720px) { .vt-positions li { grid-template-columns: 1fr; gap: 0.1rem; } }
+.vt-who { font-size: 0.85rem; font-weight: 500; color: var(--vt-ink); }
+.vt-holds { font-size: 0.875rem; color: var(--vt-ink-2); }
+
+.vt-findings { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+.vt-finding { display: flex; flex-direction: column; gap: 0.25rem; align-items: flex-start; }
+.vt-finding__claim { font-size: 0.9rem; }
+.vt-finding__src { font-size: 0.8rem; color: var(--vt-ink-3); }
+.vt-finding__src a { color: var(--vt-olive); }
+
+/* Strength of evidence — a semantic scale, drawn from the line
+   palettes so it stays inside the brand's own colour family. */
+.vt-pill {
+  font-size: 0.625rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.15rem 0.5rem; border: 1px solid; border-radius: 999px; cursor: help;
+}
+html[lang="he"] .vt-pill { text-transform: none; letter-spacing: 0.04em; }
+.vt-pill--established { color: #46523A; border-color: #A8B598; background: #E8EDDC; }
+.vt-pill--moderate    { color: #3F5A63; border-color: #9DB4B8; background: #E4EAEA; }
+.vt-pill--preliminary { color: #5C5347; border-color: #C9AE86; background: #EFE7D5; }
+.vt-pill--contested   { color: #A8563C; border-color: #D9AE96; background: #F5E9DF; }
+.vt-pill--unsupported { color: #8C2231; border-color: #D9A79E; background: #F7EAE6; }
+
+.vt-block--gap p { color: var(--vt-ink); }
+.vt-claim { background: var(--vt-olive-bg); padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.3rem; }
+.vt-claim p { font-size: 0.95rem; color: var(--vt-ink); font-family: var(--vt-display); line-height: 1.55; max-width: 74ch; }
+
+/* ---------- aside + footer ---------- */
+.vt-aside { margin-block-start: 2.5rem; padding-block-start: 2rem; border-block-start: 1px solid var(--vt-line); }
+.vt-foot {
+  max-width: var(--vt-maxw); margin: 3rem auto 0; padding-block-start: 1.1rem;
+  border-block-start: 1px solid var(--vt-line); display: flex; flex-direction: column; gap: 0.3rem;
+}
+.vt-foot p { font-size: 0.8rem; color: var(--vt-ink-3); }
+.vt-foot__date { font-variant-numeric: tabular-nums; }
+
+/* ---------- the descent ----------
+   Light enters at the top and passes down through each vessel to the one
+   below: that is the idea the diagram is drawn from, so it is what the
+   motion shows. One pass takes about nine seconds and then the drawing
+   rests, because something that never stops moving cannot be read. */
+.vt-flow {
+  stroke: var(--vt-olive-deep);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0;
+  animation-name: vt-flow;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.35, 1);
+  animation-iteration-count: infinite;
+  pointer-events: none;
+}
+/* The cycle is longer than the travel, so each channel fires once and then
+   waits — the delay is set per channel from how far down it starts. */
+.vt-sefirot.is-flowing .vt-flow {
+  animation-duration: var(--vt-cycle, 9000ms) !important;
+}
+@keyframes vt-flow {
+  0%   { stroke-dashoffset: var(--flow-len); opacity: 0; }
+  3%   { opacity: 0.85; }
+  17%  { stroke-dashoffset: 0; opacity: 0.85; }
+  22%  { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* Hovering a vessel lights its own channels. Everything else recedes rather
+   than vanishing — the shape of the whole is part of what is being shown. */
+.vt-sefirot.is-focused .vt-edge { opacity: 0.16; }
+.vt-sefirot.is-focused .vt-flow { opacity: 0; animation-play-state: paused; }
+.vt-sefirot.is-focused .vt-node-g { opacity: 0.38; }
+.vt-sefirot.is-focused .vt-edge.is-lit {
+  opacity: 1; stroke: var(--vt-olive-deep); stroke-width: 2.6; stroke-dasharray: none;
+}
+.vt-sefirot.is-focused .vt-node-g.is-lit,
+.vt-sefirot.is-focused .vt-node-g.is-near { opacity: 1; }
+.vt-node-g.is-lit .vt-node-c {
+  fill: var(--vt-olive-bg); stroke-width: 3;
+  filter: drop-shadow(0 0 6px rgba(92, 107, 74, 0.45));
+}
+.vt-node-g.is-near .vt-node-c { stroke-width: 2.2; }
+.vt-edge, .vt-node-g { transition: opacity 0.22s ease, stroke-width 0.22s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vt-flow { display: none; }
+}
+.vt-tree-cap--note { margin-block-start: 0.5rem; font-size: 0.74rem; opacity: 0.85; }
+.vt-tree-cap--note [lang="he"] { font-family: 'David Libre', Georgia, serif; }

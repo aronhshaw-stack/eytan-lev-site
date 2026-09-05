@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundation · יסוד · Eytan Lev</title>
+<meta name="description" content="Foundation (Yesod) — the Eytan Lev line every other line is built on.">
+<script>(function(){var l='en';try{l=localStorage.getItem('eyl_lang')||l}catch(e){}document.documentElement.lang=l;document.documentElement.dir=l==='he'?'rtl':'ltr';})();</script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-70 -70 140 140'><g fill='none' stroke='%235C6B4A' stroke-width='12' stroke-linejoin='round' stroke-linecap='round'><path d='M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z'/><path d='M-33.5,0 L-8,0 L0,-16 L8,0 L33.5,0'/></g></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=David+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body style="--line-bg:#46523A; --line-fg:#A8B598; --line-accent:#46523A; --line-eyebrow:#5C6B4A; --line-input:#5C6B4A; --line-pale:#F4F0E6;">
+
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="Eytan Lev">
+    <svg class="brand-mark" viewBox="-64 -64 128 128" aria-hidden="true">
+      <path d="M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z"/>
+      <path d="M-33.5,0 L-15,0 L-8,-16 L1,16 L9,0 L33.5,0"/>
+    </svg>
+    <span class="brand-name"><span class="latin-caps" data-lang="en">Eytan Lev</span><span data-lang="he">איתן לב</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Sections">
+    <a href="roots.html"><span data-lang="en">Roots</span><span data-lang="he">השורשים</span></a>
+    <a href="values.html"><span data-lang="en">Values</span><span data-lang="he">הערכים</span></a>
+    <a href="produce.html"><span data-lang="en">Shelf</span><span data-lang="he">המדף</span></a>
+    <a href="shop.html"><span data-lang="en">Shop</span><span data-lang="he">חנות</span></a>
+    <a href="from-here.html"><span data-lang="en">From Here</span><span data-lang="he">מכאן</span></a>
+    <a href="symbols.html"><span data-lang="en">Symbols</span><span data-lang="he">הסמלים</span></a>
+    <a href="journal.html"><span data-lang="en">Journal</span><span data-lang="he">היומן</span></a>
+    <a href="faq.html"><span data-lang="en">FAQ</span><span data-lang="he">שאלות נפוצות</span></a>
+    <a href="contact.html"><span data-lang="en">Contact</span><span data-lang="he">צור קשר</span></a>
+  </nav>
+  <button type="button" class="lang-toggle"><span data-lang="en">עברית</span><span data-lang="he">English</span></button>
+</header>
+
+<main>
+
+  <section class="line-hero">
+    <svg viewBox="-36 -36 72 72" aria-hidden="true">
+      <circle cx="0" cy="-8" r="17"/>
+      <path d="M0,9 L0,26"/>
+      <path d="M0,26 C-7,30 -12,32 -18,34"/>
+      <path d="M0,26 C7,30 12,32 18,34"/>
+    </svg>
+    <p class="name-big"><span class="latin-caps-center" data-lang="en">Foundation</span><span data-lang="he">יסוד</span></p>
+    <p class="name-small"><span data-lang="en">Yesod</span><span data-lang="he">Foundation</span></p>
+  </section>
+
+  <section class="line-statement">
+    <p>
+      <span class="latin-caps-center" data-lang="en">The foundation every other line is built on.</span>
+      <span data-lang="he">התשתית שעליה כל שאר הקווים בנויים.</span>
+    </p>
+  </section>
+
+  <section class="line-idea">
+    <p>
+      <span data-lang="en">The tree of life doesn't grow fast. It grows right, year after year, because of the root beneath it.</span>
+      <span data-lang="he">עץ החיים לא צומח מהר. הוא צומח נכון, שנה אחר שנה, בזכות השורש שמתחתיו.</span>
+    </p>
+    <p>
+      <!-- VERIFY: Rambam on daily habit — traditional attribution unchecked -->
+      <span data-lang="en">What we call a "foundation supplement," Maimonides called a daily habit.</span>
+      <span data-lang="he">מה שאנחנו קוראים "תוסף בסיס", הרמב"ם קרא לו הרגל יומי.</span>
+    </p>
+  </section>
+
+  <section class="line-planned">
+    <p class="eyebrow"><span data-lang="en">Planned</span><span data-lang="he">בתכנון</span></p>
+    <h2><span class="latin-caps" data-lang="en">What we're building</span><span data-lang="he">מה אנחנו בונים</span></h2>
+
+    <!-- No multivitamin (BRAND.md §5/§6): line follows the doc's own list — EVOO, olive leaf, daily -->
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="icon-wrap">
+          <svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M-26,22 C-12,12 4,-6 20,-24"/><g fill="#5C6B4A" stroke="none"><ellipse cx="-18" cy="10" rx="8" ry="4" transform="rotate(-50,-18,10)"/><ellipse cx="-6" cy="0" rx="8" ry="4" transform="rotate(-50,-6,0)"/><ellipse cx="6" cy="-12" rx="8" ry="4" transform="rotate(-50,6,-12)"/><ellipse cx="-10" cy="19" rx="8" ry="4" transform="rotate(12,-10,19)"/><circle cx="-1" cy="9" r="4"/></g></svg>
+        </div>
+        <div class="info">
+          <h3><span data-lang="en">Cold-pressed olive oil</span><span data-lang="he">שמן זית כתית</span></h3>
+          <p class="desc"><span data-lang="en">Israeli-grown source.</span><span data-lang="he">כבישה קרה, מקור ישראלי.</span></p>
+          <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="icon-wrap">
+          <svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M-26,22 C-12,12 4,-6 20,-24"/><g fill="#5C6B4A" stroke="none"><ellipse cx="-18" cy="10" rx="8" ry="4" transform="rotate(-50,-18,10)"/><ellipse cx="-6" cy="0" rx="8" ry="4" transform="rotate(-50,-6,0)"/><ellipse cx="6" cy="-12" rx="8" ry="4" transform="rotate(-50,6,-12)"/><ellipse cx="-10" cy="19" rx="8" ry="4" transform="rotate(12,-10,19)"/><circle cx="-1" cy="9" r="4"/></g></svg>
+        </div>
+        <div class="info">
+          <h3><span data-lang="en">Olive leaf extract</span><span data-lang="he">תמצית עלי זית</span></h3>
+          <p class="desc"><span data-lang="en">From Israeli groves.</span><span data-lang="he">מזיתי הארץ.</span></p>
+          <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="icon-wrap">
+          <svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M-26,22 C-12,12 4,-6 20,-24"/><g fill="#5C6B4A" stroke="none"><ellipse cx="-18" cy="10" rx="8" ry="4" transform="rotate(-50,-18,10)"/><ellipse cx="-6" cy="0" rx="8" ry="4" transform="rotate(-50,-6,0)"/><ellipse cx="6" cy="-12" rx="8" ry="4" transform="rotate(-50,6,-12)"/><ellipse cx="-10" cy="19" rx="8" ry="4" transform="rotate(12,-10,19)"/><circle cx="-1" cy="9" r="4"/></g></svg>
+        </div>
+        <div class="info">
+          <h3><span data-lang="en">Daily magnesium</span><span data-lang="he">מגנזיום יומי</span></h3>
+          <p class="desc"><span data-lang="en">For muscle and nerve.</span><span data-lang="he">לשריר ולעצב.</span></p>
+          <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="waitlist waitlist--line">
+    <h2>
+      <span class="latin-caps-center" data-lang="en">Foundation isn't selling yet.</span>
+      <span data-lang="he">יסוד עוד לא נמכר.</span>
+    </h2>
+    <p class="sub">
+      <span data-lang="en">Join the list for the Foundation line specifically.</span>
+      <span data-lang="he">הצטרפו לרשימה של קו יסוד באופן ספציפי.</span>
+    </p>
+    <form class="waitlist-form">
+      <label class="visually-hidden" for="wl-foundation">Email</label>
+      <input id="wl-foundation" type="email" required placeholder="name@example.com">
+      <button type="submit"><span data-lang="en">Keep me posted</span><span data-lang="he">עדכנו אותי</span></button>
+    </form>
+    <p class="form-note" role="status" hidden><span data-lang="en">Thanks — we'll let you know when Foundation launches.</span><span data-lang="he">תודה. נעדכן אתכם כשיסוד יושק.</span></p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <a class="footer-back-link" href="values.html"><span data-lang="en">← Back to Values</span><span data-lang="he">→ חזרה לערכים</span></a>
+  <p class="footer-meta footer-meta--spaced"><span data-lang="en">© 2026 Eytan Lev · Israel</span><span data-lang="he">© 2026 איתן לב · ישראל</span></p>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

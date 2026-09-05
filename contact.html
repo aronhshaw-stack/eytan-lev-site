@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact · Eytan Lev · איתן לב</title>
+<meta name="description" content="Get in touch with Eytan Lev — questions, press, or a grower who belongs in this story.">
+<script>(function(){var l='en';try{l=localStorage.getItem('eyl_lang')||l}catch(e){}document.documentElement.lang=l;document.documentElement.dir=l==='he'?'rtl':'ltr';})();</script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-70 -70 140 140'><g fill='none' stroke='%235C6B4A' stroke-width='12' stroke-linejoin='round' stroke-linecap='round'><path d='M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z'/><path d='M-33.5,0 L-8,0 L0,-16 L8,0 L33.5,0'/></g></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=David+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="Eytan Lev">
+    <svg class="brand-mark" viewBox="-64 -64 128 128" aria-hidden="true">
+      <path d="M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z"/>
+      <path d="M-33.5,0 L-15,0 L-8,-16 L1,16 L9,0 L33.5,0"/>
+    </svg>
+    <span class="brand-name"><span class="latin-caps" data-lang="en">Eytan Lev</span><span data-lang="he">איתן לב</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Sections">
+    <a href="roots.html"><span data-lang="en">Roots</span><span data-lang="he">השורשים</span></a>
+    <a href="values.html"><span data-lang="en">Values</span><span data-lang="he">הערכים</span></a>
+    <a href="produce.html"><span data-lang="en">Shelf</span><span data-lang="he">המדף</span></a>
+    <a href="shop.html"><span data-lang="en">Shop</span><span data-lang="he">חנות</span></a>
+    <a href="from-here.html"><span data-lang="en">From Here</span><span data-lang="he">מכאן</span></a>
+    <a href="symbols.html"><span data-lang="en">Symbols</span><span data-lang="he">הסמלים</span></a>
+    <a href="journal.html"><span data-lang="en">Journal</span><span data-lang="he">היומן</span></a>
+    <a href="faq.html"><span data-lang="en">FAQ</span><span data-lang="he">שאלות נפוצות</span></a>
+    <a href="contact.html" class="active"><span data-lang="en">Contact</span><span data-lang="he">צור קשר</span></a>
+  </nav>
+  <button type="button" class="lang-toggle"><span data-lang="en">עברית</span><span data-lang="he">English</span></button>
+</header>
+
+<main>
+
+  <section class="page-head measure" style="text-align: center; padding-block-start: clamp(3.5rem, 9vw, 6rem);">
+    <p class="eyebrow"><span data-lang="en">Contact</span><span data-lang="he">צור קשר</span></p>
+    <h1 class="page-title" style="margin-inline: auto;">
+      <span class="latin-caps-center" data-lang="en">Get in touch</span>
+      <span data-lang="he">נשמח לשמוע מכם</span>
+    </h1>
+    <p class="page-intro" style="margin-inline: auto; max-width: 50ch;">
+      <span data-lang="en">Questions, press, or a grower who belongs in this story — write to us.</span>
+      <span data-lang="he">שאלות, תקשורת, או מגדל שמקומו בסיפור הזה — כתבו לנו.</span>
+    </p>
+  </section>
+
+  <section style="padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 5vw, 4rem) clamp(5rem, 12vw, 7rem);">
+    <!-- TODO: wire to a real backend / email service before launch -->
+    <form class="contact-form">
+      <div>
+        <label for="c-name"><span data-lang="en">Name</span><span data-lang="he">שם</span></label>
+        <input id="c-name" type="text" required>
+      </div>
+      <div>
+        <label for="c-email"><span data-lang="en">Email</span><span data-lang="he">אימייל</span></label>
+        <input id="c-email" type="email" required>
+      </div>
+      <div>
+        <label for="c-msg"><span data-lang="en">Message</span><span data-lang="he">הודעה</span></label>
+        <textarea id="c-msg" rows="5" required></textarea>
+      </div>
+      <button type="submit"><span data-lang="en">Send</span><span data-lang="he">שליחה</span></button>
+      <p class="form-note contact-note" role="status" hidden>
+        <span data-lang="en">Thanks — we'll get back to you soon.</span>
+        <span data-lang="he">תודה. נחזור אליכם בהקדם.</span>
+      </p>
+    </form>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <svg class="footer-mark" viewBox="-64 -64 128 128" aria-hidden="true">
+    <path d="M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z"/>
+    <path d="M-33.5,0 L-15,0 L-8,-16 L1,16 L9,0 L33.5,0"/>
+  </svg>
+  <p class="footer-brand"><span class="latin-caps-center" data-lang="en">Eytan Lev</span><span data-lang="he">איתן לב</span></p>
+  <p class="footer-meta"><span data-lang="en">© 2026 Eytan Lev · Israel</span><span data-lang="he">© 2026 איתן לב · ישראל</span></p>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

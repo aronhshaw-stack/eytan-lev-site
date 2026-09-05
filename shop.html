@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop · Eytan Lev · איתן לב</title>
+<meta name="description" content="Every line, one page — the Eytan Lev catalog taking shape. Nothing ships yet.">
+<script>(function(){var l='en';try{l=localStorage.getItem('eyl_lang')||l}catch(e){}document.documentElement.lang=l;document.documentElement.dir=l==='he'?'rtl':'ltr';})();</script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-70 -70 140 140'><g fill='none' stroke='%235C6B4A' stroke-width='12' stroke-linejoin='round' stroke-linecap='round'><path d='M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z'/><path d='M-33.5,0 L-8,0 L0,-16 L8,0 L33.5,0'/></g></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=David+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="Eytan Lev">
+    <svg class="brand-mark" viewBox="-64 -64 128 128" aria-hidden="true">
+      <path d="M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z"/>
+      <path d="M-33.5,0 L-15,0 L-8,-16 L1,16 L9,0 L33.5,0"/>
+    </svg>
+    <span class="brand-name"><span class="latin-caps" data-lang="en">Eytan Lev</span><span data-lang="he">איתן לב</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Sections">
+    <a href="roots.html"><span data-lang="en">Roots</span><span data-lang="he">השורשים</span></a>
+    <a href="values.html"><span data-lang="en">Values</span><span data-lang="he">הערכים</span></a>
+    <a href="produce.html"><span data-lang="en">Shelf</span><span data-lang="he">המדף</span></a>
+    <a href="shop.html" class="active"><span data-lang="en">Shop</span><span data-lang="he">חנות</span></a>
+    <a href="from-here.html"><span data-lang="en">From Here</span><span data-lang="he">מכאן</span></a>
+    <a href="symbols.html"><span data-lang="en">Symbols</span><span data-lang="he">הסמלים</span></a>
+    <a href="journal.html"><span data-lang="en">Journal</span><span data-lang="he">היומן</span></a>
+    <a href="faq.html"><span data-lang="en">FAQ</span><span data-lang="he">שאלות נפוצות</span></a>
+    <a href="contact.html"><span data-lang="en">Contact</span><span data-lang="he">צור קשר</span></a>
+  </nav>
+  <button type="button" class="lang-toggle"><span data-lang="en">עברית</span><span data-lang="he">English</span></button>
+</header>
+
+<main>
+  <!-- No cart on this page by design: BRAND.md hard rule 8 — a cart that
+       cannot take money is removed. The catalog ends in a waitlist instead. -->
+
+  <section class="page-head measure" style="padding-block-start: clamp(2.5rem, 7vw, 4rem);">
+    <p class="eyebrow"><span data-lang="en">Shop</span><span data-lang="he">חנות</span></p>
+    <h1 class="page-title">
+      <span class="latin-caps" data-lang="en">Every line, one page</span>
+      <span data-lang="he">כל הקווים, עמוד אחד</span>
+    </h1>
+    <p class="page-intro">
+      <span data-lang="en">Nothing here ships yet — this is the catalog taking shape, line by line. When something is real, it will appear here first.</span>
+      <span data-lang="he">שום דבר כאן עוד לא נשלח — זה הקטלוג בתהליך בנייה, קו אחרי קו. כשמשהו יהיה אמיתי, הוא יופיע כאן קודם.</span>
+    </p>
+  </section>
+
+  <section class="shop-toolbar">
+    <label class="visually-hidden" for="shop-search">Search products</label>
+    <input id="shop-search" type="text" class="shop-search" placeholder="Search products… · חיפוש מוצרים…">
+    <div class="shop-filters">
+      <button type="button" class="shop-filter active" data-line="all"><span data-lang="en">All</span><span data-lang="he">הכל</span></button>
+      <button type="button" class="shop-filter" data-line="foundation"><span data-lang="en">Foundation</span><span data-lang="he">יסוד</span></button>
+      <button type="button" class="shop-filter" data-line="heart"><span data-lang="en">Heart</span><span data-lang="he">לב</span></button>
+      <button type="button" class="shop-filter" data-line="hydration"><span data-lang="en">Hydration</span><span data-lang="he">מים</span></button>
+      <button type="button" class="shop-filter" data-line="wholefood"><span data-lang="en">Whole Food</span><span data-lang="he">מזון שלם</span></button>
+      <button type="button" class="shop-filter" data-line="energy"><span data-lang="en">Energy</span><span data-lang="he">אנרגיה</span></button>
+      <button type="button" class="shop-filter" data-line="sleep"><span data-lang="en">Sleep</span><span data-lang="he">מנוחה</span></button>
+    </div>
+  </section>
+
+  <section class="shop-grid-section">
+    <div class="product-grid" data-shop-grid>
+
+      <!-- Foundation (no multivitamin — BRAND.md §5/§6) -->
+      <div class="product-tile" data-line="foundation" data-search="cold-pressed olive oil israeli-grown source שמן זית כתית כבישה קרה מקור ישראלי" style="--line-bg:#46523A; --line-fg:#A8B598;">
+        <p class="shop-line-label"><span data-lang="en">Foundation</span><span data-lang="he">יסוד</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M-26,22 C-12,12 4,-6 20,-24"/><g fill="#5C6B4A" stroke="none"><ellipse cx="-18" cy="10" rx="8" ry="4" transform="rotate(-50,-18,10)"/><ellipse cx="-6" cy="0" rx="8" ry="4" transform="rotate(-50,-6,0)"/><ellipse cx="6" cy="-12" rx="8" ry="4" transform="rotate(-50,6,-12)"/><ellipse cx="-10" cy="19" rx="8" ry="4" transform="rotate(12,-10,19)"/><circle cx="-1" cy="9" r="4"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Cold-pressed olive oil</span><span data-lang="he">שמן זית כתית</span></h3>
+            <p class="desc"><span data-lang="en">Israeli-grown source.</span><span data-lang="he">כבישה קרה, מקור ישראלי.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="foundation" data-search="olive leaf extract israeli groves תמצית עלי זית מזיתי הארץ" style="--line-bg:#46523A; --line-fg:#A8B598;">
+        <p class="shop-line-label"><span data-lang="en">Foundation</span><span data-lang="he">יסוד</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M-26,22 C-12,12 4,-6 20,-24"/><g fill="#5C6B4A" stroke="none"><ellipse cx="-18" cy="10" rx="8" ry="4" transform="rotate(-50,-18,10)"/><ellipse cx="-6" cy="0" rx="8" ry="4" transform="rotate(-50,-6,0)"/><ellipse cx="6" cy="-12" rx="8" ry="4" transform="rotate(-50,6,-12)"/><ellipse cx="-10" cy="19" rx="8" ry="4" transform="rotate(12,-10,19)"/><circle cx="-1" cy="9" r="4"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Olive leaf extract</span><span data-lang="he">תמצית עלי זית</span></h3>
+            <p class="desc"><span data-lang="en">From Israeli groves.</span><span data-lang="he">מזיתי הארץ.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="foundation" data-search="daily magnesium muscle nerve מגנזיום יומי לשריר ולעצב" style="--line-bg:#46523A; --line-fg:#A8B598;">
+        <p class="shop-line-label"><span data-lang="en">Foundation</span><span data-lang="he">יסוד</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M-26,22 C-12,12 4,-6 20,-24"/><g fill="#5C6B4A" stroke="none"><ellipse cx="-18" cy="10" rx="8" ry="4" transform="rotate(-50,-18,10)"/><ellipse cx="-6" cy="0" rx="8" ry="4" transform="rotate(-50,-6,0)"/><ellipse cx="6" cy="-12" rx="8" ry="4" transform="rotate(-50,6,-12)"/><ellipse cx="-10" cy="19" rx="8" ry="4" transform="rotate(12,-10,19)"/><circle cx="-1" cy="9" r="4"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Daily magnesium</span><span data-lang="he">מגנזיום יומי</span></h3>
+            <p class="desc"><span data-lang="en">For muscle and nerve.</span><span data-lang="he">לשריר ולעצב.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heart -->
+      <div class="product-tile" data-line="heart" data-search="pomegranate extract polyphenol תמצית רימון ריכוז פוליפנולים" style="--line-bg:#5E1520; --line-fg:#D9A79E;">
+        <p class="shop-line-label"><span data-lang="en">Heart</span><span data-lang="he">לב</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><circle cx="0" cy="6" r="21"/><path d="M-8,-13 L-6,-26 L-2,-17 L0,-28 L2,-17 L6,-26 L8,-13"/><g fill="#8C2231" stroke="none"><circle cx="-7" cy="2" r="2.6"/><circle cx="7" cy="2" r="2.6"/><circle cx="0" cy="11" r="2.6"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Pomegranate extract</span><span data-lang="he">תמצית רימון</span></h3>
+            <p class="desc"><span data-lang="en">Natural polyphenol concentrate.</span><span data-lang="he">ריכוז פוליפנולים טבעי.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="heart" data-search="omega-3 fish oil אומגה 3 שמן דגים" style="--line-bg:#5E1520; --line-fg:#D9A79E;">
+        <p class="shop-line-label"><span data-lang="en">Heart</span><span data-lang="he">לב</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><circle cx="0" cy="6" r="21"/><path d="M-8,-13 L-6,-26 L-2,-17 L0,-28 L2,-17 L6,-26 L8,-13"/><g fill="#8C2231" stroke="none"><circle cx="-7" cy="2" r="2.6"/><circle cx="7" cy="2" r="2.6"/><circle cx="0" cy="11" r="2.6"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Omega-3</span><span data-lang="he">אומגה 3</span></h3>
+            <p class="desc"><span data-lang="en">From quality fish oil.</span><span data-lang="he">משמן דגים איכותי.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="heart" data-search="coenzyme q10 studied heart function קואנזים נחקר לתפקוד הלב" style="--line-bg:#5E1520; --line-fg:#D9A79E;">
+        <p class="shop-line-label"><span data-lang="en">Heart</span><span data-lang="he">לב</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><circle cx="0" cy="6" r="21"/><path d="M-8,-13 L-6,-26 L-2,-17 L0,-28 L2,-17 L6,-26 L8,-13"/><g fill="#8C2231" stroke="none"><circle cx="-7" cy="2" r="2.6"/><circle cx="7" cy="2" r="2.6"/><circle cx="0" cy="11" r="2.6"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Coenzyme Q10</span><span data-lang="he">קואנזים Q10</span></h3>
+            <p class="desc"><span data-lang="en">Studied for heart function.</span><span data-lang="he">נחקר לתפקוד הלב.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hydration -->
+      <div class="product-tile" data-line="hydration" data-search="electrolyte concentrate sugar-free mineral תרכיז אלקטרוליטים ללא סוכר מאזן מינרלים" style="--line-bg:#2C424A; --line-fg:#9DB4B8;">
+        <p class="shop-line-label"><span data-lang="en">Hydration</span><span data-lang="he">מים</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M0,-26 C12,-10 20,0 20,8 A20,20 0 0 1 -20,8 C-20,0 -12,-10 0,-26 Z"/><path d="M-11,10 C-6,4 -4,16 1,10 C4,6 7,10 10,10"/></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Electrolyte concentrate</span><span data-lang="he">תרכיז אלקטרוליטים</span></h3>
+            <p class="desc"><span data-lang="en">Sugar-free, for mineral balance.</span><span data-lang="he">ללא סוכר, למאזן מינרלים.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="hydration" data-search="branded glass bottle reusable בקבוק זכוכית ממותג שימוש חוזר" style="--line-bg:#2C424A; --line-fg:#9DB4B8;">
+        <p class="shop-line-label"><span data-lang="en">Hydration</span><span data-lang="he">מים</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M0,-26 C12,-10 20,0 20,8 A20,20 0 0 1 -20,8 C-20,0 -12,-10 0,-26 Z"/><path d="M-11,10 C-6,4 -4,16 1,10 C4,6 7,10 10,10"/></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Branded glass bottle</span><span data-lang="he">בקבוק זכוכית ממותג</span></h3>
+            <p class="desc"><span data-lang="en">Reusable, precise measure.</span><span data-lang="he">שימוש חוזר, מידה מדויקת.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="hydration" data-search="mineral tablets fast-dissolving טבליות מינרלים המסה מהירה" style="--line-bg:#2C424A; --line-fg:#9DB4B8;">
+        <p class="shop-line-label"><span data-lang="en">Hydration</span><span data-lang="he">מים</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M0,-26 C12,-10 20,0 20,8 A20,20 0 0 1 -20,8 C-20,0 -12,-10 0,-26 Z"/><path d="M-11,10 C-6,4 -4,16 1,10 C4,6 7,10 10,10"/></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Mineral tablets</span><span data-lang="he">טבליות מינרלים</span></h3>
+            <p class="desc"><span data-lang="en">Fast-dissolving in water.</span><span data-lang="he">להמסה מהירה במים.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Whole Food -->
+      <div class="product-tile" data-line="wholefood" data-search="whole grain flour stone-milled קמח דגן מלא טחינת אבן" style="--line-bg:#33302A; --line-fg:#C9AE86;">
+        <p class="shop-line-label"><span data-lang="en">Whole Food</span><span data-lang="he">מזון שלם</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M0,32 L0,-10"/><path d="M0,24 C-8,20 -14,22 -18,26"/><path d="M0,24 C8,20 14,22 18,26"/><g fill="#33302A" stroke="none"><ellipse cx="-8" cy="12" rx="7" ry="3.5" transform="rotate(-40,-8,12)"/><ellipse cx="8" cy="12" rx="7" ry="3.5" transform="rotate(40,8,12)"/><ellipse cx="-8" cy="2" rx="7" ry="3.5" transform="rotate(-40,-8,2)"/><ellipse cx="8" cy="2" rx="7" ry="3.5" transform="rotate(40,8,2)"/><ellipse cx="-8" cy="-8" rx="7" ry="3.5" transform="rotate(-40,-8,-8)"/><ellipse cx="8" cy="-8" rx="7" ry="3.5" transform="rotate(40,8,-8)"/><ellipse cx="0" cy="-19" rx="3.5" ry="8"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Whole grain flour</span><span data-lang="he">קמח דגן מלא</span></h3>
+            <p class="desc"><span data-lang="en">Stone-milled, Israeli-grown.</span><span data-lang="he">טחינת אבן, ישראלי.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="wholefood" data-search="seven-species granola no added sugar גרנולה שבעת המינים ללא סוכר מוסף" style="--line-bg:#33302A; --line-fg:#C9AE86;">
+        <p class="shop-line-label"><span data-lang="en">Whole Food</span><span data-lang="he">מזון שלם</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M0,32 L0,-10"/><path d="M0,24 C-8,20 -14,22 -18,26"/><path d="M0,24 C8,20 14,22 18,26"/><g fill="#33302A" stroke="none"><ellipse cx="-8" cy="12" rx="7" ry="3.5" transform="rotate(-40,-8,12)"/><ellipse cx="8" cy="12" rx="7" ry="3.5" transform="rotate(40,8,12)"/><ellipse cx="-8" cy="2" rx="7" ry="3.5" transform="rotate(-40,-8,2)"/><ellipse cx="8" cy="2" rx="7" ry="3.5" transform="rotate(40,8,2)"/><ellipse cx="-8" cy="-8" rx="7" ry="3.5" transform="rotate(-40,-8,-8)"/><ellipse cx="8" cy="-8" rx="7" ry="3.5" transform="rotate(40,8,-8)"/><ellipse cx="0" cy="-19" rx="3.5" ry="8"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Seven-species granola</span><span data-lang="he">גרנולה שבעת המינים</span></h3>
+            <p class="desc"><span data-lang="en">No added sugar.</span><span data-lang="he">ללא סוכר מוסף.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="wholefood" data-search="date honey silan דבש תמרים סילאן טהור" style="--line-bg:#33302A; --line-fg:#C9AE86;">
+        <p class="shop-line-label"><span data-lang="en">Whole Food</span><span data-lang="he">מזון שלם</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M0,32 L0,-10"/><path d="M0,24 C-8,20 -14,22 -18,26"/><path d="M0,24 C8,20 14,22 18,26"/><g fill="#33302A" stroke="none"><ellipse cx="-8" cy="12" rx="7" ry="3.5" transform="rotate(-40,-8,12)"/><ellipse cx="8" cy="12" rx="7" ry="3.5" transform="rotate(40,8,12)"/><ellipse cx="-8" cy="2" rx="7" ry="3.5" transform="rotate(-40,-8,2)"/><ellipse cx="8" cy="2" rx="7" ry="3.5" transform="rotate(40,8,2)"/><ellipse cx="-8" cy="-8" rx="7" ry="3.5" transform="rotate(-40,-8,-8)"/><ellipse cx="8" cy="-8" rx="7" ry="3.5" transform="rotate(40,8,-8)"/><ellipse cx="0" cy="-19" rx="3.5" ry="8"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Date honey</span><span data-lang="he">דבש תמרים</span></h3>
+            <p class="desc"><span data-lang="en">Pure silan.</span><span data-lang="he">סילאן טהור.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Energy -->
+      <div class="product-tile" data-line="energy" data-search="majhoul dates premium israeli תמרי מג'הול גודל פרימיום" style="--line-bg:#7A3A26; --line-fg:#E0C9A6;">
+        <p class="shop-line-label"><span data-lang="en">Energy</span><span data-lang="he">אנרגיה</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M-26,24 C-14,18 -6,28 6,22 C14,18 20,26 26,20"/><g fill="#7A3A26" stroke="none"><circle cx="1" cy="10" r="6.5"/><circle cx="-3" cy="0" r="8"/><circle cx="3" cy="-11" r="8.5"/><circle cx="-3" cy="-21" r="7"/><circle cx="4" cy="-29" r="5.5"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Majhoul dates</span><span data-lang="he">תמרי מג'הול</span></h3>
+            <p class="desc"><span data-lang="en">Premium size, Israeli-grown.</span><span data-lang="he">גודל פרימיום, ישראלי.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="energy" data-search="date-almond bar two ingredients חטיף תמר-שקד שני מרכיבים" style="--line-bg:#7A3A26; --line-fg:#E0C9A6;">
+        <p class="shop-line-label"><span data-lang="en">Energy</span><span data-lang="he">אנרגיה</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M-26,24 C-14,18 -6,28 6,22 C14,18 20,26 26,20"/><g fill="#7A3A26" stroke="none"><circle cx="1" cy="10" r="6.5"/><circle cx="-3" cy="0" r="8"/><circle cx="3" cy="-11" r="8.5"/><circle cx="-3" cy="-21" r="7"/><circle cx="4" cy="-29" r="5.5"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Date-almond bar</span><span data-lang="he">חטיף תמר-שקד</span></h3>
+            <p class="desc"><span data-lang="en">Two ingredients only.</span><span data-lang="he">שני מרכיבים בלבד.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="energy" data-search="green tea caffeine slow release קפאין ירוק שחרור מתון" style="--line-bg:#7A3A26; --line-fg:#E0C9A6;">
+        <p class="shop-line-label"><span data-lang="en">Energy</span><span data-lang="he">אנרגיה</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><path d="M-26,24 C-14,18 -6,28 6,22 C14,18 20,26 26,20"/><g fill="#7A3A26" stroke="none"><circle cx="1" cy="10" r="6.5"/><circle cx="-3" cy="0" r="8"/><circle cx="3" cy="-11" r="8.5"/><circle cx="-3" cy="-21" r="7"/><circle cx="4" cy="-29" r="5.5"/></g></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Green tea caffeine</span><span data-lang="he">קפאין ירוק</span></h3>
+            <p class="desc"><span data-lang="en">Gentle, slow release.</span><span data-lang="he">מתפרחת תה, שחרור מתון.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sleep -->
+      <div class="product-tile" data-line="sleep" data-search="magnesium oil pre-sleep שמן מגנזיום מריחה לפני השינה" style="--line-bg:#1B2338; --line-fg:#B08D57;">
+        <p class="shop-line-label"><span data-lang="en">Sleep</span><span data-lang="he">מנוחה</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><rect x="-14" y="2" width="9" height="30" rx="2"/><rect x="5" y="2" width="9" height="30" rx="2"/><path d="M-9.5,0 C-15,-5 -11,-12 -9.5,-17 C-8,-12 -4,-5 -9.5,0 Z"/><path d="M9.5,0 C4,-5 8,-12 9.5,-17 C11,-12 15,-5 9.5,0 Z"/></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Magnesium oil</span><span data-lang="he">שמן מגנזיום</span></h3>
+            <p class="desc"><span data-lang="en">For a pre-sleep rub.</span><span data-lang="he">למריחה לפני השינה.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="sleep" data-search="nightly herbal tea chamomile lemon balm תה צמחים לילי קמומיל מליסה" style="--line-bg:#1B2338; --line-fg:#B08D57;">
+        <p class="shop-line-label"><span data-lang="en">Sleep</span><span data-lang="he">מנוחה</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><rect x="-14" y="2" width="9" height="30" rx="2"/><rect x="5" y="2" width="9" height="30" rx="2"/><path d="M-9.5,0 C-15,-5 -11,-12 -9.5,-17 C-8,-12 -4,-5 -9.5,0 Z"/><path d="M9.5,0 C4,-5 8,-12 9.5,-17 C11,-12 15,-5 9.5,0 Z"/></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Nightly herbal tea</span><span data-lang="he">תה צמחים לילי</span></h3>
+            <p class="desc"><span data-lang="en">Chamomile and lemon balm blend.</span><span data-lang="he">תערובת קמומיל ומליסה.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile" data-line="sleep" data-search="pillow spray lavender cedar ספריי לכרית לבנדר" style="--line-bg:#1B2338; --line-fg:#B08D57;">
+        <p class="shop-line-label"><span data-lang="en">Sleep</span><span data-lang="he">מנוחה</span></p>
+        <div class="product-card">
+          <div class="icon-wrap"><svg viewBox="-36 -36 72 72" aria-hidden="true"><rect x="-14" y="2" width="9" height="30" rx="2"/><rect x="5" y="2" width="9" height="30" rx="2"/><path d="M-9.5,0 C-15,-5 -11,-12 -9.5,-17 C-8,-12 -4,-5 -9.5,0 Z"/><path d="M9.5,0 C4,-5 8,-12 9.5,-17 C11,-12 15,-5 9.5,0 Z"/></svg></div>
+          <div class="info">
+            <h3><span data-lang="en">Pillow spray</span><span data-lang="he">ספריי לכרית</span></h3>
+            <p class="desc"><span data-lang="en">Lavender and gentle cedar.</span><span data-lang="he">לבנדר וקדרון עדין.</span></p>
+            <p class="price"><span data-lang="en">Soon</span><span data-lang="he">בקרוב</span></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="no-results" hidden><span data-lang="en">No products match that search.</span><span data-lang="he">לא נמצאו מוצרים תואמים.</span></p>
+  </section>
+
+  <section class="waitlist waitlist--panel">
+    <h2>
+      <span class="latin-caps-center" data-lang="en">We're not selling yet. Soon we will be.</span>
+      <span data-lang="he">אנחנו עוד לא מוכרים. בקרוב כן.</span>
+    </h2>
+    <p class="sub">
+      <span data-lang="en">Leave an address and you'll be the first to know.</span>
+      <span data-lang="he">השאירו כתובת ותהיו הראשונים לדעת.</span>
+    </p>
+    <!-- TODO: wire to a real mailing-list service before launch -->
+    <form class="waitlist-form">
+      <label class="visually-hidden" for="wl-shop">Email</label>
+      <input id="wl-shop" type="email" required placeholder="name@example.com">
+      <button type="submit"><span data-lang="en">Keep me posted</span><span data-lang="he">עדכנו אותי</span></button>
+    </form>
+    <p class="form-note" role="status" hidden><span data-lang="en">Thanks. We'll be in touch.</span><span data-lang="he">תודה. נעדכן אתכם.</span></p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <svg class="footer-mark" viewBox="-64 -64 128 128" aria-hidden="true">
+    <path d="M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z"/>
+    <path d="M-33.5,0 L-15,0 L-8,-16 L1,16 L9,0 L33.5,0"/>
+  </svg>
+  <p class="footer-brand"><span class="latin-caps-center" data-lang="en">Eytan Lev</span><span data-lang="he">איתן לב</span></p>
+  <p class="footer-meta"><span data-lang="en">© 2026 Eytan Lev · Israel</span><span data-lang="he">© 2026 איתן לב · ישראל</span></p>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
