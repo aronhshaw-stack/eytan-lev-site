@@ -134,274 +134,214 @@
     rim.position.set(-3, 4, -10);
     scene.add(rim);
 
-    // ---- shamayim: the sky above the hills is deep space at the top,
-    // coming down through dusk to the warm haze the land still holds. The
-    // top is the Sleep line's midnight, so the palette does not leave the
-    // brand to get there. Stars thin out toward the horizon, the way they
-    // do when there is still light in the sky.
-    // A true night now, not a dusk: deep blue-black at the zenith, the field
-    // lifting to a teal-green airglow just above the horizon, with a warm
-    // cast in the last band where the land's own light scatters. The old
-    // ramp ran down to cream, which is a sky an hour after sunset — a sky
-    // with a Milky Way in it is three hours later than that.
-    var SKY_TOP = '#070B18', SKY_LOW = '#4A5343';
-    // The sky is a texture, and it used to be 512 square. Stretched across a
-    // full-width hero that put every star three to five screen pixels wide,
-    // which is why they read as falling snow rather than as stars. At 1536 a
-    // star can be the sub-pixel point it actually is.
-    var SKY = 1536, S = SKY / 512;
+    // ---- shamayim.
+    //
+    // The sky is a photograph now, or is built the way one is. Three things
+    // the earlier versions got structurally wrong, none of them fixable by
+    // tuning:
+    //
+    //   It was a square texture stretched over a wide frame, so every star
+    //   was an ellipse 1.4 times wider than tall. It is 16:9 now, and
+    //   resize() crops rather than stretches, so a texel is always square.
+    //
+    //   It was 1536 wide under a 2560-pixel frame: a star could not be a
+    //   point. It is 3072 on a desktop, and a star's core is a texel or two.
+    //
+    //   The galaxy was soft blobs. A real one is grain: star clouds and dust
+    //   at every scale, which is fractal noise, not gradients. The band is
+    //   built from value noise in octaves — brightness where the noise is
+    //   high, dust where a second noise is high — masked to the band, and
+    //   the field of faint stars follows the same mask.
+    var SW = (window.innerWidth * (window.devicePixelRatio || 1) > 1700) ? 3072 : 2048;
+    var SH = Math.round(SW * 9 / 16);
+    var S = SW / 1536;                               // texel scale relative to the old sky
     var sc = document.createElement('canvas');
-    sc.width = SKY; sc.height = SKY;
+    sc.width = SW; sc.height = SH;
     var sctx = sc.getContext('2d');
-    var g = sctx.createLinearGradient(0, 0, 0, SKY);
-    // One continuous ramp. The short holds that used to sit at each stop
-    // were there to show where one wash met the next; a photographed sky has
-    // no such seams, and the eye finds them immediately once nothing else in
-    // the frame is drawn.
-    [[0, SKY_TOP], [0.18, '#0B1226'], [0.36, '#111C38'], [0.50, '#172446'],
-     [0.60, '#1E2E4E'], [0.68, '#27394F'], [0.74, '#34474E'],
-     [0.80, '#43524A'], [0.88, '#4A5445'], [1, SKY_LOW]
+
+    // The gradient. Blue-black at the zenith, lifting to a green-gold airglow
+    // above the horizon; the last band is the land's own scatter.
+    var SKY_TOP = '#05091A', SKY_LOW = '#3E4A44';
+    var g = sctx.createLinearGradient(0, 0, 0, SH);
+    [[0, SKY_TOP], [0.18, '#080F24'], [0.36, '#0E1A36'], [0.50, '#132242'],
+     [0.60, '#1A2C4A'], [0.68, '#22364C'], [0.74, '#2D434C'],
+     [0.80, '#3A4D48'], [0.88, '#404E44'], [1, SKY_LOW]
     ].forEach(function (st) { g.addColorStop(st[0], st[1]); });
-    sctx.fillStyle = g; sctx.fillRect(0, 0, SKY, SKY);
+    sctx.fillStyle = g; sctx.fillRect(0, 0, SW, SH);
 
-    // Blotting: soft irregular patches, so the wash is not perfectly even.
-    var wash = 20261;
-    function wrnd() { wash = (wash * 1103515245 + 12345) & 0x7fffffff; return wash / 0x7fffffff; }
-    for (var w = 0; w < 26; w++) {
-      var wx = wrnd() * SKY, wy = wrnd() * 460 * S, wr = (40 + wrnd() * 150) * S;
-      var wg = sctx.createRadialGradient(wx, wy, 0, wx, wy, wr);
-      var up = wrnd() > 0.5;
-      wg.addColorStop(0, (up ? 'rgba(140,170,220,' : 'rgba(4,6,16,') + (0.02 + wrnd() * 0.04).toFixed(3) + ')');
-      wg.addColorStop(1, up ? 'rgba(140,170,220,0)' : 'rgba(4,6,16,0)');
-      sctx.fillStyle = wg; sctx.fillRect(0, 0, SKY, SKY);
-    }
-
-    // ---- Stars. Deterministic, so the sky is the same sky on every visit.
-    //
-    // The old field was one radius and one white, varying only in alpha, and
-    // that is the whole reason it looked like weather. Three things fix it,
-    // and all three are real:
-    //
-    //   Magnitude follows a power law. Naked-eye stars are overwhelmingly
-    //   faint — a handful are bright and hundreds are barely there — so the
-    //   distribution is skewed rather than uniform.
-    //
-    //   Stars have colours. They run from blue-white through white to orange
-    //   with surface temperature, and a field of identical white dots is the
-    //   thing a real photograph never shows.
-    //
-    //   Air reddens and dims what it passes through. Near the horizon you are
-    //   looking through far more atmosphere, so a star there is both fainter
-    //   AND warmer. Only dimming them, which is what this did before, gets
-    //   half of it and looks like a fade.
+    // Deterministic noise for everything below.
     var starSeed = 20260901;
     function srnd() {
       starSeed = (starSeed * 1103515245 + 12345) & 0x7fffffff;
       return starSeed / 0x7fffffff;
     }
-    // spectral classes, roughly, weighted the way a naked-eye field is
+
+    // ---- the galaxy, as noise.
+    var MW = { x0: 0.64, y0: 0.96, x1: 0.36, y1: -0.08 };          // bottom → top, in unit coords
+    var mwdx = (MW.x1 - MW.x0) * SW, mwdy = (MW.y1 - MW.y0) * SH;
+    var mwl = Math.hypot(mwdx, mwdy);
+    var mwux = mwdx / mwl, mwuy = mwdy / mwl;                    // along the band
+    var mwnx = -mwuy, mwny = mwux;                                // across it
+    // band-space coordinates for a texel: u along (0 at the bulge), w across (texels)
+    function bandCoords(px, py) {
+      var rx = px - MW.x0 * SW, ry = py - MW.y0 * SH;
+      return [ (rx * mwux + ry * mwuy) / mwl, rx * mwnx + ry * mwny ];
+    }
+    // value noise with a smooth lattice, octaved
+    function makeNoise(seed) {
+      var N = 64, lat = new Float32Array(N * N), ls = seed, i;
+      function lr() { ls = (ls * 1103515245 + 12345) & 0x7fffffff; return ls / 0x7fffffff; }
+      for (i = 0; i < N * N; i++) lat[i] = lr();
+      function at(x, y) {
+        var xi = Math.floor(x), yi = Math.floor(y), fx = x - xi, fy = y - yi;
+        fx = fx * fx * (3 - 2 * fx); fy = fy * fy * (3 - 2 * fy);
+        var x0 = ((xi % N) + N) % N, y0 = ((yi % N) + N) % N, x1 = (x0 + 1) % N, y1 = (y0 + 1) % N;
+        var a = lat[y0 * N + x0], b = lat[y0 * N + x1], c = lat[y1 * N + x0], d = lat[y1 * N + x1];
+        return (a + (b - a) * fx) * (1 - fy) + (c + (d - c) * fx) * fy;
+      }
+      return function fbm(x, y, oct) {
+        var v = 0, amp = 0.5, f = 1, sum = 0;
+        for (var o = 0; o < oct; o++) { v += at(x * f, y * f) * amp; sum += amp; amp *= 0.5; f *= 2.03; }
+        return v / sum;
+      };
+    }
+    var cloud = makeNoise(4111), dust = makeNoise(9377), fine = makeNoise(2718);
+
+    // Painted at a quarter of the sky's width and scaled up — noise this soft
+    // has nothing to lose, and it keeps the loop short.
+    var GW = Math.round(SW / 2), GH = Math.round(SH / 2);
+    var gc = document.createElement('canvas'); gc.width = GW; gc.height = GH;
+    var gx = gc.getContext('2d');
+    var img = gx.createImageData(GW, GH), d = img.data;
+    var HALF = 0.075 * SW;                                        // half-width of the band, texels
+    for (var py = 0; py < GH; py++) {
+      for (var px = 0; px < GW; px++) {
+        var bc = bandCoords(px * 2, py * 2), u = bc[0], w = bc[1];
+        // the band's own width wanders and thickens toward the bulge
+        var wob = (cloud(u * 3.0 + 7, 0.3, 2) - 0.5) * HALF * 1.2;
+        var halfHere = HALF * (1.25 - u * 0.5);
+        var prof = Math.exp(-((w - wob) * (w - wob)) / (2 * halfHere * halfHere));
+        if (prof < 0.01) continue;
+        var nx = px / GW * 6, ny = py / GH * 3.4;
+        // three scales: the big star clouds, the mid-scale knots, and a fine
+        // grain that is the unresolved stars themselves
+        var c1 = cloud(nx, ny, 5), c2 = fine(nx * 3.1, ny * 3.1, 4), c3 = fine(nx * 11 + 3, ny * 11, 2);
+        var bright = prof * (0.30 + 0.70 * Math.pow(c1, 1.3)) * (0.45 + 0.55 * c2) * (0.7 + 0.6 * c3);
+        // the bulge is brighter and warmer; the far end of the band cools
+        var warm = Math.max(0, 1 - u * 1.5);
+        bright *= 0.8 + warm * 0.9;
+        // dust: long clouds along the band where the second noise is high
+        var dv = dust(nx * 1.4 + u * 2.0, ny * 0.5 + w / HALF * 0.35, 4);
+        var lane = Math.max(0, Math.min(1, (dv - 0.45) / 0.15)) * Math.min(1, prof * 1.5) * (0.65 + warm * 0.35);
+        var lum = bright * (1 - lane * 0.92);
+        // grey-white with a little blue away from the core, gold at the bulge —
+        // the lavender of the first pass is not a colour the sky has
+        var r = 196 + 44 * warm, gch = 198 + 12 * warm, bch = 214 - 84 * warm;
+        var o = (py * GW + px) * 4;
+        var a = Math.min(1, lum * 1.25);
+        d[o] = r; d[o + 1] = gch; d[o + 2] = bch; d[o + 3] = Math.round(a * 255);
+        // dust in front of the light darkens what is behind the band too
+        if (lane > 0.05) {
+          d[o] = Math.round(d[o] * (1 - lane * 0.4) + 20 * lane * 0.4);
+          d[o + 1] = Math.round(d[o + 1] * (1 - lane * 0.4) + 14 * lane * 0.4);
+          d[o + 2] = Math.round(d[o + 2] * (1 - lane * 0.4) + 12 * lane * 0.4);
+          d[o + 3] = Math.max(d[o + 3], Math.round(lane * prof * 110));
+        }
+      }
+    }
+    gx.putImageData(img, 0, 0);
+    sctx.imageSmoothingEnabled = true; sctx.imageSmoothingQuality = 'high';
+    sctx.globalCompositeOperation = 'lighter';
+    sctx.drawImage(gc, 0, 0, SW, SH);
+    sctx.globalCompositeOperation = 'source-over';
+
+    // ---- stars.
+    // Magnitude follows a power law; colour follows temperature; air dims
+    // and reddens near the horizon. Cores are a texel or two — a star is a
+    // point — and only the brightest few per cent carry a soft skirt. The
+    // faint end is dense along the band, because that is what the band is.
     var CLASSES = [
-      [0.14, [166, 192, 255]],   // B — blue-white
-      [0.40, [212, 224, 255]],   // A
-      [0.66, [248, 248, 250]],   // F — white
-      [0.85, [255, 242, 214]],   // G — the sun's colour
-      [0.96, [255, 214, 164]],   // K — orange
-      [1.00, [255, 184, 138]]    // M — red
+      [0.14, [166, 192, 255]], [0.40, [212, 224, 255]], [0.66, [248, 248, 250]],
+      [0.85, [255, 242, 214]], [0.96, [255, 214, 164]], [1.00, [255, 184, 138]]
     ];
     function starColour(t) {
       for (var i = 0; i < CLASSES.length; i++) if (t <= CLASSES[i][0]) return CLASSES[i][1];
       return CLASSES[CLASSES.length - 1][1];
     }
-
-    // ---- The galaxy. A band rising from behind the far ridge, leaning a
-    // little off vertical, the way it stands in the sky in late summer from
-    // this latitude. It is three things laid over each other, and every one
-    // of them is in the photograph: a broad cool haze of unresolved stars, a
-    // warmer, brighter core toward the bulge at the bottom, and dark dust
-    // lanes cut through the middle of it — the lanes are what make it a
-    // galaxy seen edge-on rather than a smear of light.
-    var MW = { x0: 0.62, y0: 0.92, x1: 0.38, y1: -0.05 };   // bottom → top
-    // A slight bow, because a straight band reads as a beam.
-    function mwAt(u) { return [ (MW.x0 + (MW.x1 - MW.x0) * u + Math.sin(u * Math.PI) * 0.05) * SKY,
-                                (MW.y0 + (MW.y1 - MW.y0) * u) * SKY ]; }
-    function gauss(w, sd) { return Math.exp(-(w * w) / (2 * sd * sd)); }
-    var mwdx = MW.x1 - MW.x0, mwdy = MW.y1 - MW.y0, mwl = Math.hypot(mwdx, mwdy);
-    var mwnx = -mwdy / mwl, mwny = mwdx / mwl;             // across the band
-    var mwAng = Math.atan2(mwdy, mwdx);
-    // The haze, the core and the dust are painted at a sixth of the sky's
-    // resolution on two canvases of their own and laid over the sky once
-    // each, scaled up. Not for speed — because the browser dithers every
-    // gradient it fills with the same ordered pattern, and four hundred of
-    // them added together turn that invisible dither into a checkerboard
-    // across the whole sky. Painted small and scaled up, it is blurred away.
-    var MWN = 256, mk = MWN / SKY;
-    var lc = document.createElement('canvas'); lc.width = lc.height = MWN;
-    var dc = document.createElement('canvas'); dc.width = dc.height = MWN;
-    var gx = lc.getContext('2d'), kx = dc.getContext('2d');
-    // Solid discs, not gradients — a gradient is dithered and a solid fill
-    // is not — and the softness comes from one blur over the whole layer
-    // afterwards, done by hand so it is the same in every browser.
-    function disc(ctx, x, y, r, rgb, a) {
-      ctx.fillStyle = 'rgba(' + rgb + ',' + a.toFixed(3) + ')';
-      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
-    }
-    function blurLayer(c, radius, passes) {
-      var ctx = c.getContext('2d'), n = c.width;
-      var img = ctx.getImageData(0, 0, n, n), d = img.data, len = n * n;
-      var f = new Float32Array(len * 4), t = new Float32Array(len * 4), i, k, x, y, ch;
-      for (i = 0; i < len; i++) {          // premultiply, or clear pixels drag the colour down
-        var al = d[i * 4 + 3] / 255;
-        f[i * 4] = d[i * 4] * al; f[i * 4 + 1] = d[i * 4 + 1] * al; f[i * 4 + 2] = d[i * 4 + 2] * al; f[i * 4 + 3] = al;
-      }
-      var w = radius * 2 + 1;
-      for (k = 0; k < passes; k++) {
-        for (y = 0; y < n; y++) for (ch = 0; ch < 4; ch++) {     // rows
-          var acc = 0, row = y * n;
-          for (x = -radius; x <= radius; x++) acc += f[(row + Math.min(n - 1, Math.max(0, x))) * 4 + ch];
-          for (x = 0; x < n; x++) {
-            t[(row + x) * 4 + ch] = acc / w;
-            acc += f[(row + Math.min(n - 1, x + radius + 1)) * 4 + ch] - f[(row + Math.max(0, x - radius)) * 4 + ch];
-          }
-        }
-        for (x = 0; x < n; x++) for (ch = 0; ch < 4; ch++) {     // columns
-          var acc2 = 0;
-          for (y = -radius; y <= radius; y++) acc2 += t[(Math.min(n - 1, Math.max(0, y)) * n + x) * 4 + ch];
-          for (y = 0; y < n; y++) {
-            f[(y * n + x) * 4 + ch] = acc2 / w;
-            acc2 += t[(Math.min(n - 1, y + radius + 1) * n + x) * 4 + ch] - t[(Math.max(0, y - radius) * n + x) * 4 + ch];
-          }
-        }
-      }
-      for (i = 0; i < len; i++) {
-        var a2 = f[i * 4 + 3];
-        if (a2 > 0.0005) {
-          d[i * 4] = Math.min(255, f[i * 4] / a2); d[i * 4 + 1] = Math.min(255, f[i * 4 + 1] / a2); d[i * 4 + 2] = Math.min(255, f[i * 4 + 2] / a2);
-        } else { d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = 0; }
-        d[i * 4 + 3] = Math.min(255, Math.round(a2 * 255));
-      }
-      ctx.putImageData(img, 0, 0);
-    }
-    gx.globalCompositeOperation = 'lighter';
-    var b;
-    // the haze: many soft blobs, wider and cooler away from the core
-    for (b = 0; b < 360; b++) {
-      var bu = srnd(), bw = (srnd() + srnd() + srnd() - 1.5) * 0.16 * (0.7 + bu * 0.6);
-      var bp = mwAt(bu), bx = (bp[0] + mwnx * bw * SKY) * mk, by = (bp[1] + mwny * bw * SKY) * mk;
-      var br_ = (50 + srnd() * 130) * S * mk * 0.6;
-      var warm = Math.max(0, 1 - bu * 1.4);              // warm low, cool high
-      var bcol = ((150 + 84 * warm) | 0) + ',' + ((156 + 44 * warm) | 0) + ',' + ((200 - 76 * warm) | 0);
-      var ba = (0.008 + srnd() * 0.013) * (0.75 - warm * 0.25) * gauss(bw, 0.08);
-      if (ba <= 0.002) continue;
-      disc(gx, bx, by, br_, bcol, ba);
-    }
-    // the core: a tighter, warmer run along the lower half
-    for (b = 0; b < 110; b++) {
-      var cu = 0.04 + srnd() * 0.56, cw = (srnd() + srnd() + srnd() - 1.5) * 0.05;
-      var cp = mwAt(cu), cx = (cp[0] + mwnx * cw * SKY) * mk, cy = (cp[1] + mwny * cw * SKY) * mk;
-      var cr_ = (22 + srnd() * 60) * S * mk * 0.6;
-      var ca = (0.014 + srnd() * 0.026) * (1 - cu * 0.8) * gauss(cw, 0.04);
-      disc(gx, cx, cy, cr_ * 0.9, '236,196,140', ca * 0.3);
-    }
-    blurLayer(lc, 5, 3);
-    // The dust: two lanes, each a run of small clouds stretched along the
-    // band and wandering across it, brownish rather than black — dust in
-    // front of starlight is warm, not neutral. Many and faint, so they read
-    // as cloud rather than as a pair of smudges. Ellipses: a round dark blob
-    // is a hole, a long one is a cloud.
-    for (b = 0; b < 900; b++) {
-      var lane = b % 3 === 0 ? 0.02 : (b % 3 === 1 ? -0.014 : 0.004);
-      var du = 0.03 + srnd() * 0.64;
-      var dw = lane + Math.sin(du * 7.0 + lane * 60) * 0.012 + (srnd() + srnd() - 1) * 0.05;
-      var dp = mwAt(du), dx_ = (dp[0] + mwnx * dw * SKY) * mk, dy_ = (dp[1] + mwny * dw * SKY) * mk;
-      var dr = (3 + srnd() * 9) * S * mk * 0.7, dl = dr * (1.6 + srnd() * 2.2);
-      var da = (0.04 + srnd() * 0.06) * (1 - du * 0.75);
-      kx.save();
-      kx.translate(dx_, dy_); kx.rotate(mwAng + (srnd() - 0.5) * 0.6); kx.scale(dl / dr, 1);
-      disc(kx, 0, 0, dr, '24,18,14', da);
-      kx.restore();
-    }
-    blurLayer(dc, 3, 3);
-    sctx.imageSmoothingEnabled = true;
-    sctx.imageSmoothingQuality = 'high';
     sctx.globalCompositeOperation = 'lighter';
-    sctx.drawImage(lc, 0, 0, SKY, SKY);
-    sctx.globalCompositeOperation = 'source-over';
-    sctx.drawImage(dc, 0, 0, SKY, SKY);
-    sctx.globalCompositeOperation = 'lighter';
-    // The unresolved field: thousands of the faintest stars packed along the
-    // band — this is most of what the haze actually is. Soft dots a little
-    // over a texel wide, not sub-texel squares: those alias into a lattice
-    // the moment the texture is scaled to the screen.
-    for (b = 0; b < 5200; b++) {
-      var fu = srnd(), fw = (srnd() + srnd() + srnd() - 1.5) * 0.105 * (0.7 + fu * 0.6);
-      var fp = mwAt(fu), fx = fp[0] + mwnx * fw * SKY, fy = fp[1] + mwny * fw * SKY;
-      if (fy < 0 || fy > SKY * 0.8) continue;
-      var fa = (0.03 + srnd() * 0.13) * (0.7 + fu * 0.5);   // thinner toward the bulge, which the core already lights
-      sctx.fillStyle = 'rgba(236,218,190,' + fa.toFixed(2) + ')';
-      sctx.beginPath(); sctx.arc(fx, fy, 0.75 * S, 0, Math.PI * 2); sctx.fill();
-    }
-
-    for (var st = 0; st < 3600; st++) {
-      var sy = Math.pow(srnd(), 1.5) * 0.76;         // crowded toward the zenith
+    var NSTAR = Math.round(14000 * (SW / 3072) * (SW / 3072));
+    for (var st = 0; st < NSTAR; st++) {
+      var sy = Math.pow(srnd(), 1.35) * 0.80;
       var sxp = srnd();
-      // how much air we are looking through: 1 overhead, 0 at the haze line
-      var air = Math.pow(1 - sy / 0.76, 1.35);
-      var m = Math.pow(srnd(), 3.4);                 // the power law — steeper: a real field is almost all faint
-      var mag = (0.10 + 0.90 * m) * air;
-      if (mag < 0.035) continue;
-
+      var x = sxp * SW, y = sy * SH;
+      // the band gets the crowd: keep a star more often the closer it lies
+      var bcs = bandCoords(x, y);
+      var inBand = Math.exp(-(bcs[1] * bcs[1]) / (2 * HALF * HALF * 1.6));
+      if (srnd() > 0.28 + 0.72 * inBand) continue;
+      var air = Math.pow(1 - sy / 0.80, 1.3);
+      var m = Math.pow(srnd(), 3.6);
+      var mag = (0.12 + 0.88 * m) * air;
+      if (mag < 0.03) continue;
       var c = starColour(srnd());
-      // atmospheric reddening: warm the colour with the airmass, not just fade it
-      var red = (1 - air) * 0.55;
-      var cr = c[0] + (255 - c[0]) * red;
-      var cg = c[1] + (180 - c[1]) * red;
-      var cb = c[2] + (128 - c[2]) * red;
-      var rgbs = (cr | 0) + ',' + (cg | 0) + ',' + (cb | 0);
-      var x = sxp * SKY, y = sy * SKY;
-      var core = (0.16 + 0.40 * m) * S;
-
-      // halo first — a point source through a lens is a core plus a skirt,
-      // and the skirt is what makes a bright star read as bright rather than
-      // as a bigger dot
-      if (m > 0.45) {
-        var hg = sctx.createRadialGradient(x, y, 0, x, y, core * 4);
-        hg.addColorStop(0, 'rgba(' + rgbs + ',' + (mag * 0.14).toFixed(3) + ')');
-        hg.addColorStop(0.4, 'rgba(' + rgbs + ',' + (mag * 0.035).toFixed(3) + ')');
+      var red = (1 - air) * 0.5;
+      var rgbs = ((c[0] + (255 - c[0]) * red) | 0) + ',' + ((c[1] + (180 - c[1]) * red) | 0) + ',' + ((c[2] + (128 - c[2]) * red) | 0);
+      var core = (0.45 + 1.1 * m) * (SW / 3072);
+      if (m > 0.55) {
+        var hg = sctx.createRadialGradient(x, y, 0, x, y, core * 5);
+        hg.addColorStop(0, 'rgba(' + rgbs + ',' + (mag * 0.16).toFixed(3) + ')');
+        hg.addColorStop(0.4, 'rgba(' + rgbs + ',' + (mag * 0.04).toFixed(3) + ')');
         hg.addColorStop(1, 'rgba(' + rgbs + ',0)');
         sctx.fillStyle = hg;
-        sctx.beginPath(); sctx.arc(x, y, core * 4, 0, Math.PI * 2); sctx.fill();
+        sctx.beginPath(); sctx.arc(x, y, core * 5, 0, Math.PI * 2); sctx.fill();
       }
-      sctx.beginPath();
-      sctx.arc(x, y, core, 0, Math.PI * 2);
-      sctx.fillStyle = 'rgba(' + rgbs + ',' + mag.toFixed(3) + ')';
-      sctx.fill();
-
-      // No spikes. Diffraction spikes belong to a telescope's spider, not to
-      // a camera lens, and drawn at this size they read as clip-art sparkles.
+      sctx.fillStyle = 'rgba(' + rgbs + ',' + Math.min(1, mag * 1.1).toFixed(3) + ')';
+      sctx.beginPath(); sctx.arc(x, y, core, 0, Math.PI * 2); sctx.fill();
     }
-
-    // Airglow. There is no sun in this sky any more; what sits on the
-    // horizon is the faint green-gold light the upper air gives off on its
-    // own, strongest low and behind the tree — which is also what gives the
-    // crown something to stand against. Two wide passes, no core: it is a
-    // band, not a body, and it must never get bright enough to read as one.
-    var ag = sctx.createLinearGradient(0, 0.58 * SKY, 0, 0.82 * SKY);
+    // Airglow: a band along the whole horizon, green-gold, faint.
+    sctx.globalCompositeOperation = 'lighter';
+    var ag = sctx.createLinearGradient(0, 0.60 * SH, 0, 0.84 * SH);
     ag.addColorStop(0, 'rgba(110,118,82,0)');
-    ag.addColorStop(0.7, 'rgba(118,122,84,0.16)');
-    ag.addColorStop(1, 'rgba(126,120,82,0.22)');
-    sctx.fillStyle = ag; sctx.fillRect(0, 0, SKY, SKY);
-
+    ag.addColorStop(0.7, 'rgba(118,122,84,0.14)');
+    ag.addColorStop(1, 'rgba(126,120,82,0.20)');
+    sctx.fillStyle = ag; sctx.fillRect(0, 0, SW, SH);
     sctx.globalCompositeOperation = 'source-over';
+    // Grain. A long exposure has noise in it, and its absence is one of the
+    // things that says "rendered". Painted small and scaled, very faint.
+    (function grain() {
+      var n = 256, c = document.createElement('canvas'); c.width = c.height = n;
+      var x = c.getContext('2d'), im = x.createImageData(n, n), dd = im.data, gs = 777;
+      for (var i = 0; i < n * n; i++) {
+        gs = (gs * 1103515245 + 12345) & 0x7fffffff;
+        var v = 118 + ((gs >> 8) % 20);
+        dd[i * 4] = dd[i * 4 + 1] = dd[i * 4 + 2] = v; dd[i * 4 + 3] = 255;
+      }
+      x.putImageData(im, 0, 0);
+      sctx.globalCompositeOperation = 'overlay';
+      sctx.globalAlpha = 0.16;
+      for (var ty = 0; ty < SH; ty += n) for (var tx = 0; tx < SW; tx += n) sctx.drawImage(c, tx, ty);
+      sctx.globalAlpha = 1;
+      sctx.globalCompositeOperation = 'source-over';
+    })();
 
     var skyTex = new T.CanvasTexture(sc);
     skyTex.magFilter = T.LinearFilter;
-    // No mipmaps. A CanvasTexture defaults to a mipmapped min filter, and
-    // 1536 is not a power of two, so the renderer quietly resampled the whole
-    // sky down to 1024 and then sampled that — which is where a fine lattice
-    // over the field came from. Sampled as painted, there is nothing to alias.
     skyTex.minFilter = T.LinearFilter;
     skyTex.generateMipmaps = false;
     if (T.sRGBEncoding !== undefined) skyTex.encoding = T.sRGBEncoding;
+    // Crop, never stretch: resize() sets repeat/offset so a texel stays
+    // square whatever the frame's aspect. Wide frames lose a little sky at
+    // the top; tall ones lose a little at the sides.
+    var SKY_ASPECT = SW / SH;
+    function fitSky(aspect) {
+      if (aspect >= SKY_ASPECT) {
+        var ry = SKY_ASPECT / aspect;
+        skyTex.repeat.set(1, ry); skyTex.offset.set(0, 0);          // keep the horizon: crop the top
+      } else {
+        var rx = aspect / SKY_ASPECT;
+        skyTex.repeat.set(rx, 1); skyTex.offset.set((1 - rx) / 2, 0);
+      }
+    }
+    fitSky(16 / 9);
     scene.background = skyTex;
     // Exponential, and tinted to the haze at the horizon rather than to a
     // neutral grey: distance should warm and lift toward the sun, the way air
@@ -1634,6 +1574,7 @@
       var h = Math.round(frame.clientHeight || r.width * 0.72);
       if (!h) return false;
       renderer.setSize(r.width, h, false);
+      fitSky(r.width / h);
       canvas.style.height = h + 'px';
       camera.aspect = r.width / h;
       camera.fov = r.width < 700 ? 48 : 40;

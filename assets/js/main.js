@@ -348,6 +348,23 @@
     } catch (e) { /* a tainted or unavailable canvas just means no grain */ }
   }
 
+  // ----- the menu button (small screens)
+  function initNavToggle() {
+    var header = document.querySelector('.site-header');
+    var btn = document.querySelector('.nav-toggle');
+    if (!header || !btn) return;
+    function set(open) {
+      header.classList.toggle('nav-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    btn.addEventListener('click', function () { set(!header.classList.contains('nav-open')); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+    header.querySelectorAll('.site-nav a').forEach(function (a) { a.addEventListener('click', function () { set(false); }); });
+    if ('ResizeObserver' in window) new ResizeObserver(function () {
+      document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+    }).observe(header);
+  }
+
   function initLangToggle() {
     var btn = document.querySelector('.lang-toggle');
     if (!btn) return;
@@ -513,6 +530,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     initHeaderHeight();
+    initNavToggle();
     initHeaderScroll();
     initPaperGrain();
     initLangToggle();

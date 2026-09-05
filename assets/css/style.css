@@ -130,6 +130,39 @@ html[lang="he"] [data-lang="en"] { display: none !important; }
 .site-nav a:hover { border-block-end-color: var(--hairline); }
 .site-nav a.active { border-block-end-color: var(--sage); color: var(--olive); }
 
+/* ---------- the menu button ----------
+   Nine sections do not fit on one line under 900px, and a nav that wraps to
+   two rows over the hero is the first thing that says "not finished". Below
+   the breakpoint the nav folds behind a button; above it the button is gone. */
+.nav-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 44px; height: 44px; margin-inline-start: auto;
+  background: transparent; border: 1px solid var(--hairline); border-radius: 999px;
+  cursor: pointer; padding: 0; flex-direction: column; gap: 5px;
+}
+.nav-toggle__bar { display: block; width: 18px; height: 1.5px; background: var(--olive); transition: transform 0.25s ease, opacity 0.2s ease; }
+.site-header.is-top.is-over-sky .nav-toggle { border-color: rgba(244, 240, 230, 0.45); }
+.site-header.is-top.is-over-sky .nav-toggle__bar { background: var(--cream); }
+.site-header.nav-open .nav-toggle__bar:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.site-header.nav-open .nav-toggle__bar:nth-child(2) { opacity: 0; }
+.site-header.nav-open .nav-toggle__bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+@media (max-width: 900px) {
+  .nav-toggle { display: inline-flex; }
+  .lang-toggle { margin-inline-start: 0; }
+  .site-nav { display: none; }
+  .site-header.nav-open .site-nav {
+    display: flex; flex-direction: column; gap: 0; width: 100%; order: 3;
+    padding-block: 0.6rem 0.4rem; border-block-start: 1px solid var(--hairline); margin-block-start: 0.5rem;
+  }
+  .site-header.nav-open .site-nav a { padding-block: 0.65rem; font-size: 1rem; border-block-end: 1px solid transparent; }
+  /* open over the sky, the menu needs a ground of its own */
+  .site-header.is-top.nav-open { background: var(--glass-strong); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }
+  .site-header.is-top.is-over-sky.nav-open .site-nav, .site-header.is-top.is-over-sky.nav-open .brand-name { color: var(--deep-olive); }
+  .site-header.is-top.is-over-sky.nav-open .brand-mark { stroke: var(--olive); }
+  .site-header.is-top.is-over-sky.nav-open .nav-toggle__bar { background: var(--olive); }
+  .site-header.is-top.is-over-sky.nav-open .lang-toggle { color: var(--olive); border-color: var(--hairline); }
+}
+
 .lang-toggle {
   font-family: 'Assistant', sans-serif; font-size: 0.8125rem; letter-spacing: 0.05em;
   color: var(--olive); background: transparent; border: 1px solid var(--hairline);
