@@ -550,6 +550,40 @@
     });
   }
 
+  // ----- the choshen: a stone opens a reading, not a page.
+  //
+  // The stones stay real links, so with no JS a click still goes somewhere
+  // and the keyboard still works. With JS the click is intercepted and the
+  // reading opens under the plate — the plate is the argument, and jumping
+  // away from it or covering it with a modal loses that.
+  function initChoshen() {
+    var read = document.getElementById('choshen-read');
+    if (!read) return;
+    var he = read.querySelector('[data-read-he]');
+    var en = read.querySelector('[data-read-en]');
+    var link = read.querySelector('[data-read-link]');
+    var stones = Array.prototype.slice.call(document.querySelectorAll('.stone'));
+    if (!stones.length) return;
+
+    stones.forEach(function (a) {
+      a.setAttribute('aria-controls', 'choshen-read');
+      a.addEventListener('click', function (e) {
+        // let a modified click do what the reader asked for
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+        e.preventDefault();
+        var h = a.querySelector('.stone__he');
+        var n = a.querySelector('.stone__en');
+        he.textContent = h ? h.textContent.trim() : '';
+        en.textContent = n ? n.textContent.trim() : '';
+        link.setAttribute('href', a.getAttribute('href'));
+        read.hidden = false;
+        stones.forEach(function (o) { o.classList.toggle('is-open', o === a); });
+        // colour the reading with the stone it belongs to
+        read.style.setProperty('--stone', a.style.getPropertyValue('--stone') || '#5C6B4A');
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     initHeaderHeight();
     initNavToggle();
@@ -565,5 +599,6 @@
     initJournalFilter();
     initForms();
     initShop();
+    initChoshen();
   });
 })();

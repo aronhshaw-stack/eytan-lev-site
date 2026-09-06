@@ -163,6 +163,11 @@
   function init() {
     var canvas = document.querySelector('[data-helix]');
     if (!canvas) return;
+    // helix3d.js renders the same molecule with real light. It claims the
+    // canvas synchronously if WebGL is available, and hands it back here if
+    // the library never arrives.
+    window.__eylHelixFallback = init;
+    if (window.__eylHelix3D) return;
     var ctx = canvas.getContext('2d');
     if (!ctx) return;
     var stage = canvas.closest('.helix__stage') || canvas.parentNode;

@@ -1092,10 +1092,10 @@ html[dir="rtl"] .product-card .icon-wrap svg { transform: translate(50%, 40%); }
 
    Everything here is drawn: gradients, not photographs. Nothing is traced. */
 .robe {
-  --cloth: #1E2A46;
-  --thread-gold: rgba(198, 162, 96, 0.13);
-  --thread-scarlet: rgba(146, 44, 48, 0.1);
-  --thread-purple: rgba(96, 56, 116, 0.1);
+  --cloth: #1B2743;
+  --thread-gold: rgba(198, 162, 96, 0.055);
+  --thread-scarlet: rgba(158, 40, 44, 0.05);
+  --thread-purple: rgba(104, 54, 128, 0.05);
   --stitch: rgba(214, 186, 124, 0.42);
   position: relative;
   /* The cloth runs to the top edge and the header floats on it — the page is
@@ -1103,23 +1103,43 @@ html[dir="rtl"] .product-card .icon-wrap svg { transform: translate(50%, 40%); }
   margin-block-start: calc(-1 * var(--header-h));
   padding-block-start: var(--header-h);
   background-color: var(--cloth);
+  /* Wool, not graph paper.
+     The first pass laid the coloured threads at 61, 79, 103 and 127 pixels,
+     which at any real viewing size is a grid rather than a weave — the eye
+     reads the spacing as ruling. A woven cloth's coloured threads sit a few
+     picks apart, so they land at 7 to 13 pixels here and the four dyes read
+     as one fabric. Under them is the linen itself at a three-pixel pitch:
+     warp catching the light, weft in its shadow. Over the top go slubs, the
+     small irregularities in a hand-spun yarn, without which any repeating
+     weave reads as printed rather than woven. */
   background-image:
     /* light falling from over the left shoulder, and the fall-off at the edges */
     radial-gradient(90% 62% at 24% 4%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0) 66%),
-    radial-gradient(125% 85% at 50% 44%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.46) 100%),
-    /* the gold wire, worked both ways */
-    repeating-linear-gradient(90deg, var(--thread-gold) 0 1px, rgba(0, 0, 0, 0) 1px 61px),
-    repeating-linear-gradient(0deg, var(--thread-gold) 0 1px, rgba(0, 0, 0, 0) 1px 79px),
-    /* scarlet and purple */
-    repeating-linear-gradient(90deg, var(--thread-scarlet) 0 1px, rgba(0, 0, 0, 0) 1px 103px),
-    repeating-linear-gradient(0deg, var(--thread-purple) 0 1px, rgba(0, 0, 0, 0) 1px 127px),
+    radial-gradient(125% 85% at 50% 44%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.5) 100%),
+    /* slubs: irregular thickenings in the yarn */
+    radial-gradient(circle at 17% 32%, rgba(255, 255, 255, 0.05) 0 1.5px, rgba(0, 0, 0, 0) 2px),
+    radial-gradient(circle at 63% 71%, rgba(0, 0, 0, 0.10) 0 2px, rgba(0, 0, 0, 0) 2.5px),
+    radial-gradient(circle at 84% 19%, rgba(255, 255, 255, 0.04) 0 1.5px, rgba(0, 0, 0, 0) 2px),
+    /* the gold wire, worked both ways (Exodus 39:3 — beaten thin and cut) */
+    repeating-linear-gradient(90deg, var(--thread-gold) 0 1px, rgba(0, 0, 0, 0) 1px 9px),
+    repeating-linear-gradient(0deg, var(--thread-gold) 0 1px, rgba(0, 0, 0, 0) 1px 11px),
+    /* tolaat shani, and argaman */
+    repeating-linear-gradient(90deg, var(--thread-scarlet) 0 1px, rgba(0, 0, 0, 0) 1px 13px),
+    repeating-linear-gradient(0deg, var(--thread-purple) 0 1px, rgba(0, 0, 0, 0) 1px 7px),
     /* the linen itself: warp catching the light, weft in its shadow */
     repeating-linear-gradient(90deg,
-      rgba(255, 255, 255, 0.055) 0 1px, rgba(0, 0, 0, 0.05) 1px 2px, rgba(0, 0, 0, 0) 2px 3px),
+      rgba(255, 255, 255, 0.055) 0 1px, rgba(0, 0, 0, 0.06) 1px 2px, rgba(0, 0, 0, 0) 2px 3px),
     repeating-linear-gradient(0deg,
-      rgba(0, 0, 0, 0.11) 0 1px, rgba(255, 255, 255, 0.035) 1px 2px, rgba(0, 0, 0, 0) 2px 3px);
+      rgba(0, 0, 0, 0.12) 0 1px, rgba(255, 255, 255, 0.04) 1px 2px, rgba(0, 0, 0, 0) 2px 3px);
+  background-size:
+    auto, auto,
+    140px 190px, 210px 160px, 170px 230px,
+    auto, auto, auto, auto, auto, auto;
   color: #E8E2D2;
 }
+/* A running stitch across the cloth, above and below the plate. A garment
+   shows its seams; a colour field does not. */
+.robe .choshen::before, .robe .choshen::after { opacity: 0.55; }
 /* Dark grounds: the olive eyebrow vanishes, so these take the sage. */
 .honesty .eyebrow, .robe .eyebrow, .morph .eyebrow { color: var(--sage); }
 /* Cloth is dark, so the page's own type has to come up with it. */
@@ -1251,19 +1271,29 @@ html[dir="rtl"] .product-card .icon-wrap svg { transform: translate(50%, 40%); }
 .stone {
   position: relative; display: block;
   aspect-ratio: 4 / 3;
-  padding: clamp(6px, 1.05vw, 11px);
+  /* A deeper collar. The first pass had a bezel two per cent of the cell
+     wide, which is a picture frame; a stone is SET, and the metal has to
+     come up over its girdle far enough to hold it. */
+  padding: clamp(11px, 2.4vw, 22px);
   /* the setting follows the stone: a cushion, so the collar is one too */
-  border-radius: 12% / 16%;
+  border-radius: 16% / 21%;
   text-decoration: none; color: inherit;
   background:
+    /* hammered: a planished surface is a field of shallow dimples, and each
+       one carries its own small highlight and its own small shadow. Two
+       offset lattices, because one on its own reads as polka dots. */
+    radial-gradient(circle at 34% 28%, rgba(255, 245, 220, 0.10) 0 16%, rgba(0, 0, 0, 0) 46%),
+    radial-gradient(circle at 68% 71%, rgba(46, 30, 8, 0.11) 0 17%, rgba(0, 0, 0, 0) 48%),
+    radial-gradient(circle at 12% 82%, rgba(255, 245, 220, 0.07) 0 15%, rgba(0, 0, 0, 0) 44%),
     /* worked metal is never smooth: a fine tooth over the reflection */
     repeating-linear-gradient(126deg,
       rgba(255, 255, 255, 0.05) 0 1px, rgba(0, 0, 0, 0.05) 1px 2px, rgba(0, 0, 0, 0) 2px 5px),
     conic-gradient(from 202deg at 46% 42%,
-      #5E4620 0deg, #8A6B3C 34deg, #D8BE8C 76deg,
-      #F8EBC8 104deg, #E0C795 126deg, #A2803F 168deg,
-      #6B5027 200deg, #523D1C 232deg, #A88551 274deg,
-      #EFD9A6 310deg, #C9A667 338deg, #5E4620 360deg);
+      #4A3416 0deg, #7A5A2C 34deg, #C9A85F 76deg,
+      #F4E0B0 104deg, #D2B274 126deg, #8E6C2E 168deg,
+      #55401C 200deg, #3E2E12 232deg, #96733D 274deg,
+      #E8CD8E 310deg, #B8944F 338deg, #4A3416 360deg);
+  background-size: 11px 11px, 17px 17px, 23px 23px, auto, auto;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.55),
     inset 0 -1px 0 rgba(60, 44, 20, 0.55),
@@ -1300,41 +1330,45 @@ html[dir="rtl"] .product-card .icon-wrap svg { transform: translate(50%, 40%); }
   position: relative; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 0.3rem; height: 100%; padding: 0.45rem;
-  /* a cushion, not a tile — the corners of a cabochon are turned */
-  border-radius: 14% / 18%;
+  /* An oval, not a tile. A cabochon has no corners: the dome runs out to a
+     girdle all the way round, and the flat-cornered cushion of the first
+     pass is most of why these read as buttons. */
+  border-radius: 46% / 54%;
   text-align: center;
   --core: var(--stone);
-  --core: color-mix(in srgb, var(--stone) 72%, #FFFFFF);
+  --core: color-mix(in srgb, var(--stone) 66%, #FFE6C4);
   --deep: var(--stone);
-  --deep: color-mix(in srgb, var(--stone) 62%, #000000);
+  --deep: color-mix(in srgb, var(--stone) 48%, #000000);
   background:
-    /* the lamp: a hard hotspot with a short elongated tail */
-    radial-gradient(3.4% 2.8% at var(--hx, 21%) var(--hy, 16%),
-      rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55) 52%, rgba(255, 255, 255, 0) 100%),
-    radial-gradient(15% 6.5% at calc(var(--hx, 21%) + 4%) calc(var(--hy, 16%) + 1.5%),
-      rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0) 78%),
+    /* the lamp — tungsten, 3200K, so the hotspot is warm and not white */
+    radial-gradient(3.0% 2.4% at var(--hx, 21%) var(--hy, 16%),
+      rgba(255, 240, 214, 0.98), rgba(255, 226, 180, 0.55) 52%, rgba(255, 226, 180, 0) 100%),
+    radial-gradient(13% 5.5% at calc(var(--hx, 21%) + 4%) calc(var(--hy, 16%) + 1.5%),
+      rgba(255, 232, 190, 0.28), rgba(255, 232, 190, 0) 78%),
+    /* the cool rim, opposite the key, where the dome turns away from it */
+    radial-gradient(40% 24% at 84% 22%, rgba(186, 214, 255, 0.30), rgba(186, 214, 255, 0) 76%),
     /* the sheen the dome carries across its near shoulder */
-    radial-gradient(66% 52% at 36% 30%, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0) 72%),
+    radial-gradient(62% 48% at 36% 30%, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0) 72%),
     /* returned light: a crescent on the far side, warm from the gold under it */
-    radial-gradient(56% 36% at 68% 84%, rgba(255, 240, 205, 0.30), rgba(255, 240, 205, 0.08) 45%, rgba(255, 240, 205, 0) 70%),
+    radial-gradient(56% 34% at 68% 84%, rgba(255, 236, 196, 0.32), rgba(255, 236, 196, 0.08) 45%, rgba(255, 236, 196, 0) 70%),
     /* limb darkening: the rim is the longest path through the stone */
-    radial-gradient(98% 92% at 48% 46%,
-      rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, 0.16) 66%, rgba(0, 0, 0, 0.42) 86%, rgba(0, 0, 0, 0.66) 100%),
+    radial-gradient(96% 90% at 48% 46%,
+      rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0.20) 60%, rgba(0, 0, 0, 0.52) 84%, rgba(0, 0, 0, 0.78) 100%),
     /* the body: lit core, deep colour at the edge */
-    radial-gradient(58% 50% at 44% 40%, var(--core) 0%, var(--stone) 58%, var(--deep) 100%);
+    radial-gradient(56% 48% at 44% 40%, var(--core) 0%, var(--stone) 54%, var(--deep) 100%);
   box-shadow:
     /* the rim line where the dome turns to face the light, then the
        shadow the bezel lip throws down onto the stone */
-    inset 0 0 0 1.5px rgba(255, 255, 255, 0.20),
-    inset 1px 1.5px 3px rgba(255, 255, 255, 0.28),
-    inset -1px -1px 2px rgba(0, 0, 0, 0.35),
-    inset 0 7px 12px -2px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.18),
+    inset 1px 1.5px 3px rgba(255, 236, 200, 0.30),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.4),
+    inset 0 9px 16px -3px rgba(0, 0, 0, 0.62),
     inset 0 -3px 8px rgba(255, 236, 194, 0.10),
-    inset 0 0 22px 4px rgba(0, 0, 0, 0.26),
+    inset 0 0 26px 5px rgba(0, 0, 0, 0.34),
     /* the girdle: a dark seat, then the bright bevel of the metal round it */
-    0 0 0 1px rgba(20, 14, 6, 0.75),
-    0 0 0 2px rgba(255, 236, 194, 0.42),
-    0 0 0 3px rgba(120, 90, 40, 0.5);
+    0 0 0 1px rgba(20, 14, 6, 0.8),
+    0 0 0 2.5px rgba(255, 236, 194, 0.46),
+    0 0 0 4px rgba(120, 90, 40, 0.55);
   transition: --hx 0.45s ease, --hy 0.45s ease;
 }
 /* Move, and the lamp slides over the dome — a reflection travels across a
@@ -1344,18 +1378,26 @@ html[dir="rtl"] .product-card .icon-wrap svg { transform: translate(50%, 40%); }
 }
 .stone__face::before {
   content: ''; position: absolute; inset: -30%;
-  /* Inclusions. Two periods at different angles, so the banding never
-     settles into a regular stripe. Faint — at any more than this it reads
-     as brushed metal or wood grain rather than as stone. */
+  /* Inclusions. A stone that is optically clean reads as plastic; what says
+     mineral is the flaw — a cloud of tiny bubbles here, a healed fracture
+     there, a few needles lying at whatever angle the crystal grew. So this
+     is two faint needle sets at incommensurate angles, plus three clouds
+     that do not sit on any lattice. All of it stays under the threshold
+     where it would read as texture rather than as depth. */
   background:
+    radial-gradient(closest-side at 34% 42%, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0) 100%),
+    radial-gradient(closest-side at 66% 58%, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 100%),
+    radial-gradient(closest-side at 52% 74%, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0) 100%),
     repeating-linear-gradient(var(--vein, 118deg),
-      rgba(255, 255, 255, 0.012) 0 3px,
-      rgba(255, 255, 255, 0) 3px 17px,
-      rgba(0, 0, 0, 0.014) 17px 21px,
-      rgba(255, 255, 255, 0) 21px 44px),
-    repeating-linear-gradient(calc(var(--vein, 118deg) + 37deg),
-      rgba(255, 255, 255, 0.008) 0 8px,
-      rgba(255, 255, 255, 0) 8px 53px);
+      rgba(255, 255, 255, 0.030) 0 1px,
+      rgba(255, 255, 255, 0) 1px 13px,
+      rgba(0, 0, 0, 0.030) 13px 14px,
+      rgba(255, 255, 255, 0) 14px 37px),
+    repeating-linear-gradient(calc(var(--vein, 118deg) + 53deg),
+      rgba(255, 255, 255, 0.022) 0 1px,
+      rgba(255, 255, 255, 0) 1px 29px);
+  background-size: 62% 44%, 44% 34%, 38% 30%, auto, auto;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat;
   pointer-events: none;
 }
 /* Inside the stone: a cloud of the body colour, brighter, sitting off-centre
@@ -1652,3 +1694,195 @@ html[lang="he"] .grad__lbl--he { display: block; }
 .onward { padding: clamp(2.5rem, 6vw, 3.5rem) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 7vw, 4.5rem); border-block-start: 1px solid var(--hairline); }
 .onward__head { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.25rem, 2.6vw, 1.7rem); color: var(--deep-olive); margin: 0 0 0.8rem; text-wrap: balance; }
 .onward__lead { line-height: 1.8; color: var(--muted); max-width: 58ch; margin: 0 0 1.4rem; }
+
+/* ---------- the tree as navigation: two glass orbs ----------
+   Values on the trunk, Roots where the roots leave the ground. Everything
+   else is in the nav; these two ARE the tree and belong on it.
+
+   Glass, not a tinted pill. The backdrop filter genuinely samples the canvas
+   underneath, so what blurs behind the orb is the leaf that happens to be
+   there — move the tree and the blur changes. On top of that go the three
+   things that make thick glass read as thick: a bright meniscus where the
+   surface curves up to the rim, a dark inner wall on the far side where the
+   light has bent away, and a faint spectral fringe at the edge, because at
+   an index around 1.5 the red and blue do not come out of the glass in the
+   same place. */
+.treenav__orb {
+  --orb-tint: rgba(168, 181, 152, 0.10);      /* sage, the site's own */
+  padding: 0.52rem 1.15rem;
+  border: 0;
+  border-radius: 999px;
+  color: #F4F1E6;
+  background:
+    linear-gradient(152deg,
+      rgba(255, 255, 255, 0.26) 0%,
+      rgba(255, 255, 255, 0.05) 34%,
+      rgba(255, 255, 255, 0.02) 62%,
+      rgba(255, 255, 255, 0.14) 100%),
+    var(--orb-tint);
+  -webkit-backdrop-filter: blur(7px) saturate(1.5) brightness(1.06);
+  backdrop-filter: blur(7px) saturate(1.5) brightness(1.06);
+  box-shadow:
+    inset 0 1.2px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.20),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.13),
+    inset 5px 8px 16px -9px rgba(255, 255, 255, 0.55),
+    inset -6px -10px 18px -10px rgba(10, 16, 10, 0.65),
+    0 10px 26px -14px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  isolation: isolate;
+}
+/* the spectral fringe — dispersion at the rim, kept under the threshold
+   where it would read as a coloured border */
+.treenav__orb::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from 210deg,
+    rgba(255, 170, 140, 0.55), rgba(255, 240, 190, 0.20) 22%,
+    rgba(160, 220, 255, 0.50) 46%, rgba(255, 255, 255, 0.10) 68%,
+    rgba(190, 170, 255, 0.42) 84%, rgba(255, 170, 140, 0.55));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  opacity: 0.5;
+}
+/* the specular: a small hard catchlight that slides when you point at it,
+   the way a reflection travels over a curved surface */
+.treenav__orb::after {
+  content: ''; position: absolute; pointer-events: none;
+  inset-inline-start: 14%; inset-block-start: 8%;
+  width: 34%; height: 34%; border-radius: 50%;
+  background: radial-gradient(closest-side,
+    rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.16) 55%, rgba(255, 255, 255, 0) 100%);
+  transition: transform 0.4s ease, opacity 0.3s ease;
+  opacity: 0.85;
+}
+.treenav__orb:hover, .treenav__orb:focus-visible {
+  background:
+    linear-gradient(152deg,
+      rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.07) 34%,
+      rgba(255, 255, 255, 0.03) 62%, rgba(255, 255, 255, 0.18) 100%),
+    rgba(168, 181, 152, 0.16);
+  transform: translate(-50%, -50%) scale(1.055);
+}
+.treenav__orb:hover::after, .treenav__orb:focus-visible::after {
+  transform: translate(26%, 22%); opacity: 1;
+}
+.treenav__orb:focus-visible { outline: 2px solid var(--sage); outline-offset: 4px; }
+.treenav__orb-name { font-size: 1em; }
+.treenav__orb .he { color: #CBD6BC; font-size: 0.8em; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .treenav__orb { background: rgba(30, 38, 28, 0.72); }
+}
+
+/* ---------- the constellation layer ----------
+   Real patterns at real relative positions, in dust gold at eight per cent —
+   present, but not something you have to look at. Point at one and it becomes
+   a reading layer. Three of them, and they are the three named together in
+   Job 9:9, which is why these and not a zodiac. */
+.skymap { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.skymap__item {
+  position: absolute;
+  inset-inline-start: var(--sx); inset-block-start: var(--sy);
+  width: var(--sw); aspect-ratio: 1;
+  pointer-events: auto; cursor: help;
+  opacity: 0.08; transition: opacity 0.45s ease;
+}
+.skymap__item:hover, .skymap__item:focus-visible { opacity: 0.62; }
+.skymap__item:focus-visible { outline: 1px solid rgba(216, 190, 140, 0.5); outline-offset: 10px; }
+.skymap svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.skymap__lines path { fill: none; stroke: #D8BE8C; stroke-width: 0.7; stroke-linejoin: round; stroke-linecap: round; }
+.skymap__stars circle { fill: #F2E4C4; }
+.skymap__cap {
+  position: absolute; inset-block-start: 104%; inset-inline-start: 0;
+  margin: 0; width: max(15rem, 100%);
+  font-size: 0.72rem; line-height: 1.55; letter-spacing: 0.04em;
+  color: #E7D6AE; opacity: 0; transform: translateY(-4px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.skymap__cap b { font-family: 'David Libre', Georgia, serif; font-weight: 500; }
+.skymap__cap span { display: block; color: #BCAF92; font-size: 0.94em; margin-block-start: 0.15rem; }
+.skymap__item:hover .skymap__cap, .skymap__item:focus-visible .skymap__cap {
+  opacity: 1; transform: none;
+}
+/* Under the descent the sky is gone, and so is this. */
+.descent.is-under .skymap { opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+/* No room beside the headline on a small screen. */
+@media (max-width: 900px) { .skymap { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .skymap__item, .skymap__cap, .treenav__orb::after { transition: none; }
+}
+/* In Hebrew the orb's name is already Hebrew; the gloss beside it would be
+   the same word twice. */
+html[lang="he"] .treenav__orb .he { display: none; }
+
+/* ---------- the helix, rendered ----------
+   The WebGL build sits in a black void rather than on the site's dark olive:
+   glass needs somewhere near black to fall to, or every highlight is a
+   mid-tone and nothing reads as glass. */
+.helix__stage.is-3d { background: #050507; }
+.helix__stage.is-3d .helix__hint { color: #9FB098; }
+.helix__stage.is-3d .helix__note { color: #7E8C78; }
+/* The tip rides with the base pair it belongs to. No box and no chrome — a
+   plate is annotated, not labelled. */
+.helix__tip {
+  position: absolute; z-index: 2; margin: 0; pointer-events: none;
+  transform: translate(-50%, -220%);
+  font-size: 0.72rem; letter-spacing: 0.05em; white-space: nowrap;
+  color: #F0E2BE; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 0, 0, 0.9);
+  opacity: 0; transition: opacity 0.22s ease;
+}
+.helix__tip.is-on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .helix__tip { transition: none; } }
+
+/* ---------- the reading under the plate ----------
+   Not a modal. The plate stays where it is and the stone you picked stays
+   lit, because what is being explained is a position ON the plate. */
+.choshen__read {
+  max-width: min(54rem, 94vw); margin: clamp(1.4rem, 3vw, 2rem) auto 0;
+  padding: clamp(1.1rem, 2.6vw, 1.6rem) clamp(1.2rem, 3vw, 1.8rem);
+  border: 1px solid rgba(214, 186, 124, 0.34);
+  border-inline-start: 3px solid var(--stone, #5C6B4A);
+  background: rgba(9, 14, 26, 0.55);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.choshen__read-eyebrow {
+  margin: 0 0 0.5rem; font-size: 0.68rem; letter-spacing: 0.16em; color: #B6A87F;
+}
+html[lang="en"] .choshen__read-eyebrow { text-transform: uppercase; }
+.choshen__read-he {
+  margin: 0; font-family: 'David Libre', Georgia, serif;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem); line-height: 1.4; color: #F1E7CE;
+}
+.choshen__read-en {
+  margin: 0.25rem 0 0; font-size: 0.78rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #C8BC9B;
+}
+.choshen__read-note {
+  margin: 0.9rem 0 0; padding-block-start: 0.8rem;
+  border-block-start: 1px solid rgba(214, 186, 124, 0.2);
+  font-size: 0.85rem; line-height: 1.7; color: #BFB59B; max-width: 52ch;
+}
+.choshen__read-links { margin: 0.9rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; }
+.choshen__read-links .text-link { color: #E4CFA2; }
+/* the stone you picked stays proud of the others */
+.stone.is-open { transform: translateY(-3px); filter: brightness(1.09); }
+.stone.is-open .stone__face { box-shadow: inset 0 0 0 1.5px rgba(255, 236, 194, 0.5),
+  inset 0 9px 16px -3px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(20, 14, 6, 0.8),
+  0 0 0 3px rgba(255, 236, 194, 0.72), 0 0 0 5px rgba(120, 90, 40, 0.6); }
+
+/* ── The seed, under a macro lens ─────────────────────────────────────────
+   The frame is the same square the drawn mark occupied, so nothing on the
+   page moves when the render takes over. The canvas sits under the SVG and
+   only becomes the visible layer once the scene has actually started, which
+   is what `is-3d` means; if three never arrives the drawn mark stays and the
+   canvas is never shown. */
+.seedframe { position: relative; inline-size: clamp(210px, 30vw, 300px); aspect-ratio: 1 / 1; margin-inline: auto; }
+.seedframe .hero-mark { inline-size: 100%; }
+.seedframe__canvas { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; display: none;
+  /* the render is a lit plate, not a pasted photograph: its edge has to give
+     out into the page rather than stop at a rectangle */
+  -webkit-mask-image: radial-gradient(circle closest-side at 50% 52%, #000 46%, rgba(0,0,0,0.92) 66%, rgba(0,0,0,0.55) 84%, transparent 100%);
+  mask-image: radial-gradient(circle closest-side at 50% 52%, #000 46%, rgba(0,0,0,0.92) 66%, rgba(0,0,0,0.55) 84%, transparent 100%); }
+.seedframe.is-3d .seedframe__canvas { display: block; }
+.seedframe.is-3d .hero-mark { visibility: hidden; }
