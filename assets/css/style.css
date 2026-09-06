@@ -962,6 +962,10 @@ html[lang="he"] .mlk__translit { text-transform: none; letter-spacing: 0.04em; }
 .line-idea { padding: 0 clamp(1.25rem, 5vw, 4rem) clamp(3.5rem, 9vw, 6rem); max-width: calc(58ch + 2 * clamp(1.25rem, 5vw, 4rem)); margin-inline: auto; }
 .line-idea p { margin: 0 0 1.15rem; max-width: 58ch; }
 .line-planned { padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 5vw, 4rem); background: var(--panel); }
+/* One product to a line now, so the auto-fit grid has nothing to fit against
+   and would stretch a single card the full width of the page. Cap it at the
+   width a card wants and let it sit at the start of the measure. */
+.line-planned .product-grid { max-width: 22rem; }
 .line-planned .eyebrow { color: var(--line-eyebrow, var(--line-accent)); margin-block-end: 0.5rem; }
 .line-planned h2 { font-family: 'David Libre', Georgia, serif; font-weight: 400; font-size: clamp(1.3rem, 2.6vw, 1.7rem); color: var(--line-h2, var(--line-accent)); margin: 0 0 clamp(2rem, 5vw, 2.6rem); }
 
@@ -1073,9 +1077,9 @@ html[dir="rtl"] .product-card .icon-wrap svg { transform: translate(50%, 40%); }
    direction, or its punctuation strands at the wrong end of the line. */
 .en { direction: ltr; unicode-bidi: isolate; }
 
-.worldwide { text-align: center; padding: 0 clamp(1.25rem, 5vw, 4rem) clamp(2.5rem, 6vw, 3.5rem); }
-.worldwide .he { font-family: 'David Libre', Georgia, serif; font-size: 1.1rem; color: var(--deep-olive); margin: 0 0 0.4rem; direction: rtl; }
-.worldwide .en { font-family: 'David Libre', Georgia, serif; font-size: 0.8rem; letter-spacing: 0.2em; padding-inline-start: 0.2em; color: var(--muted); margin: 0; text-transform: uppercase; }
+.reach { text-align: center; padding: 0 clamp(1.25rem, 5vw, 4rem) clamp(2.5rem, 6vw, 3.5rem); }
+.reach .he { font-family: 'David Libre', Georgia, serif; font-size: 1.1rem; color: var(--deep-olive); margin: 0 0 0.4rem; direction: rtl; }
+.reach .en { font-family: 'David Libre', Georgia, serif; font-size: 0.8rem; letter-spacing: 0.2em; padding-inline-start: 0.2em; color: var(--muted); margin: 0; text-transform: uppercase; }
 /* The plate below is a symmetrical object on the centre line, so on this one
    page the head is centred to meet it. Everywhere else heads stay ranged to
    the start edge. */
@@ -1886,3 +1890,20 @@ html[lang="en"] .choshen__read-eyebrow { text-transform: uppercase; }
   mask-image: radial-gradient(circle closest-side at 50% 52%, #000 46%, rgba(0,0,0,0.92) 66%, rgba(0,0,0,0.55) 84%, transparent 100%); }
 .seedframe.is-3d .seedframe__canvas { display: block; }
 .seedframe.is-3d .hero-mark { visibility: hidden; }
+
+/* ── Intent, marked ───────────────────────────────────────────────────────
+   Sourcing and standards the brand means to hold and has not yet earned.
+   The tag is the whole difference between a claim and a plan, so it sits on
+   the same line as the sentence it qualifies and is never quieter than it. */
+.intent {
+  display: inline-block; margin-inline-start: 0.5rem; vertical-align: 0.08em;
+  padding: 0.08rem 0.5rem; border: 1px solid var(--sage); border-radius: 999px;
+  font-size: 0.66rem; letter-spacing: 0.12em; line-height: 1.7;
+  color: var(--olive); white-space: nowrap;
+}
+html:not([lang="he"]) .intent { text-transform: uppercase; }
+/* On a line card the ground is the line's own colour, so the tag borrows it. */
+.rootlab .intent { border-color: var(--line-bg); color: var(--line-bg); }
+/* In the standards list the detail column is end-aligned, so the tag reads
+   better ahead of the words it qualifies rather than trailing off the edge. */
+.standards-list .intent { margin-inline: 0 0.5rem; }
