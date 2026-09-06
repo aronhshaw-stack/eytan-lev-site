@@ -319,7 +319,7 @@ html[lang="he"] .hero h1, html[lang="he"] .hero-tree__copy h1 { max-width: 16ch;
 }
 /* Only once the 3D scene is live is there anything to descend through. With
    no WebGL the section is an ordinary block: tree, then the six cards. */
-.descent.is-descent { height: 420svh; background: none; }
+.descent.is-descent { height: 300svh; background: none; }
 .descent.is-descent .descent__stage {
   position: sticky; inset-block-start: 0; height: 100svh;
   background: linear-gradient(#121827 0%, #1F2638 36%, #3D3B42 60%, #7C603D 74%, #C4964F 86%, #7E6238 100%);
@@ -609,6 +609,35 @@ html[dir="rtl"] .linestrip__fade--start {
 .rootlab__say { display: block; margin-block-start: 0.55rem; font-size: 0.9rem; line-height: 1.65; }
 .rootlab__prods { display: block; margin-block-start: 0.6rem; font-size: 0.76rem; color: var(--muted); }
 .rootlab__go { display: block; margin-block-start: 0.8rem; font-size: 0.8rem; letter-spacing: 0.04em; color: var(--line-bg); }
+
+/* A product on a root: the pack shot beside the words. The card is the
+   shop tile turned sideways — same bottle, same label — so the thing on the
+   root is the thing on the shelf. */
+.rootlab--product { display: grid; grid-template-columns: 5.6rem minmax(0, 1fr); gap: 0.95rem; align-items: center; }
+.rootlab__pack {
+  position: relative; display: block; aspect-ratio: 1; overflow: hidden; border-radius: 3px;
+  background:
+    radial-gradient(80% 70% at 38% 22%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(120% 90% at 50% 100%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.38) 100%),
+    var(--line-bg);
+}
+.rootlab__pack .pack { inset-block-end: 10%; height: 72%; }
+.rootlab__pack .pack__mark { font-size: 0.3rem; letter-spacing: 0.08em; white-space: nowrap; }
+.rootlab__pack svg {
+  position: absolute; z-index: 2; width: 16%; height: auto; inset-inline-start: 50%;
+  inset-block-end: calc(10% + 72% * 0.30); transform: translate(-50%, 40%);
+  fill: none; stroke: var(--line-bg); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; opacity: 0.9;
+}
+html[dir="rtl"] .rootlab__pack svg { transform: translate(50%, 40%); }
+.rootlab__body { display: block; min-width: 0; }
+.rootlab__line { display: block; font-size: 0.68rem; letter-spacing: 0.14em; color: var(--line-bg); }
+.rootlab__line [data-lang="en"] { text-transform: uppercase; }
+.rootlab__product { display: block; margin-block-start: 0.2rem; font-family: 'David Libre', Georgia, serif; font-size: 1.15rem; line-height: 1.25; color: var(--deep-olive); }
+.rootlab--product .rootlab__say { margin-block-start: 0.3rem; font-size: 0.86rem; color: var(--muted); }
+.rootlab--product .rootlab__go { margin-block-start: 0.55rem; }
+@media (max-width: 760px) { .rootlab--product { grid-template-columns: 4.6rem minmax(0, 1fr); } }
+.waitlist-form.is-failed { outline: 1px solid #8C2231; outline-offset: 6px; border-radius: 4px; }
+.contact-form.is-failed { outline: 1px solid #8C2231; outline-offset: 6px; border-radius: 4px; }
 
 /* Fallback layout: no scene to hang off, so they line up under the tree. */
 .treenav__frame:not(.is-3d) .rootlab {

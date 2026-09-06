@@ -402,15 +402,35 @@
     });
   }
 
-  // ----- waitlist + contact forms: front-end confirmation only.
-  // TODO: wire to a real mailing-list / backend before launch.
+  // ----- waitlist + contact forms.
+  // A form posts to whatever data-endpoint names (Formspree, Buttondown, a
+  // function of your own — anything that takes a JSON POST). With no
+  // endpoint set there is nothing to send to, so the form and its promise
+  // are hidden rather than shown and broken: a visitor is never told
+  // "we'll be in touch" by a page that cannot keep it. Set the attribute on
+  // the form and the whole thing comes back on.
   function initForms() {
     document.querySelectorAll('.waitlist-form, .contact-form').forEach(function (form) {
+      var endpoint = (form.getAttribute('data-endpoint') || '').trim();
+      var note = form.parentElement.querySelector('.form-note');
+      if (!endpoint) {
+        form.hidden = true;
+        // the "leave an address" line above it is a promise too
+        var lead = form.parentElement.querySelector('.sub, .page-intro');
+        if (lead && form.classList.contains('waitlist-form')) lead.hidden = true;
+        return;
+      }
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        var note = form.parentElement.querySelector('.form-note');
-        if (note) note.hidden = false;
-        form.reset();
+        var data = {};
+        form.querySelectorAll('input, textarea').forEach(function (el) { if (el.name || el.id) data[el.name || el.id] = el.value; });
+        data.page = location.pathname; data.lang = document.documentElement.lang;
+        var btn = form.querySelector('button[type="submit"]');
+        if (btn) btn.disabled = true;
+        fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data) })
+          .then(function (r) { if (!r.ok) throw new Error(String(r.status)); if (note) note.hidden = false; form.reset(); })
+          .catch(function () { if (btn) btn.disabled = false; form.classList.add('is-failed'); })
+          .then(function () { if (btn) btn.disabled = false; });
       });
     });
   }
