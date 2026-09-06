@@ -12,6 +12,11 @@
   'use strict';
 
   var THREE_SRC = 'assets/vendor/three.min.js';   // self-hosted: no visitor touches a CDN
+  // Same release on a public CDN. Reached only if the self-hosted copy fails
+  // to load (a preview host that carries the page but not the assets folder,
+  // a blocked path); the SVG drawing is the fallback of last resort, not the
+  // first.
+  var THREE_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
   var BARK = 0x46433A, LEAF_A = 0x2B3626, LEAF_B = 0x7E9268;
   // the tone the crown takes when the low sun catches it — warmer and paler
   // than anything in the mass below, and the reason a canopy reads as lit
@@ -32,11 +37,18 @@
 
   function loadThree(cb) {
     if (window.THREE) return cb();
-    var s = document.createElement('script');
-    s.src = THREE_SRC;
-    s.onload = cb;
-    s.onerror = function () { /* SVG fallback stays */ };
-    document.head.appendChild(s);
+    var tried = 0;
+    function attempt(src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = cb;
+      s.onerror = function () {
+        if (++tried === 1 && src !== THREE_CDN) attempt(THREE_CDN);
+        /* else: the SVG drawing stays */
+      };
+      document.head.appendChild(s);
+    }
+    attempt(THREE_SRC);
   }
 
   // ---- deterministic noise, so the tree is the same every visit
