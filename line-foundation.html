@@ -15,12 +15,11 @@
 <meta name="description" content="Foundation (Yesod) — the Eytan Lev line every other line is built on.">
 <script>(function(){var l='en';try{l=localStorage.getItem('eyl_lang')||l}catch(e){}document.documentElement.lang=l;document.documentElement.dir=l==='he'?'rtl':'ltr';})();</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-70 -70 140 140'><g fill='none' stroke='%235C6B4A' stroke-width='12' stroke-linejoin='round' stroke-linecap='round'><path d='M0,-58 L16.8,-29 L50.2,-29 L33.5,0 L50.2,29 L16.8,29 L0,58 L-16.8,29 L-50.2,29 L-33.5,0 L-50.2,-29 L-16.8,-29 Z'/><path d='M-33.5,0 L-8,0 L0,-16 L8,0 L33.5,0'/></g></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=David+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body style="--line-bg:#46523A; --line-fg:#A8B598; --line-accent:#46523A; --line-eyebrow:#5C6B4A; --line-input:#5C6B4A; --line-pale:#F4F0E6;">
+<a class="skip-link" href="#main">Skip to content</a>
 
 <header class="site-header">
   <a class="brand" href="index.html" aria-label="Eytan Lev">
@@ -47,7 +46,7 @@
   <button type="button" class="lang-toggle"><span data-lang="en">עברית</span><span data-lang="he">English</span></button>
 </header>
 
-<main>
+<main id="main">
 
   <section class="line-hero">
     <svg viewBox="-36 -36 72 72" aria-hidden="true">
@@ -132,6 +131,7 @@
       <input id="wl-foundation" type="email" required placeholder="name@example.com">
       <button type="submit"><span data-lang="en">Keep me posted</span><span data-lang="he">עדכנו אותי</span></button>
     </form>
+    <p class="form-consent" dir="ltr">By sending this you agree to our <a href="privacy.html">privacy policy</a>. We keep only what you type here, and only to reply.</p>
     <p class="form-note" role="status" hidden><span data-lang="en">Thanks — we'll let you know when Foundation launches.</span><span data-lang="he">תודה. נעדכן אתכם כשיסוד יושק.</span></p>
   </section>
 
@@ -140,6 +140,7 @@
 <footer class="site-footer">
   <a class="footer-back-link" href="values.html"><span data-lang="en">← Back to Values</span><span data-lang="he">→ חזרה לערכים</span></a>
   <p class="footer-meta footer-meta--spaced"><span data-lang="en">© 2026 Eytan Lev · Israel</span><span data-lang="he">© 2026 איתן לב · ישראל</span></p>
+    <p class="footer-legal" dir="ltr"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="refunds.html">Refunds</a></p>
 </footer>
 
 <script src="assets/js/main.js"></script>

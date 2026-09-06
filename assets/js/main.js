@@ -418,6 +418,8 @@
         // the "leave an address" line above it is a promise too
         var lead = form.parentElement.querySelector('.sub, .page-intro');
         if (lead && form.classList.contains('waitlist-form')) lead.hidden = true;
+        var consent = form.parentElement.querySelector('.form-consent');
+        if (consent) consent.hidden = true;
         return;
       }
       form.addEventListener('submit', function (e) {

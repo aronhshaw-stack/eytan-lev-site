@@ -19,7 +19,7 @@
   --vt-olive-bg: #E7EADC;
   --vt-alert: #8C2231;
   --vt-alert-bg: #F7EFEA;
-  --vt-dim: #8E8A7A;
+  --vt-dim: #6E6A5C;
 
   --vt-display: 'David Libre', Georgia, 'Times New Roman', serif;
   --vt-body: 'Assistant', system-ui, sans-serif;
@@ -304,5 +304,5 @@ html[lang="he"] .vt-pill { text-transform: none; letter-spacing: 0.04em; }
 @media (prefers-reduced-motion: reduce) {
   .vt-flow { display: none; }
 }
-.vt-tree-cap--note { margin-block-start: 0.5rem; font-size: 0.74rem; opacity: 0.85; }
+.vt-tree-cap--note { margin-block-start: 0.5rem; font-size: 0.74rem; }
 .vt-tree-cap--note [lang="he"] { font-family: 'David Libre', Georgia, serif; }

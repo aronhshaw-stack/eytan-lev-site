@@ -11,7 +11,7 @@
 (function () {
   'use strict';
 
-  var THREE_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  var THREE_SRC = 'assets/vendor/three.min.js';   // self-hosted: no visitor touches a CDN
   var BARK = 0x46433A, LEAF_A = 0x2B3626, LEAF_B = 0x7E9268;
   // the tone the crown takes when the low sun catches it — warmer and paler
   // than anything in the mass below, and the reason a canopy reads as lit
@@ -1825,14 +1825,21 @@
       for (var i = 0; i < surfIdx.length; i++) {
         // Deeper branches finish later, so the tree unfolds outward.
         var d = branches[surfIdx[i]].depth;
-        var stagger = d >= 9 ? 0 : (4 - Math.min(4, d)) * 0.16;
-        placeBranch(bMesh, i, surfIdx[i],
-          Math.max(0, Math.min(1, (e - stagger) / (1 - stagger || 1))));
+        // Strict generations. A child used to start while its parent was a
+        // sixth grown, from the point the parent would EVENTUALLY reach — so
+        // twigs appeared in mid-air with nothing under them. Now the trunk
+        // finishes first, then each generation of limbs in turn, each one
+        // beginning only when the wood it grows from is there.
+        var gen = d >= 9 ? 0 : (branches[surfIdx[i]].root ? 4 - d : 5 - d);
+        // (g0/g1, not t0: t0 is the animation's start time in this scope,
+        // and shadowing it stopped the clock.)
+        var g0 = Math.max(0, (gen - 0.10) / 6), g1 = (gen + 1) / 6;
+        placeBranch(bMesh, i, surfIdx[i], Math.max(0, Math.min(1, (e - g0) / (g1 - g0))));
       }
       bMesh.instanceMatrix.needsUpdate = true;
       jS.instanceMatrix.needsUpdate = true;
 
-      var lt = Math.max(0, (e - 0.55) / 0.45);
+      var lt = Math.max(0, (e - 0.78) / 0.22);   // leaves come as the twigs finish
       var swayNow = (reduced || depthP > 0.25) ? 0 : now;
       for (var j = 0; j < clusters.length; j++) placeCluster(j, lt, swayNow);
       lMesh.instanceMatrix.needsUpdate = true;
